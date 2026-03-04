@@ -1,0 +1,53 @@
+
+> backend@1.0.0 test
+> node --experimental-vm-modules ../../node_modules/jest/bin/jest.js
+
+[1m[2mDetermining test suites to run...[22m[22m[999D[K
+[?2026h[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026l[K[1A[K[1A(node:151923) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026h[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026l[K[1A[K[1A[999D[K
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[K[1A[K[1A  [2mconsole.log[22m
+    [EVENT][Backend] request_received {"path":"/api/v1/health"}
+[2m[22m
+[2m      [2mat Object.trackEvent ([22m[2m../../packages/shared/src/logger.js[2m:12:21)[22m[2m[22m
+
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026h[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026l[K[1A[K[1A[999D[K
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[K[1A[K[1A  [2mconsole.log[22m
+    [EVENT][Backend] request_success {"path":"/api/v1/profile"}
+[2m[22m
+[2m      [2mat Object.trackEvent ([22m[2m../../packages/shared/src/logger.js[2m:12:21)[22m[2m[22m
+
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026h[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026l[K[1A[K[1A[0m[7m[1m[32m PASS [39m[22m[27m[0m [2mtests/[22m[1mmessages.test.js[22m
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[K[1A[K[1A  [32m✓[39m [2mhealth endpoint returns ok (77 ms)[22m
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[K[1A[K[1A  [32m✓[39m [2mprofile endpoint returns correct data (10 ms)[22m
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[K[1A[K[1A
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [1m...js[22m
+[?2026h[K[1A[K[1A[?2026l[999D[K[1mTest Suites: [22m[1m[32m1 passed[39m[22m, 1 total
+[1mTests:       [22m[1m[32m2 passed[39m[22m, 2 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        0.692 s, estimated 1 s
+[2mRan all test suites[22m[2m.[22m
+[?2026h[?2026l⠙[1G[0K

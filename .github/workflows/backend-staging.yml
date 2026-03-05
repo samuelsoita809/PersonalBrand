@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - development
-    paths:
-      - 'apps/backend/**'
-      - 'packages/**'
-      - '.github/workflows/deploy-backend-staging.yml'
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}

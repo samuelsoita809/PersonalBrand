@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest';
 import request from "supertest";
 import app from "../src/index.js";
 

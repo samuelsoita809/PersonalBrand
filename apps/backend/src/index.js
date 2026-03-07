@@ -61,6 +61,9 @@ app.post("/api/v1/ai/insight", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => logger.info(`Backend running on port ${PORT}`));
+
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+    app.listen(PORT, () => logger.info(`Backend running on port ${PORT}`));
+}
 
 export default app;

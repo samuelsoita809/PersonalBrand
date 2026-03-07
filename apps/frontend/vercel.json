@@ -2,13 +2,9 @@
     "buildCommand": "npm run build",
     "installCommand": "npm install",
     "devCommand": "npm run dev",
-    "outputDirectory": "apps/frontend/dist",
+    "outputDirectory": "dist",
     "framework": "vite",
     "rewrites": [
-        {
-            "source": "/api/:path*",
-            "destination": "/api/index.js"
-        },
         {
             "source": "/(.*)",
             "destination": "/index.html"

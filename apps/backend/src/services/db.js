@@ -11,7 +11,7 @@ const logger = createLogger('Database');
 
 /**
  * Drizzle MySQL Data Service
- * Implements the profile data storage using TiDB Cloud MySQL.
+ * Implements the profile data storage using Vercel/MySQL.
  */
 class DataService {
     constructor() {

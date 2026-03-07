@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "echo 'No build step required'",
+    "build": "mkdir -p dist && echo 'No build step required'",
     "test": "vitest run",
     "dev": "node src/index.js",
     "start": "node src/index.js"

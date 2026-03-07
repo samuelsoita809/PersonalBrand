@@ -4,6 +4,9 @@
         "dev": {
             "cache": false
         },
+        "backend#build": {
+            "outputs": []
+        },
         "build": {
             "dependsOn": [
                 "^build"

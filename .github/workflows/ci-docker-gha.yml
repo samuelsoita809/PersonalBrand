@@ -1,7 +1,8 @@
 name: CI Mode 2 - Docker + GHA
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ development, main ]
 
 jobs:
   docker-build:

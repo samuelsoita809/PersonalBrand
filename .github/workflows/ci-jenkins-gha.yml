@@ -1,7 +1,8 @@
 name: CI Mode 3 - Jenkins + GHA
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ development, main ]
 
 jobs:
   trigger-jenkins:

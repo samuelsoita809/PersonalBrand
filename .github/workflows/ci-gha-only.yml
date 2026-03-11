@@ -1,7 +1,10 @@
 name: CI Mode 1 - GHA Only
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ development, main ]
+  pull_request:
+    branches: [ development, main ]
 
 jobs:
   test-and-build:

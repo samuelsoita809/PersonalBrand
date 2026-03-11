@@ -1,8 +1,7 @@
 name: CI Mode 4 - Full Orchestration
 
 on:
-  push:
-    branches: [ development, main ]
+  workflow_dispatch:
 
 jobs:
   full-pipeline:

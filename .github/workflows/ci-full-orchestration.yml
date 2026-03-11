@@ -1,0 +1,19 @@
+name: CI Mode 4 - Full Orchestration
+
+on:
+  push:
+    branches: [ development, main ]
+
+jobs:
+  full-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Docker Context
+        run: docker compose build
+        
+      - name: Notify Jenkins of Artifacts
+        run: |
+          echo "Notifying Jenkins to pick up Docker images and run integration tests..."
+          # Logic to trigger remote Jenkins with image tags

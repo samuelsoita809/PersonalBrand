@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "componentType": "Card",
+    "title": "Project Alpha",
+    "description": "This is my first project",
+    "onClickType": "modal"
+  },
+  {
+    "id": 2,
+    "componentType": "Card",
+    "title": "Project Beta",
+    "description": "This is my second project",
+    "onClickType": "modal"
+  },
+  {
+    "id": 3,
+    "componentType": "InfoPanel",
+    "title": "Stats",
+    "content": "You have 3 projects online"
+  },
+  {
+    "id": 4,
+    "componentType": "ContactForm"
+  }
+]

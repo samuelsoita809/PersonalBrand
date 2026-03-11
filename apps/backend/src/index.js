@@ -3,22 +3,31 @@ import { createLogger, EVENTS, VERSION } from "@monorepo/shared";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 
+import { authenticateToken } from "./middleware/auth.js";
+
 import { db } from "./services/db.js";
+import { jobQueue } from "./services/jobs.js";
+import { analytics } from "./services/analytics.js";
+import { aiService } from "./services/ai.js";
+
+import { configureSecurity } from "./middleware/security.js";
+
 
 dotenv.config();
 
 const app = express();
-const logger = createLogger('Backend');
-app.use(express.json());
+configureSecurity(app);
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const logger = createLogger('Backend');
+
+app.use(express.json());
 
 app.get("/api/v1/health", (req, res) => {
     logger.trackEvent(EVENTS.REQUEST_RECEIVED, { path: '/api/v1/health' });
     res.status(200).json({ status: "ok", version: VERSION });
 });
+
+
 
 app.get("/api/v1/profile", async (req, res) => {
     try {
@@ -32,10 +41,11 @@ app.get("/api/v1/profile", async (req, res) => {
 });
 
 /**
- * AI Insights Endpoint
- * Processes profile data through Gemini to generate a professional summary or advice.
+
+ * AI Insights Endpoint (Asynchronous Job Pattern)
+ * Queues a request for Gemini to generate an insight.
  */
-app.post("/api/v1/ai/insight", async (req, res) => {
+app.post("/api/v1/ai/insight", authenticateToken, async (req, res) => {
     const { prompt } = req.body;
 
     if (!prompt) {
@@ -43,22 +53,49 @@ app.post("/api/v1/ai/insight", async (req, res) => {
     }
 
     try {
-        logger.trackEvent(EVENTS.REQUEST_RECEIVED, { path: '/api/v1/ai/insight' });
-        const profile = await db.getProfile();
+        logger.info('AI Insight request received - Queueing job');
+        
+        // Track the initial request
+        analytics.track('AI_INSIGHT_REQUESTED', { prompt_preview: prompt.substring(0, 50) });
 
-        const fullPrompt = `As a professional career advisor, given this profile: ${JSON.stringify(profile)}. Answer this request: ${prompt}`;
+        // Enqueue the heavy lifting
+        jobQueue.add('GENERATE_AI_INSIGHT', async (data) => {
+            try {
+                const profile = await db.getProfile();
+                const text = await aiService.generateInsight(profile, data.prompt);
+                
+                logger.info('AI Insight Job Completed Successfully');
+                analytics.track('AI_INSIGHT_SUCCESS', { job: 'GENERATE_AI_INSIGHT' });
+                
+                // In a full app, we might notify the user via WebSocket or store the result
+            } catch (error) {
+                logger.error('Background AI Job Failed', error);
+                analytics.track('AI_INSIGHT_FAILURE', { error: error.message });
+            }
+        }, { prompt });
 
-        const result = await model.generateContent(fullPrompt);
-        const response = await result.response;
-        const text = response.text();
+        // Return 202 Accepted immediately
+        res.status(202).json({ 
+            message: "AI Insight request accepted and is being processed in the background.",
+            jobStatus: "queued"
+        });
 
-        logger.trackEvent(EVENTS.REQUEST_SUCCESS, { path: '/api/v1/ai/insight' });
-        res.status(200).json({ insight: text });
     } catch (error) {
-        logger.error('Gemini AI processing error:', error);
-        res.status(500).json({ error: "AI Insight generation failed" });
+        logger.error('Failed to queue AI job:', error);
+        res.status(500).json({ error: "Failed to initiate AI processing" });
     }
 });
+
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    logger.error('Unhandled Exception:', err);
+    res.status(500).json({ 
+        error: "Internal Server Error", 
+        message: err.message
+    });
+});
+
 
 const PORT = process.env.PORT || 8080;
 
@@ -67,3 +104,4 @@ if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
 }
 
 export default app;
+

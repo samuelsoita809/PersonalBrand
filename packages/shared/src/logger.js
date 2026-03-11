@@ -1,16 +1,24 @@
-// Monitoring and Event Tracking Utility
+import winston from 'winston';
+
 export const createLogger = (context) => {
-    return {
-        info: (message, data = {}) => {
-            console.log(`[INFO][${context}] ${message}`, JSON.stringify(data));
-        },
-        error: (message, error = {}) => {
-            console.error(`[ERROR][${context}] ${message}`, error);
-            // In a real app, this would send to an incident tracking service (e.g., Sentry)
-        },
-        trackEvent: (eventName, metadata = {}) => {
-            console.log(`[EVENT][${context}] ${eventName}`, JSON.stringify(metadata));
-            // In a real app, this would send to an analytics service (e.g., Mixpanel)
-        }
+    const logger = winston.createLogger({
+        level: 'info',
+        format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.json()
+        ),
+        defaultMeta: { service: 'brand-service', context },
+        transports: [
+            new winston.transports.Console()
+        ],
+    });
+
+    // Add XAWoW business event tracking
+    logger.trackEvent = (eventName, metadata = {}) => {
+        logger.info(`EVENT:${eventName}`, { ...metadata });
     };
+
+    return logger;
 };
+
+

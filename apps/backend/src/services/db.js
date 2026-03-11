@@ -1,72 +1,78 @@
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import { eq } from 'drizzle-orm';
 import { createLogger, VERSION } from "@monorepo/shared";
 import dotenv from 'dotenv';
-import * as schema from '../db/schema.ts';
+import * as schema from '../db/schema.js';
+import { z } from 'zod';
 
 dotenv.config();
 
 const logger = createLogger('Database');
 
+// Zod schema for profile validation
+export const profileSchema = z.object({
+    name: z.string().min(1),
+    title: z.string().min(1),
+    bio: z.string().optional(),
+    socials: z.record(z.string()).optional(),
+    version: z.string().optional(),
+});
+
 /**
- * Drizzle MySQL Data Service
- * Implements the profile data storage using Vercel/MySQL.
+ * Drizzle PostgreSQL Data Service (Supabase)
+ * Implements the profile data storage using Supabase/PostgreSQL.
  */
 class DataService {
     constructor() {
-        this.connection = mysql.createPool({
-            uri: process.env.DATABASE_URL,
-            ssl: {
-                rejectUnauthorized: true
-            }
-        });
-        this.db = drizzle(this.connection, { schema, mode: 'default' });
+        const client = postgres(process.env.DATABASE_URL);
+        this.db = drizzle(client, { schema });
         this.profileId = 'samuel-soita';
     }
 
     async getProfile() {
         try {
-            logger.info('Fetching profile data from MySQL');
+            logger.info('Fetching profile data from Supabase');
             const result = await this.db.query.profiles.findFirst({
                 where: eq(schema.profiles.id, this.profileId)
             });
 
             if (!result) {
-                logger.warn('Profile not found in MySQL, returning default');
+                logger.warn('Profile not found in Supabase, returning default');
                 return this.getDefaultProfile();
             }
 
-            // Drizzle might return JSON fields as strings or objects depending on the driver
-            const socials = typeof result.socials === 'string' ? JSON.parse(result.socials) : result.socials;
-
-            return { ...result, socials };
+            return result;
         } catch (error) {
-            logger.error('Error fetching profile from MySQL:', error);
+            logger.error('Error fetching profile from Supabase:', error);
             return this.getDefaultProfile();
         }
     }
 
     async updateProfile(newData) {
         try {
-            logger.info('Updating profile data in MySQL', newData);
+            logger.info('Validating and updating profile data in Supabase');
+            
+            // Validate data
+            const validatedData = profileSchema.parse(newData);
 
             await this.db.insert(schema.profiles)
                 .values({
                     id: this.profileId,
-                    ...newData,
+                    ...validatedData,
                     updatedAt: new Date()
                 })
-                .onDuplicateKeyUpdate({
+                .onConflictDoUpdate({
+                    target: schema.profiles.id,
                     set: {
-                        ...newData,
+                        ...validatedData,
                         updatedAt: new Date()
                     }
                 });
 
             return await this.getProfile();
         } catch (error) {
-            logger.error('Error updating profile in MySQL:', error);
+            logger.error('Error updating profile in Supabase:', error);
             throw error;
         }
     }
@@ -88,3 +94,4 @@ class DataService {
 
 export const db = new DataService();
 export { schema };
+

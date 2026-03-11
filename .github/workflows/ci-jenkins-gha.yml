@@ -1,0 +1,17 @@
+name: CI Mode 3 - Jenkins + GHA
+
+on:
+  push:
+    branches: [ development, main ]
+
+jobs:
+  trigger-jenkins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Trigger Jenkins Pipeline
+        run: |
+          echo "This step would trigger a Jenkins job via Webhook or CLI"
+          # Example: curl -X POST JENKINS_URL/job/BrandPipeline/build --user USER:TOKEN
+          echo "Jenkins trigger initiated."

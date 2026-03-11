@@ -1,0 +1,20 @@
+name: CI Mode 2 - Docker + GHA
+
+on:
+  push:
+    branches: [ development, main ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build and test with Docker Compose
+        run: |
+          docker compose build
+          # Example of running tests inside container
+          # docker compose run backend npm run test

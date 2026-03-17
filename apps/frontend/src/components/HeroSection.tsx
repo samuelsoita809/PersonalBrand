@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeroText from './HeroText';
 import ProfileCard from './ProfileCard';
 import heroConfig from '../config/hero.json';
 import { useAnalytics } from '../context/analytics';
+import WorkWithMeModal from './WorkWithMeModal';
+import ConnectWithMeModal from './ConnectWithMeModal';
 
 const HeroSection: React.FC = () => {
   const { heading, subheading, intro, profile, ctas } = heroConfig;
   const { trackEvent } = useAnalytics();
+  const [isWorkModalOpen, setIsWorkModalOpen] = useState(false);
+  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
 
   useEffect(() => {
     trackEvent('hero_view', {
@@ -17,7 +21,14 @@ const HeroSection: React.FC = () => {
 
   const handleCtaClick = (id: string, label: string) => {
     trackEvent(`cta_${id}_click`, { label });
-    console.log(`${id} clicked`);
+    
+    if (id === 'work') {
+      setIsWorkModalOpen(true);
+      trackEvent('modal_open', { type: 'work_with_me' });
+    } else if (id === 'connect') {
+      setIsConnectModalOpen(true);
+      trackEvent('modal_open', { type: 'connect_with_me' });
+    }
   };
 
   return (
@@ -61,6 +72,16 @@ const HeroSection: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Modals */}
+      <WorkWithMeModal 
+        isOpen={isWorkModalOpen} 
+        onClose={() => setIsWorkModalOpen(false)} 
+      />
+      <ConnectWithMeModal 
+        isOpen={isConnectModalOpen} 
+        onClose={() => setIsConnectModalOpen(false)} 
+      />
     </section>
   );
 };

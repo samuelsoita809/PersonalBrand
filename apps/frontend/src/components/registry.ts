@@ -8,5 +8,6 @@ export const componentRegistry: Record<string, React.LazyExoticComponent<any> | 
   InfoPanel: lazy(() => import('./InfoPanel')),
   ContactForm: lazy(() => import('./ContactForm')),
   HeroSection,
+  AnalyticsDashboard: lazy(() => import('./AnalyticsDashboard')),
 };
 

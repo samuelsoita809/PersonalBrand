@@ -4,7 +4,8 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "infrastructure/*"
+    "infrastructure/*",
+    "apps/dashboard"
 
   ],
   "devDependencies": {

@@ -22,5 +22,9 @@
   {
     "id": 4,
     "componentType": "ContactForm"
+  },
+  {
+    "id": 5,
+    "componentType": "AnalyticsDashboard"
   }
 ]

@@ -5,6 +5,7 @@ export const componentRegistry: Record<string, React.LazyExoticComponent<any>> =
  Modal: lazy(() => import('./Modal')),
  InfoPanel: lazy(() => import('./InfoPanel')),
  ContactForm: lazy(() => import('./ContactForm')),
+ AnalyticsDashboard: lazy(() => import('./AnalyticsDashboard')),
 };
 
 

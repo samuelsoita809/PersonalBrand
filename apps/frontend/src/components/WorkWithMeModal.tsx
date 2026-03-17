@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { Send, CheckCircle2 } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAnalytics } from '../context/analytics';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const workSchema = z.object({
+  projectName: z.string().min(2, 'Project name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid business email'),
+  message: z.string().min(10, 'Please provide a bit more detail (min 10 chars)'),
+});
+
+type WorkFormData = z.infer<typeof workSchema>;
 
 interface WorkWithMeModalProps {
   isOpen: boolean;
@@ -13,18 +24,30 @@ const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) =>
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm<WorkFormData>({
+    resolver: zodResolver(workSchema),
+  });
+
+  const onSubmit = async (data: WorkFormData) => {
     setLoading(true);
     
-    // Simulate API call
+    // Simulate API call (Build Phase - Logic)
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    trackEvent('modal_submit', { type: 'work_with_me' });
+    trackEvent('modal_submit', { 
+      type: 'work_with_me',
+      projectName: data.projectName 
+    });
+    
     setIsSubmitted(true);
     setLoading(false);
+    reset();
     
-    // Close modal after success message
     setTimeout(() => {
       onClose();
       setIsSubmitted(false);
@@ -34,7 +57,7 @@ const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) =>
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Let's Build Something Great">
       {!isSubmitted ? (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <p className="text-slate-400 text-sm mb-6">
             Looking for a technical partner or premium engineering? Tell me about your project and I'll get back to you within 24 hours.
           </p>
@@ -42,31 +65,45 @@ const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) =>
           <div className="space-y-2">
             <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Project Name</label>
             <input 
-              required
-              type="text" 
+              {...register('projectName')}
               placeholder="e.g. Next-Gen Brand Identity"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all"
+              className={`w-full bg-white/5 border ${errors.projectName ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all`}
             />
+            {errors.projectName && (
+              <p className="text-red-400 text-xs flex items-center gap-1">
+                <AlertCircle size={12} /> {errors.projectName.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
             <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Your Email</label>
             <input 
-              required
+              {...register('email')}
               type="email" 
               placeholder="hello@company.com"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all"
+              className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all`}
             />
+            {errors.email && (
+              <p className="text-red-400 text-xs flex items-center gap-1">
+                <AlertCircle size={12} /> {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
             <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Brief Overview</label>
             <textarea 
-              required
+              {...register('message')}
               rows={4}
               placeholder="How can I help you scale?"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all resize-none"
+              className={`w-full bg-white/5 border ${errors.message ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all resize-none`}
             ></textarea>
+            {errors.message && (
+              <p className="text-red-400 text-xs flex items-center gap-1">
+                <AlertCircle size={12} /> {errors.message.message}
+              </p>
+            )}
           </div>
 
           <button 

@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { Mail, Linkedin, Twitter, CheckCircle2 } from 'lucide-react';
+import { Mail, Linkedin, Twitter, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAnalytics } from '../context/analytics';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const connectSchema = z.object({
+  email: z.string().email('Please enter a valid email'),
+  message: z.string().min(5, 'Message is too short (min 5 chars)'),
+});
+
+type ConnectFormData = z.infer<typeof connectSchema>;
 
 interface ConnectWithMeModalProps {
   isOpen: boolean;
@@ -13,21 +23,30 @@ const ConnectWithMeModal: React.FC<ConnectWithMeModalProps> = ({ isOpen, onClose
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm<ConnectFormData>({
+    resolver: zodResolver(connectSchema),
+  });
+
   const handleQuickConnect = async (platform: string) => {
     trackEvent('cta_connect_click', { platform });
     window.open(platform === 'linkedin' ? 'https://linkedin.com' : 'https://twitter.com', '_blank');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: ConnectFormData) => {
     setLoading(true);
     
-    // Simulate API call
+    // Simulate API call (DevSecOps - Build Logic)
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     trackEvent('modal_submit', { type: 'connect_with_me' });
     setIsSubmitted(true);
     setLoading(false);
+    reset();
     
     setTimeout(() => {
       onClose();
@@ -38,21 +57,21 @@ const ConnectWithMeModal: React.FC<ConnectWithMeModalProps> = ({ isOpen, onClose
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Connect & Network">
       {!isSubmitted ? (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Social Links */}
           <div className="grid grid-cols-2 gap-4">
             <button 
               onClick={() => handleQuickConnect('linkedin')}
-              className="flex items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white"
+              className="flex items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
             >
-              <Linkedin size={20} className="text-blue-400" />
+              <Linkedin size={20} className="text-blue-400 group-hover:scale-110 transition-transform" />
               <span>LinkedIn</span>
             </button>
             <button 
               onClick={() => handleQuickConnect('twitter')}
-              className="flex items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white"
+              className="flex items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
             >
-              <Twitter size={20} className="text-sky-400" />
+              <Twitter size={20} className="text-sky-400 group-hover:scale-110 transition-transform" />
               <span>Twitter / X</span>
             </button>
           </div>
@@ -67,25 +86,35 @@ const ConnectWithMeModal: React.FC<ConnectWithMeModalProps> = ({ isOpen, onClose
           </div>
 
           {/* Direct Message Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Email</label>
               <input 
-                required
+                {...register('email')}
                 type="email" 
                 placeholder="your@email.com"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500/50 transition-all"
+                className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500/50 transition-all`}
               />
+              {errors.email && (
+                <p className="text-red-400 text-xs flex items-center gap-1">
+                  <AlertCircle size={12} /> {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
               <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Message</label>
               <textarea 
-                required
+                {...register('message')}
                 rows={3}
                 placeholder="Let's discuss something amazing..."
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+                className={`w-full bg-white/5 border ${errors.message ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500/50 transition-all resize-none`}
               ></textarea>
+              {errors.message && (
+                <p className="text-red-400 text-xs flex items-center gap-1">
+                  <AlertCircle size={12} /> {errors.message.message}
+                </p>
+              )}
             </div>
 
             <button 

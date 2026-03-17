@@ -9,12 +9,12 @@
   },
   "ctas": [
     {
-      "id": "work_with_me",
+      "id": "work",
       "label": "Work With Me",
       "type": "primary"
     },
     {
-      "id": "connect_with_me",
+      "id": "connect",
       "label": "Connect With Me",
       "type": "secondary"
     }

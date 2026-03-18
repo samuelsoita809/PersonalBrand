@@ -19,16 +19,40 @@ class AnalyticsService {
         try {
             logger.info(`Tracking event: ${eventName}`, { context, ...metadata });
             
-            // This assumes the analytics_events table exists in the schema
-            // If not yet in schema.ts, we use the raw SQL migration we created
             await db.db.insert(schema.analytics_events).values({
+                id: crypto.randomUUID(),
                 event_name: eventName,
                 metadata: metadata,
                 context: context,
-                created_at: new Date()
+                createdAt: new Date()
             });
         } catch (error) {
             logger.error(`Failed to track event: ${eventName}`, error);
+        }
+    }
+
+    async getSummary() {
+        try {
+            logger.info('Fetching analytics summary stats');
+            const events = await db.db.select().from(schema.analytics_events);
+            const leads = await db.db.select().from(schema.hero_leads);
+            
+            const stats = {
+                total_events: events.length,
+                page_views: events.filter(e => e.event_name === 'page_view').length,
+                cta_clicks: events.filter(e => e.event_name.startsWith('cta_')).length,
+                modal_opens: events.filter(e => e.event_name === 'modal_open').length,
+                leads: leads.length
+            };
+
+            // Calculation Rules for Product Specification
+            stats.ctr = stats.page_views > 0 ? (stats.cta_clicks / stats.page_views).toFixed(4) : 0;
+            stats.modal_rate = stats.cta_clicks > 0 ? (stats.modal_opens / stats.cta_clicks).toFixed(4) : 0;
+
+            return stats;
+        } catch (error) {
+            logger.error('Error fetching summary:', error);
+            throw error;
         }
     }
 }

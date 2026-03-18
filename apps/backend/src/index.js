@@ -2,6 +2,7 @@ import express from "express";
 import { createLogger, EVENTS, VERSION } from "@monorepo/shared";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
+import crypto from "crypto";
 
 import { authenticateToken } from "./middleware/auth.js";
 
@@ -62,7 +63,7 @@ app.post("/api/v1/ai/insight", authenticateToken, async (req, res) => {
         jobQueue.add('GENERATE_AI_INSIGHT', async (data) => {
             try {
                 const profile = await db.getProfile();
-                const text = await aiService.generateInsight(profile, data.prompt);
+                await aiService.generateInsight(profile, data.prompt);
                 
                 logger.info('AI Insight Job Completed Successfully');
                 analytics.track('AI_INSIGHT_SUCCESS', { job: 'GENERATE_AI_INSIGHT' });
@@ -87,8 +88,81 @@ app.post("/api/v1/ai/insight", authenticateToken, async (req, res) => {
 });
 
 
+/**
+ * Analytics Event Tracking
+ * Public endpoint to receive frontend events.
+ */
+app.post("/api/v1/analytics/events", async (req, res) => {
+    const { event_name, metadata } = req.body;
+    
+    if (!event_name) {
+        return res.status(400).json({ error: "Event name is required" });
+    }
+
+    try {
+        await analytics.track(event_name, metadata, 'frontend');
+        res.status(204).send();
+    } catch (error) {
+        logger.error('Failed to record event:', error);
+        res.status(500).json({ error: "Failed to record event" });
+    }
+});
+
+/**
+ * Hero Lead Submission
+ * Public endpoint to receive modal form submissions.
+ */
+app.post("/api/v1/hero/lead", async (req, res) => {
+    const { name, email, message } = req.body;
+    
+    if (!name || !email) {
+        return res.status(400).json({ error: "Name and email are required" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(db.schema.hero_leads).values({
+            id,
+            name,
+            email,
+            message,
+            createdAt: new Date()
+        });
+        
+        logger.info(`New hero lead received: ${email}`);
+        
+        // Mock Email Integration (as per specification)
+        logger.info(`[EMAIL SIMULATION] To: admin@tax-project.com, Subject: New Hero Lead - ${name}`);
+        
+        res.status(201).json({ status: "success", leadId: id });
+    } catch (error) {
+        logger.error('Failed to record hero lead:', error);
+        res.status(500).json({ error: "Failed to record lead" });
+    }
+});
+
+/**
+ * Analytics Summary
+ * Protected endpoint for the Admin Dashboard.
+ */
+app.get("/api/v1/analytics/summary", authenticateToken, async (req, res) => {
+    // Only admins can see the full summary
+    if (req.user?.role !== 'admin') {
+        logger.warn(`Unauthorized access attempt to analytics summary by ${req.user?.id}`);
+        return res.status(403).json({ error: "Forbidden: Admin access required" });
+    }
+
+    try {
+        const summary = await analytics.getSummary();
+        res.status(200).json(summary);
+    } catch (error) {
+        logger.error('Failed to fetch analytics summary:', error);
+        res.status(500).json({ error: "Failed to fetch analytics summary" });
+    }
+});
+
 // Global Error Handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
     logger.error('Unhandled Exception:', err);
     res.status(500).json({ 
         error: "Internal Server Error", 

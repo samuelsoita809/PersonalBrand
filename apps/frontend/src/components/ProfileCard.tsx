@@ -18,9 +18,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, role, image }) => {
             src={image} 
             alt={name} 
             className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x400?text=SS';
-            }}
           />
         </div>
         

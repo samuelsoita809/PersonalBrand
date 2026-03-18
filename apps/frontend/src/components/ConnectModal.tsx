@@ -13,12 +13,12 @@ const connectSchema = z.object({
 
 type ConnectFormData = z.infer<typeof connectSchema>;
 
-interface ConnectWithMeModalProps {
+interface ConnectModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const ConnectWithMeModal: React.FC<ConnectWithMeModalProps> = ({ isOpen, onClose }) => {
+const ConnectModal: React.FC<ConnectModalProps> = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
@@ -148,4 +148,4 @@ const ConnectWithMeModal: React.FC<ConnectWithMeModalProps> = ({ isOpen, onClose
   );
 };
 
-export default ConnectWithMeModal;
+export default ConnectModal;

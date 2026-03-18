@@ -3,7 +3,7 @@ import { componentRegistry } from './registry';
 
 interface DynamicRendererProps {
   componentName: string;
-  props?: any;
+  props?: Record<string, unknown>;
 }
 
 const DynamicRenderer: React.FC<DynamicRendererProps> = ({ componentName, props }) => {

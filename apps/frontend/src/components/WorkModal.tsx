@@ -14,12 +14,12 @@ const workSchema = z.object({
 
 type WorkFormData = z.infer<typeof workSchema>;
 
-interface WorkWithMeModalProps {
+interface WorkModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) => {
+const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
@@ -136,4 +136,4 @@ const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) =>
   );
 };
 
-export default WorkWithMeModal;
+export default WorkModal;

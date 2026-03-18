@@ -62,7 +62,7 @@ app.post("/api/v1/ai/insight", authenticateToken, async (req, res) => {
         jobQueue.add('GENERATE_AI_INSIGHT', async (data) => {
             try {
                 const profile = await db.getProfile();
-                const text = await aiService.generateInsight(profile, data.prompt);
+                await aiService.generateInsight(profile, data.prompt);
                 
                 logger.info('AI Insight Job Completed Successfully');
                 analytics.track('AI_INSIGHT_SUCCESS', { job: 'GENERATE_AI_INSIGHT' });
@@ -88,7 +88,7 @@ app.post("/api/v1/ai/insight", authenticateToken, async (req, res) => {
 
 
 // Global Error Handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
     logger.error('Unhandled Exception:', err);
     res.status(500).json({ 
         error: "Internal Server Error", 

@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 
-export const componentRegistry: Record<string, React.LazyExoticComponent<any>> = {
+export const componentRegistry: Record<string, React.LazyExoticComponent<React.ComponentType<Record<string, unknown>>>> = {
   AnalyticsDashboard: lazy(() => import('./AnalyticsDashboard')),
   Listings: lazy(() => import('./placeholder/index').then(m => ({ default: m.Listings }))),
   Leads: lazy(() => import('./placeholder/index').then(m => ({ default: m.Leads }))),

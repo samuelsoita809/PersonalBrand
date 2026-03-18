@@ -6,7 +6,7 @@ interface DashboardConfig {
   id: number;
   componentType: string;
   title: string;
-  props?: any;
+  props?: Record<string, unknown>;
 }
 
 const DashboardPage: React.FC = () => {

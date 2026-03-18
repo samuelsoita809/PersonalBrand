@@ -1,0 +1,11 @@
+{
+  "table": "analytics_events",
+  "fields": {
+    "event_id": "UUID",
+    "event_type": "string",
+    "page_url": "string",
+    "cta_id": "string",
+    "session_id": "string",
+    "timestamp": "datetime"
+  }
+}

@@ -5,10 +5,22 @@ const logger = createLogger('Analytics');
 
 export const useAnalytics = () => {
   const trackEvent = useCallback((eventName: string, data?: any) => {
-    // In a real app, this would send to GA/PostHog/etc.
-    // For now, we use our shared logger which is already instrumented.
     logger.info(`Tracking Event: ${eventName}`, data);
     
+    // Send to backend
+    fetch('/api/v1/analytics/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_name: eventName,
+        metadata: {
+          ...data,
+          url: window.location.href,
+          timestamp: new Date().toISOString(),
+        }
+      })
+    }).catch(err => logger.error('Failed to send analytics to backend', err));
+
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', eventName, data);
     }

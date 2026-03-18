@@ -4,10 +4,12 @@ import HomePage from './pages/HomePage';
 import Dashboard from './pages/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import PageTracker from './components/PageTracker';
 
 const App: React.FC = () => (
   <AuthProvider>
     <Router>
+      <PageTracker />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route 

@@ -86,6 +86,46 @@ app.post("/api/v1/ai/insight", authenticateToken, async (req, res) => {
     }
 });
 
+/**
+ * Analytics Event Tracking
+ * Public endpoint to receive frontend events.
+ */
+app.post("/api/v1/analytics/events", async (req, res) => {
+    const { event_name, metadata } = req.body;
+    
+    if (!event_name) {
+        return res.status(400).json({ error: "Event name is required" });
+    }
+
+    try {
+        await analytics.track(event_name, metadata, 'frontend');
+        res.status(204).send();
+    } catch (error) {
+        logger.error('Failed to record event:', error);
+        res.status(500).json({ error: "Failed to record event" });
+    }
+});
+
+/**
+ * Analytics Summary
+ * Protected endpoint for the Admin Dashboard.
+ */
+app.get("/api/v1/analytics/summary", authenticateToken, async (req, res) => {
+    // Only admins can see the full summary
+    if (req.user?.role !== 'admin') {
+        logger.warn(`Unauthorized access attempt to analytics summary by ${req.user?.id}`);
+        return res.status(403).json({ error: "Forbidden: Admin access required" });
+    }
+
+    try {
+        const summary = await analytics.getSummary();
+        res.status(200).json(summary);
+    } catch (error) {
+        logger.error('Failed to fetch analytics summary:', error);
+        res.status(500).json({ error: "Failed to fetch analytics summary" });
+    }
+});
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {

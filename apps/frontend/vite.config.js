@@ -10,10 +10,20 @@ export default defineConfig({
       '@mui/utils': '@mui/utils/modern',
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     exclude: ['**/tests/e2e/**', '**/node_modules/**', '**/dist/**'],
   },
 })
+
 

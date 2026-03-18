@@ -36,22 +36,40 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
   const onSubmit = async (data: WorkFormData) => {
     setLoading(true);
     
-    // Simulate API call (Build Phase - Logic)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    trackEvent('modal_submit', { 
-      type: 'work_with_me',
-      projectName: data.projectName 
-    });
-    
-    setIsSubmitted(true);
-    setLoading(false);
-    reset();
-    
-    setTimeout(() => {
-      onClose();
-      setIsSubmitted(false);
-    }, 3000);
+    try {
+      const response = await fetch('/api/v1/hero/lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.projectName, // Using project name as the identifier
+          email: data.email,
+          message: data.message
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to submit');
+
+      trackEvent('modal_submit', { 
+        type: 'work',
+        projectName: data.projectName 
+      });
+      
+      setIsSubmitted(true);
+      reset();
+      
+      setTimeout(() => {
+        onClose();
+        setIsSubmitted(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Submission error:', error);
+      // Fallback for demo if backend is not running or fails
+      trackEvent('modal_submit_failure', { error: 'API_ERROR' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

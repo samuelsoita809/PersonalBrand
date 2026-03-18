@@ -40,18 +40,35 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ isOpen, onClose }) => {
   const onSubmit = async (data: ConnectFormData) => {
     setLoading(true);
     
-    // Simulate API call (DevSecOps - Build Logic)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    trackEvent('modal_submit', { type: 'connect_with_me' });
-    setIsSubmitted(true);
-    setLoading(false);
-    reset();
-    
-    setTimeout(() => {
-      onClose();
-      setIsSubmitted(false);
-    }, 3000);
+    try {
+      const response = await fetch('/api/v1/hero/lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.email.split('@')[0], 
+          email: data.email,
+          message: data.message
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to submit');
+
+      trackEvent('modal_submit', { type: 'connect' });
+      setIsSubmitted(true);
+      reset();
+      
+      setTimeout(() => {
+        onClose();
+        setIsSubmitted(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Submission error:', error);
+      trackEvent('modal_submit_failure', { error: 'API_ERROR' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

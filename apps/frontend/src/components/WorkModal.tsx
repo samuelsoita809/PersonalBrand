@@ -43,7 +43,8 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: data.projectName, // Using project name as the identifier
+          name: data.projectName,
+
           email: data.email,
           message: data.message
         }),
@@ -65,7 +66,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
       }, 3000);
     } catch (error) {
       console.error('Submission error:', error);
-      // Fallback for demo if backend is not running or fails
+
       trackEvent('modal_submit_failure', { error: 'API_ERROR' });
     } finally {
       setLoading(false);

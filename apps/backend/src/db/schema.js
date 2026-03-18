@@ -16,6 +16,10 @@ export const analytics_events = pgTable('analytics_events', {
     metadata: jsonb('metadata'),
     context: varchar('context', { length: 50 }),
     createdAt: timestamp('created_at').defaultNow(),
+});export const hero_leads = pgTable('hero_leads', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    message: text('message'),
+    createdAt: timestamp('created_at').defaultNow(),
 });
-
-

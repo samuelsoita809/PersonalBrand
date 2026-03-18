@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "name": "hero_view",
+      "description": "Hero section visible above the fold",
+      "kpi": "Page engagement"
+    },
+    {
+      "name": "cta_work_click",
+      "description": "Visitor clicks 'Work With Me' button",
+      "kpi": "Lead intent"
+    },
+    {
+      "name": "cta_connect_click",
+      "description": "Visitor clicks 'Connect With Me' button",
+      "kpi": "Networking interest"
+    },
+    {
+      "name": "modal_open",
+      "description": "Modal overlay displayed to user",
+      "kpi": "Interaction depth"
+    }
+  ]
+}

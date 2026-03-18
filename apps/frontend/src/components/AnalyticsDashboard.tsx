@@ -21,7 +21,18 @@ const AnalyticsDashboard: React.FC = () => {
       });
       if (!response.ok) throw new Error('Failed to fetch analytics');
       const data = await response.json();
-      setStats(data);
+      
+      // Transform specification-aligned summary data into dashboard widgets
+      const transformedStats = [
+        { label: 'Page Views', value: data.page_views, icon: Users, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+        { label: 'CTA Clicks', value: data.cta_clicks, icon: MousePointer2, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+        { label: 'Modal Opens', value: data.modal_opens, icon: ExternalLink, color: 'text-pink-400', bg: 'bg-pink-400/10' },
+        { label: 'Total Leads', value: data.leads, icon: Users, color: 'text-green-400', bg: 'bg-green-400/10' },
+        { label: 'CTR', value: `${(data.ctr * 100).toFixed(1)}%`, icon: BarChart3, color: 'text-orange-400', bg: 'bg-orange-400/10' },
+        { label: 'Modal Rate', value: `${(data.modal_rate * 100).toFixed(1)}%`, icon: BarChart3, color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
+      ];
+      
+      setStats(transformedStats);
       setError(null);
     } catch (err: any) {
       logger.error('Error fetching analytics:', err);
@@ -58,12 +69,6 @@ const AnalyticsDashboard: React.FC = () => {
     );
   }
 
-  const icons: Record<string, any> = {
-    'Total Page Views': Users,
-    'CTA Clicks': MousePointer2,
-    'Modal Opens': ExternalLink,
-    'Conversion Rate': BarChart3,
-  };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -79,9 +84,9 @@ const AnalyticsDashboard: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, idx) => {
-          const Icon = icons[stat.label] || BarChart3;
+          const Icon = stat.icon;
           return (
             <div key={idx} className="backdrop-blur-xl bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-all group">
               <div className="flex items-center justify-between mb-4">

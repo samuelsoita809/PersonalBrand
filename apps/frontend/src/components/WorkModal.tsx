@@ -14,12 +14,12 @@ const workSchema = z.object({
 
 type WorkFormData = z.infer<typeof workSchema>;
 
-interface WorkWithMeModalProps {
+interface WorkModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) => {
+const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
@@ -36,22 +36,39 @@ const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) =>
   const onSubmit = async (data: WorkFormData) => {
     setLoading(true);
     
-    // Simulate API call (Build Phase - Logic)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    trackEvent('modal_submit', { 
-      type: 'work_with_me',
-      projectName: data.projectName 
-    });
-    
-    setIsSubmitted(true);
-    setLoading(false);
-    reset();
-    
-    setTimeout(() => {
-      onClose();
-      setIsSubmitted(false);
-    }, 3000);
+    try {
+      const response = await fetch('/api/v1/hero/lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.projectName,
+          email: data.email,
+          message: data.message
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to submit');
+
+      trackEvent('modal_submit', { 
+        type: 'work',
+        projectName: data.projectName 
+      });
+      
+      setIsSubmitted(true);
+      reset();
+      
+      setTimeout(() => {
+        onClose();
+        setIsSubmitted(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Submission error:', error);
+      trackEvent('modal_submit_failure', { error: 'API_ERROR' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -136,4 +153,4 @@ const WorkWithMeModal: React.FC<WorkWithMeModalProps> = ({ isOpen, onClose }) =>
   );
 };
 
-export default WorkWithMeModal;
+export default WorkModal;

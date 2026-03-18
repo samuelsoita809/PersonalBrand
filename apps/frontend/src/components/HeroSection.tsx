@@ -1,13 +1,14 @@
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import HeroText from './HeroText';
 import ProfileCard from './ProfileCard';
+import CTAButtons from './CTAButtons';
 import heroConfig from '../config/hero.json';
 import { useAnalytics } from '../context/analytics';
 import { isFeatureEnabled } from '@monorepo/shared';
 
 // Lazy load modals for performance optimization (DevSecOps requirement)
-const WorkWithMeModal = lazy(() => import('./WorkWithMeModal'));
-const ConnectWithMeModal = lazy(() => import('./ConnectWithMeModal'));
+const WorkModal = lazy(() => import('./WorkModal'));
+const ConnectModal = lazy(() => import('./ConnectModal'));
 
 const HeroSection: React.FC = () => {
   const { heading, subheading, intro, profile, ctas } = heroConfig;
@@ -28,14 +29,14 @@ const HeroSection: React.FC = () => {
   }, [trackEvent, heading]);
 
   const handleCtaClick = (id: string, label: string) => {
-    trackEvent(`cta_${id}_click`, { label });
-
     if (id === 'work') {
+      trackEvent('cta_work_click', { label });
       setIsWorkModalOpen(true);
-      trackEvent('modal_open', { type: 'work_with_me' });
+      trackEvent('modal_open', { type: 'work' });
     } else if (id === 'connect') {
+      trackEvent('cta_connect_click', { label });
       setIsConnectModalOpen(true);
-      trackEvent('modal_open', { type: 'connect_with_me' });
+      trackEvent('modal_open', { type: 'connect' });
     }
   };
 
@@ -52,21 +53,10 @@ const HeroSection: React.FC = () => {
             intro={intro}
           />
 
-          <div className="flex flex-wrap gap-4">
-            {ctas.map((cta) => (
-              <button
-                key={cta.id}
-                id={cta.id}
-                className={`px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 ${cta.type === 'primary'
-                    ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200'
-                    : 'bg-transparent border border-white/20 text-white hover:bg-white/5'
-                  }`}
-                onClick={() => handleCtaClick(cta.id, cta.label)}
-              >
-                {cta.label}
-              </button>
-            ))}
-          </div>
+          <CTAButtons 
+            ctas={ctas} 
+            onCtaClick={handleCtaClick} 
+          />
         </div>
 
         {/* Right Column: Profile Card */}
@@ -82,11 +72,11 @@ const HeroSection: React.FC = () => {
 
       {/* Modals with Suspense for optimized building */}
       <Suspense fallback={null}>
-        <WorkWithMeModal
+        <WorkModal
           isOpen={isWorkModalOpen}
           onClose={() => setIsWorkModalOpen(false)}
         />
-        <ConnectWithMeModal
+        <ConnectModal
           isOpen={isConnectModalOpen}
           onClose={() => setIsConnectModalOpen(false)}
         />

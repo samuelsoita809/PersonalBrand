@@ -40,9 +40,9 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center py-20 px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center py-20 px-6 overflow-hidden">
       {/* Background elements inherited from layout */}
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
 
         {/* Left Column: Text & CTAs */}
         <div className="lg:col-span-7 space-y-10 order-2 lg:order-1">
@@ -91,6 +91,11 @@ const HeroSection: React.FC = () => {
           onClose={() => setIsConnectModalOpen(false)}
         />
       </Suspense>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-30">
+        <div className="w-px h-12 bg-gradient-to-b from-white to-transparent"></div>
+      </div>
     </section>
   );
 };

@@ -7,6 +7,10 @@
             "destination": "https://samuelsoitabackend-stage.vercel.app/api/:path*"
         },
         {
+            "source": "/dashboard/:path*",
+            "destination": "https://samuelsoitadashboard-stage.vercel.app/:path*"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

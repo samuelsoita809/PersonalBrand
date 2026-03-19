@@ -12,6 +12,7 @@ const AnalyticsDashboard: React.FC = () => {
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dbError, setDbError] = useState<string | null>(null);
 
   const [isReal, setIsReal] = useState(true);
 
@@ -51,6 +52,7 @@ const AnalyticsDashboard: React.FC = () => {
       setTimeSeries(seriesData);
       setHistory(historyData);
       setIsReal(summaryData.isReal ?? true);
+      setDbError(summaryData.error || null);
       setError(null);
     } catch (err: any) {
       logger.error('Error fetching analytics:', err);
@@ -128,9 +130,9 @@ const AnalyticsDashboard: React.FC = () => {
              <p className="text-xs text-yellow-500/70 mt-1">
                The dashboard is currently displaying cached/static data because the database connection failed. 
              </p>
-             {stats?.[0]?.error && (
+             {dbError && (
                <p className="text-[10px] font-mono bg-black/20 p-2 rounded mt-2 text-red-300 border border-red-500/20">
-                 Error: {stats[0].error}
+                 System Error: {dbError}
                </p>
              )}
              <p className="text-xs text-yellow-500/70 mt-2">

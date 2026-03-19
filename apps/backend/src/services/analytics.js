@@ -1,6 +1,7 @@
 import { db } from './db.js';
 import { createLogger } from '@monorepo/shared';
 import * as schema from '../db/schema.js';
+import crypto from 'crypto';
 
 const logger = createLogger('AnalyticsService');
 
@@ -51,8 +52,17 @@ class AnalyticsService {
 
             return stats;
         } catch (error) {
-            logger.error('Error fetching summary:', error);
-            throw error;
+            logger.warn('Failed to fetch analytics from database, using empty defaults', error.message);
+            // Graceful fallback to prevent 500 errors in the dashboard
+            return {
+                total_events: 0,
+                page_views: 0,
+                cta_clicks: 0,
+                modal_opens: 0,
+                leads: 0,
+                ctr: 0,
+                modal_rate: 0
+            };
         }
     }
 
@@ -62,10 +72,7 @@ class AnalyticsService {
             cutoff.setDate(cutoff.getDate() - days);
 
             const events = await db.db.select().from(schema.analytics_events);
-            // In a real app, we'd filter in the query, but we'll do it in JS for simplicity here 
-            // since we're using a small dataset and drizzle/postgres-js combo.
-            
-            const series = events.filter(e => e.createdAt >= cutoff);
+            const series = events.filter(e => e.createdAt && e.createdAt >= cutoff);
             
             // Group by day
             const grouped = {};
@@ -77,17 +84,19 @@ class AnalyticsService {
             }
 
             series.forEach(e => {
-                const dateStr = e.createdAt.toISOString().split('T')[0];
-                if (grouped[dateStr]) {
-                    if (e.event_name === 'page_view') grouped[dateStr].views++;
-                    if (e.event_name.startsWith('cta_')) grouped[dateStr].clicks++;
+                if (e.createdAt && typeof e.createdAt.toISOString === 'function') {
+                    const dateStr = e.createdAt.toISOString().split('T')[0];
+                    if (grouped[dateStr]) {
+                        if (e.event_name === 'page_view') grouped[dateStr].views++;
+                        if (e.event_name.startsWith('cta_')) grouped[dateStr].clicks++;
+                    }
                 }
             });
 
             return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
         } catch (error) {
-            logger.error('Error fetching time series:', error);
-            throw error;
+            logger.warn('Failed to fetch time series, using empty dataset', error.message);
+            return [];
         }
     }
 
@@ -98,8 +107,8 @@ class AnalyticsService {
                 .orderBy(db.db.desc(schema.analytics_events.createdAt))
                 .limit(limit);
         } catch (error) {
-            logger.error('Error fetching recent events:', error);
-            throw error;
+            logger.warn('Failed to fetch recent events, using empty list', error.message);
+            return [];
         }
     }
 }

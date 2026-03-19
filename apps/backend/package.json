@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p public && echo 'healthy' > public/health.txt",
+    "build": "mkdir -p public && echo 'healthy' > public/health.txt && npm run lint && npm run test",
     "test": "vitest run",
     "dev": "node src/index.js",
     "start": "node src/index.js",

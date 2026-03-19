@@ -1,11 +1,11 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    "pipeline": {
+    "tasks": {
         "dev": {
             "cache": false
         },
         "backend#build": {
-            "outputs": []
+            "outputs": ["public/**"]
         },
         "build": {
             "dependsOn": [

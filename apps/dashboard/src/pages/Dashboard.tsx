@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
-import type { DashboardSection } from '../config/dashboard';
-import { DASHBOARD_SECTIONS } from '../config/dashboard';
 import DynamicRenderer from '../components/DynamicRenderer';
 import { LayoutDashboard, Menu, X } from 'lucide-react';
+
+export interface DashboardSection {
+  id: number;
+  componentType: string;
+  title: string;
+  props?: Record<string, unknown>;
+}
+
+const DASHBOARD_SECTIONS: DashboardSection[] = [
+  {
+    id: 1,
+    componentType: "AnalyticsDashboard",
+    title: "Admin Engagement Analytics",
+    props: {}
+  }
+];
 
 const DashboardPage: React.FC = () => {
   const [sections] = useState<DashboardSection[]>(DASHBOARD_SECTIONS);

@@ -2,7 +2,6 @@ import React, { useEffect, useState, Suspense, lazy } from 'react';
 import HeroText from './HeroText';
 import ProfileCard from './ProfileCard';
 import CTAButtons from './CTAButtons';
-import heroConfig from '../config/hero.json';
 import { useAnalytics } from '../context/analytics';
 import { isFeatureEnabled } from '@monorepo/shared';
 
@@ -10,8 +9,31 @@ import { isFeatureEnabled } from '@monorepo/shared';
 const WorkModal = lazy(() => import('./WorkModal'));
 const ConnectModal = lazy(() => import('./ConnectModal'));
 
+const HERO_CONFIG = {
+  heading: "Samuel Soita",
+  subheading: "Software Engineer & Digital Strategist",
+  intro: "Building the future with Premium Code and Aesthetic Design. Specializing in high-performance web applications and brand-focused digital experiences.",
+  profile: {
+    name: "Samuel Soita",
+    role: "Founder & Lead Engineer",
+    image: "/profile.png"
+  },
+  ctas: [
+    {
+      id: "work",
+      label: "Work With Me",
+      type: "primary" as const
+    },
+    {
+      id: "connect",
+      label: "Connect With Me",
+      type: "secondary" as const
+    }
+  ]
+};
+
 const HeroSection: React.FC = () => {
-  const { heading, subheading, intro, profile, ctas } = heroConfig;
+  const { heading, subheading, intro, profile, ctas } = HERO_CONFIG;
   const { trackEvent } = useAnalytics();
   const [isWorkModalOpen, setIsWorkModalOpen] = useState(false);
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);

@@ -20,10 +20,11 @@ export const authenticateToken = async (req, res, next) => {
 
     try {
         const user = await authService.verifyToken(token);
+        logger.info(`Authenticated user: ${user.username} (Role: ${user.role})`);
         req.user = user;
         next();
     } catch (error) {
-        logger.error('Forbidden: Invalid token', error);
+        logger.error('Forbidden: Invalid token or role mapping failure', error);
         return res.status(403).json({ error: 'Forbidden: Invalid or expired token' });
     }
 };

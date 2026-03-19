@@ -51,6 +51,7 @@ class AuthService {
         const adminPass = process.env.ADMIN_PASSWORD || 'password123';
 
         if (username === adminUser && password === adminPass) {
+            logger.info(`Admin login successful for: ${username}`);
             return this.generateToken({ 
                 id: 'admin-1',
                 username: adminUser, 

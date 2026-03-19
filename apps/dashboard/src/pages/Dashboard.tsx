@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import type { DashboardSection } from '../config/dashboard';
+import { DASHBOARD_SECTIONS } from '../config/dashboard';
 import DynamicRenderer from '../components/DynamicRenderer';
 import { LayoutDashboard, Menu, X } from 'lucide-react';
 
-interface DashboardConfig {
-  id: number;
-  componentType: string;
-  title: string;
-  props?: Record<string, unknown>;
-}
-
 const DashboardPage: React.FC = () => {
-  const [sections, setSections] = useState<DashboardConfig[]>([]);
+  const [sections] = useState<DashboardSection[]>(DASHBOARD_SECTIONS);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  useEffect(() => {
-    import('../config/dashboard.json').then((data) => setSections(data.default));
-  }, []);
 
   return (
     <div className="flex h-screen bg-background">

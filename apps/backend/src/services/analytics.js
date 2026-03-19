@@ -62,7 +62,8 @@ class AnalyticsService {
                 leads: 0,
                 ctr: 0,
                 modal_rate: 0,
-                isReal: false
+                isReal: false,
+                error: error.message
             };
         }
     }

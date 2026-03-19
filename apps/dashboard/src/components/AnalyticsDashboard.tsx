@@ -127,6 +127,13 @@ const AnalyticsDashboard: React.FC = () => {
              <h4 className="text-sm font-bold text-yellow-500">PostgreSQL Sync Disabled</h4>
              <p className="text-xs text-yellow-500/70 mt-1">
                The dashboard is currently displaying cached/static data because the database connection failed. 
+             </p>
+             {stats?.[0]?.error && (
+               <p className="text-[10px] font-mono bg-black/20 p-2 rounded mt-2 text-red-300 border border-red-500/20">
+                 Error: {stats[0].error}
+               </p>
+             )}
+             <p className="text-xs text-yellow-500/70 mt-2">
                Please verify your <span className="font-mono text-white/50">DATABASE_URL</span> and run migrations.
              </p>
            </div>

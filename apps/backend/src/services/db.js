@@ -3,10 +3,13 @@ import postgres from 'postgres';
 import { eq } from 'drizzle-orm';
 import { createLogger, VERSION } from "@monorepo/shared";
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
 import * as schema from '../db/schema.js';
 import { z } from 'zod';
 
-dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const logger = createLogger('Database');
 

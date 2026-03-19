@@ -25,7 +25,10 @@ export const profileSchema = z.object({
  */
 class DataService {
     constructor() {
-        const client = postgres(process.env.DATABASE_URL);
+        const client = postgres(process.env.DATABASE_URL, {
+            ssl: 'require',
+            connect_timeout: 10
+        });
         this.db = drizzle(client, { schema });
         this.profileId = 'samuel-soita';
     }

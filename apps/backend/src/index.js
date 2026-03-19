@@ -12,6 +12,7 @@ import { analytics } from "./services/analytics.js";
 import { aiService } from "./services/ai.js";
 
 import { configureSecurity } from "./middleware/security.js";
+import { authService } from "./services/auth.js";
 
 
 dotenv.config();
@@ -38,6 +39,23 @@ app.get("/api/v1/profile", async (req, res) => {
     } catch (error) {
         logger.error('Error fetching profile:', error);
         res.status(500).json({ error: "Failed to fetch profile" });
+    }
+});
+
+/**
+ * Authentication Endpoint
+ * Public endpoint to exchange credentials for a JWT.
+ */
+app.post("/api/v1/auth/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const token = await authService.login(username, password);
+        logger.info(`Successful login for user: ${username}`);
+        res.status(200).json({ token });
+    } catch (error) {
+        logger.warn(`Failed login attempt for user: ${username}`);
+        res.status(401).json({ error: "Invalid credentials" });
     }
 });
 

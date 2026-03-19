@@ -10,7 +10,6 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         logger.info('Home page mounted', { version: VERSION });
-        trackEvent('page_view', { page: 'home' });
     }, [trackEvent]);
 
     return (

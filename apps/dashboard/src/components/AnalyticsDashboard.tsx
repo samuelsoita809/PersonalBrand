@@ -143,14 +143,25 @@ const AnalyticsDashboard: React.FC = () => {
           <h3 className="text-lg font-bold text-white mb-4">Live Event Feed</h3>
           <div className="flex-1 overflow-y-auto pr-2 space-y-2 custom-scrollbar">
             {history.map((event, i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-blue-400 uppercase tracking-tighter">{event.event_name}</span>
-                  <span className="text-[9px] text-slate-500">{new Date(event.createdAt).toLocaleTimeString()}</span>
+              <div key={i} className="flex flex-col py-3 border-b border-white/5 last:border-0 group">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-tighter">{event.event_name}</span>
+                    <span className="text-[9px] text-slate-500">{new Date(event.createdAt).toLocaleTimeString()}</span>
+                  </div>
+                  <div className="text-[9px] text-slate-400 font-mono bg-white/5 px-2 py-0.5 rounded">
+                    {event.context || 'frontend'}
+                  </div>
                 </div>
-                <div className="text-[9px] text-slate-400 font-mono">
-                  {event.context}
-                </div>
+                {event.metadata && Object.keys(event.metadata).length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {Object.entries(event.metadata).map(([key, value]) => (
+                      <span key={key} className="text-[8px] bg-blue-500/10 text-blue-300/70 py-0.5 px-1.5 rounded-md border border-blue-500/10">
+                        {key}: <span className="text-white/80">{String(value)}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {history.length === 0 && <div className="text-center py-10 text-slate-600 text-xs">No events recorded yet</div>}

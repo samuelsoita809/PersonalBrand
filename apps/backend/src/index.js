@@ -179,6 +179,36 @@ app.get("/api/v1/analytics/summary", authenticateToken, async (req, res) => {
     }
 });
 
+/**
+ * Analytics Time Series
+ * Provides day-by-day stats for the dashboard charts.
+ */
+app.get("/api/v1/analytics/timeseries", authenticateToken, async (req, res) => {
+    if (req.user?.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
+
+    try {
+        const series = await analytics.getTimeSeries(7);
+        res.status(200).json(series);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch time series" });
+    }
+});
+
+/**
+ * Analytics History
+ * Provides the raw log of recent events.
+ */
+app.get("/api/v1/analytics/history", authenticateToken, async (req, res) => {
+    if (req.user?.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
+
+    try {
+        const events = await analytics.getRecentEvents(20);
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch history" });
+    }
+});
+
 // Global Error Handler
 app.use((err, req, res, _next) => {
     logger.error('Unhandled Exception:', err);

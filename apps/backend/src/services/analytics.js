@@ -55,6 +55,53 @@ class AnalyticsService {
             throw error;
         }
     }
+
+    async getTimeSeries(days = 7) {
+        try {
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - days);
+
+            const events = await db.db.select().from(schema.analytics_events);
+            // In a real app, we'd filter in the query, but we'll do it in JS for simplicity here 
+            // since we're using a small dataset and drizzle/postgres-js combo.
+            
+            const series = events.filter(e => e.createdAt >= cutoff);
+            
+            // Group by day
+            const grouped = {};
+            for (let i = 0; i < days; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                grouped[dateStr] = { date: dateStr, views: 0, clicks: 0 };
+            }
+
+            series.forEach(e => {
+                const dateStr = e.createdAt.toISOString().split('T')[0];
+                if (grouped[dateStr]) {
+                    if (e.event_name === 'page_view') grouped[dateStr].views++;
+                    if (e.event_name.startsWith('cta_')) grouped[dateStr].clicks++;
+                }
+            });
+
+            return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
+        } catch (error) {
+            logger.error('Error fetching time series:', error);
+            throw error;
+        }
+    }
+
+    async getRecentEvents(limit = 10) {
+        try {
+            return await db.db.select()
+                .from(schema.analytics_events)
+                .orderBy(db.db.desc(schema.analytics_events.createdAt))
+                .limit(limit);
+        } catch (error) {
+            logger.error('Error fetching recent events:', error);
+            throw error;
+        }
+    }
 }
 
 export const analytics = new AnalyticsService();

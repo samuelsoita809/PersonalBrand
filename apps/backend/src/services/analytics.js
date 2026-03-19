@@ -50,7 +50,7 @@ class AnalyticsService {
             stats.ctr = stats.page_views > 0 ? (stats.cta_clicks / stats.page_views).toFixed(4) : 0;
             stats.modal_rate = stats.cta_clicks > 0 ? (stats.modal_opens / stats.cta_clicks).toFixed(4) : 0;
 
-            return stats;
+            return { ...stats, isReal: true };
         } catch (error) {
             logger.warn('Failed to fetch analytics from database, using empty defaults', error.message);
             // Graceful fallback to prevent 500 errors in the dashboard
@@ -61,7 +61,8 @@ class AnalyticsService {
                 modal_opens: 0,
                 leads: 0,
                 ctr: 0,
-                modal_rate: 0
+                modal_rate: 0,
+                isReal: false
             };
         }
     }

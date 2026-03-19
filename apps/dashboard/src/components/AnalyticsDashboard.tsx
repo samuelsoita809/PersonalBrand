@@ -13,8 +13,12 @@ const AnalyticsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [isReal, setIsReal] = useState(true);
+
   const fetchStats = async () => {
-    setLoading(true);
+    // Only show loader on initial fetch
+    if (stats.length === 0) setLoading(true);
+    
     try {
       const headers = { 'Authorization': `Bearer ${token}` };
       
@@ -46,10 +50,12 @@ const AnalyticsDashboard: React.FC = () => {
       setStats(transformedStats);
       setTimeSeries(seriesData);
       setHistory(historyData);
+      setIsReal(summaryData.isReal ?? true);
       setError(null);
     } catch (err: any) {
       logger.error('Error fetching analytics:', err);
-      setError(err.message);
+      // Don't show full screen error if we already have data
+      if (stats.length === 0) setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -57,6 +63,9 @@ const AnalyticsDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchStats();
+    // Real-time polling every 10 seconds (as per live monitoring requirement)
+    const interval = setInterval(fetchStats, 10000);
+    return () => clearInterval(interval);
   }, [token]);
 
   if (loading && stats.length === 0) {
@@ -85,7 +94,20 @@ const AnalyticsDashboard: React.FC = () => {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Engagement Overview</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-bold text-white">Engagement Overview</h2>
+          {isReal ? (
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.5)]"></div>
+              <span className="text-[10px] font-bold text-green-400 uppercase tracking-wider">Live Connection</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/20 rounded-full">
+              <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
+              <span className="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Degraded: Static Data</span>
+            </div>
+          )}
+        </div>
         <button 
           onClick={fetchStats}
           disabled={loading}
@@ -95,6 +117,21 @@ const AnalyticsDashboard: React.FC = () => {
           <RefreshCcw size={18} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
+
+      {!isReal && (
+        <div className="bg-yellow-500/5 border border-yellow-500/10 p-4 rounded-xl flex items-start gap-4 animate-in fade-in zoom-in-95 duration-500">
+           <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-500">
+             <BarChart3 size={20} />
+           </div>
+           <div>
+             <h4 className="text-sm font-bold text-yellow-500">PostgreSQL Sync Disabled</h4>
+             <p className="text-xs text-yellow-500/70 mt-1">
+               The dashboard is currently displaying cached/static data because the database connection failed. 
+               Please verify your <span className="font-mono text-white/50">DATABASE_URL</span> and run migrations.
+             </p>
+           </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, idx) => {

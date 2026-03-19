@@ -30,7 +30,8 @@ class DataService {
     constructor() {
         const client = postgres(process.env.DATABASE_URL, {
             ssl: 'require',
-            connect_timeout: 10
+            connect_timeout: 10,
+            prepare: false // Required for pgbouncer pooling
         });
         this.db = drizzle(client, { schema });
         this.profileId = 'samuel-soita';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { Mail, Linkedin, Twitter, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Linkedin, Twitter, Github, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAnalytics } from '../context/analytics';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,7 +34,12 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ isOpen, onClose }) => {
 
   const handleQuickConnect = async (platform: string) => {
     trackEvent('cta_connect_click', { platform });
-    window.open(platform === 'linkedin' ? 'https://linkedin.com' : 'https://twitter.com', '_blank');
+    const urls: Record<string, string> = {
+      linkedin: 'https://linkedin.com',
+      twitter: 'https://twitter.com',
+      github: 'https://github.com/samuelsoita809'
+    };
+    window.open(urls[platform] || 'https://github.com/samuelsoita809', '_blank');
   };
 
   const onSubmit = async (data: ConnectFormData) => {
@@ -76,20 +81,27 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ isOpen, onClose }) => {
       {!isSubmitted ? (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* Social Links */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <button 
               onClick={() => handleQuickConnect('linkedin')}
-              className="flex items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
+              className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
             >
-              <Linkedin size={20} className="text-blue-400 group-hover:scale-110 transition-transform" />
-              <span>LinkedIn</span>
+              <Linkedin size={24} className="text-blue-400 group-hover:scale-110 transition-transform" />
+              <span className="text-sm">LinkedIn</span>
             </button>
             <button 
               onClick={() => handleQuickConnect('twitter')}
-              className="flex items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
+              className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
             >
-              <Twitter size={20} className="text-sky-400 group-hover:scale-110 transition-transform" />
-              <span>Twitter / X</span>
+              <Twitter size={24} className="text-sky-400 group-hover:scale-110 transition-transform" />
+              <span className="text-sm">Twitter</span>
+            </button>
+            <button 
+              onClick={() => handleQuickConnect('github')}
+              className="flex flex-col items-center justify-center gap-2 p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-slate-300 hover:text-white group"
+            >
+              <Github size={24} className="text-white group-hover:scale-110 transition-transform" />
+              <span className="text-sm">GitHub</span>
             </button>
           </div>
 

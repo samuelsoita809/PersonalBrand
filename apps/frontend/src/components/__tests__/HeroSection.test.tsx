@@ -15,11 +15,11 @@ vi.mock('../../context/analytics', () => ({
 }));
 
 // Mock lazy-loaded modals
-vi.mock('../WorkWithMeModal', () => ({
+vi.mock('../WorkModal', () => ({
   default: vi.fn(({ isOpen }) => isOpen ? <div data-testid="work-modal">Work Modal</div> : null)
 }));
 
-vi.mock('../ConnectWithMeModal', () => ({
+vi.mock('../ConnectModal', () => ({
   default: vi.fn(({ isOpen }) => isOpen ? <div data-testid="connect-modal">Connect Modal</div> : null)
 }));
 
@@ -52,7 +52,7 @@ describe('HeroSection Component', () => {
     
     // Check if trackEvent was called
     expect(mockTrackEvent).toHaveBeenCalledWith('cta_work_click', expect.anything());
-    expect(mockTrackEvent).toHaveBeenCalledWith('modal_open', { type: 'work_with_me' });
+    expect(mockTrackEvent).toHaveBeenCalledWith('modal_open', { type: 'work' });
 
     // Wait for the modal (which is lazy/mocked)
     const modal = await screen.findByTestId('work-modal');

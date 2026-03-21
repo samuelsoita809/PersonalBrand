@@ -28,7 +28,11 @@ export const profileSchema = z.object({
  */
 class DataService {
     constructor() {
-        const client = postgres(process.env.DATABASE_URL, {
+        const connectionString = process.env.DATABASE_URL || process.env.DIRECT_URL;
+        if (!connectionString) {
+            logger.warn('DATABASE_URL is missing. Please check Vercel environment variables.');
+        }
+        const client = postgres(connectionString, {
             ssl: 'require',
             connect_timeout: 10,
             prepare: false // Required for pgbouncer pooling

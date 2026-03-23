@@ -20,6 +20,8 @@ interface WorkModalProps {
 }
 
 const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
+  const [step, setStep] = useState<'selection' | 'form'>('selection');
+  const [journey, setJourney] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
@@ -33,6 +35,12 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
     resolver: zodResolver(workSchema),
   });
 
+  const handleSelection = (id: string) => {
+    setJourney(id);
+    trackEvent('journey_select', { journeyId: id });
+    setStep('form');
+  };
+
   const onSubmit = async (data: WorkFormData) => {
     setLoading(true);
     
@@ -44,9 +52,8 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
         },
         body: JSON.stringify({
           name: data.projectName,
-
           email: data.email,
-          message: data.message
+          message: `[Journey: ${journey}] ${data.message}`
         }),
       });
 
@@ -54,6 +61,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
 
       trackEvent('modal_submit', { 
         type: 'work',
+        journey,
         projectName: data.projectName 
       });
       
@@ -63,30 +71,72 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
       setTimeout(() => {
         onClose();
         setIsSubmitted(false);
+        setStep('selection');
+        setJourney(null);
       }, 3000);
     } catch (error) {
       console.error('Submission error:', error);
-
       trackEvent('modal_submit_failure', { error: 'API_ERROR' });
     } finally {
       setLoading(false);
     }
-
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Let's Build Something Great">
-      {!isSubmitted ? (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <p className="text-slate-400 text-sm mb-6">
-            Looking for a technical partner or premium engineering? Tell me about your project and I'll get back to you within 24 hours.
+    <Modal isOpen={isOpen} onClose={onClose} title={step === 'selection' ? "How can I help you?" : "Let's Get Started"}>
+      {isSubmitted ? (
+        <div className="py-12 flex flex-col items-center text-center animate-in zoom-in-95 duration-500">
+          <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
+            <CheckCircle2 size={32} className="text-green-500" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">Message Received</h3>
+          <p className="text-slate-400">
+            Thank you for reaching out. I've received your inquiry and will review it shortly.
           </p>
-          
+        </div>
+      ) : step === 'selection' ? (
+        <div className="grid grid-cols-1 gap-4 py-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {[
+            { id: 'deliver', label: 'Deliver Project', desc: 'End-to-end technical delivery' },
+            { id: 'mentor', label: 'Mentor Me', desc: '1-on-1 technical guidance' },
+            { id: 'coffee', label: 'Coffee', desc: 'Discuss ideas & networking' },
+            { id: 'problem', label: 'Solve a Problem', desc: 'Technical audit or quick fix' },
+          ].map((option) => (
+            <button
+              key={option.id}
+              onClick={() => handleSelection(option.id)}
+              className="group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 text-left hover:bg-white/10 hover:border-blue-500/30 transition-all"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">{option.label}</div>
+                  <div className="text-sm text-slate-400">{option.desc}</div>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-blue-500/20 group-hover:text-blue-400 transition-all">
+                  <Send size={18} className="transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="flex items-center gap-2 mb-6">
+            <button 
+              onClick={() => setStep('selection')}
+              className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              ← CHANGE JOURNEY
+            </button>
+            <span className="text-xs text-slate-600">/</span>
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{journey?.replace('-', ' ')}</span>
+          </div>
+
           <div className="space-y-2">
-            <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Project Name</label>
+            <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Project / Topic Name</label>
             <input 
               {...register('projectName')}
-              placeholder="e.g. Next-Gen Brand Identity"
+              placeholder="e.g. Scalable API Design"
               className={`w-full bg-white/5 border ${errors.projectName ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all`}
             />
             {errors.projectName && (
@@ -136,21 +186,11 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
             ) : (
               <>
                 <Send size={18} />
-                Send Proposal Request
+                Send Request
               </>
             )}
           </button>
         </form>
-      ) : (
-        <div className="py-12 flex flex-col items-center text-center animate-in zoom-in-95 duration-500">
-          <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
-            <CheckCircle2 size={32} className="text-green-500" />
-          </div>
-          <h3 className="text-2xl font-bold text-white mb-2">Message Received</h3>
-          <p className="text-slate-400">
-            Thank you for reaching out. I've received your inquiry and will review it shortly.
-          </p>
-        </div>
       )}
     </Modal>
   );

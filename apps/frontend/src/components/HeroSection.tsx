@@ -11,8 +11,8 @@ const ConnectModal = lazy(() => import('./ConnectModal'));
 
 const HERO_CONFIG = {
   heading: "Samuel Soita",
-  subheading: "Full Stack Software Engineer | IT Systems & Cybersecurity Engineer",
-  intro: "Building the future through secure, high-performance systems and visually refined digital experiences. I craft scalable, premium web applications that align technology with brand identity.",
+  subheading: "Engineering the Future of Digital Innovation",
+  intro: "Specialized in crafting secure, high-performance systems and visually refined digital experiences. Building scalable, premium web applications that align advanced technology with distinct brand identity.",
   profile: {
     name: "Samuel Soita",
     role: "Founder & Lead Engineer",
@@ -25,8 +25,8 @@ const HERO_CONFIG = {
       type: "primary" as const
     },
     {
-      id: "connect",
-      label: "Connect With Me",
+      id: "help",
+      label: "Help Me Free",
       type: "secondary" as const
     }
   ]
@@ -55,10 +55,11 @@ const HeroSection: React.FC = () => {
       trackEvent('cta_work_click', { label });
       setIsWorkModalOpen(true);
       trackEvent('modal_open', { type: 'work' });
-    } else if (id === 'connect') {
-      trackEvent('cta_connect_click', { label });
-      setIsConnectModalOpen(true);
-      trackEvent('modal_open', { type: 'connect' });
+    } else if (id === 'help') {
+      trackEvent('cta_help_click', { label });
+      // For now, let's open the work modal but we could create a specialized one later
+      setIsWorkModalOpen(true); 
+      trackEvent('modal_open', { type: 'help' });
     }
   };
 

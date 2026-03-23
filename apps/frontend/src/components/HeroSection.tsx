@@ -26,8 +26,9 @@ const HERO_CONFIG = {
     },
     {
       id: "help",
-      label: "Help Me Free",
-      type: "secondary" as const
+      label: "Help Me Free (Coming Soon)",
+      type: "secondary" as const,
+      disabled: true
     }
   ]
 };

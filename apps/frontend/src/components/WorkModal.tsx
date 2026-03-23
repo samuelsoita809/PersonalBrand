@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { Send, CheckCircle2, AlertCircle, ChevronRight, Armchair, Rocket, Coffee } from 'lucide-react';
+import { Send, CheckCircle2, AlertCircle, ChevronRight, Armchair, Rocket, Coffee, Search, Clock, Users } from 'lucide-react';
 import { useAnalytics } from '../context/analytics';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,14 +25,20 @@ const PRICING_MATRIX: Record<string, any[]> = {
   ],
 };
 
-const JOURNEY_OPTIONS = [
+const WORK_OPTIONS = [
   { id: 'deliver-project', label: 'Deliver My Project', desc: 'End-to-end technical delivery', icon: Rocket },
   { id: 'mentor-me', label: 'Mentor Me', desc: '1-on-1 technical guidance', icon: Armchair },
-  { id: 'coffee-consult', label: 'Coffee With Me', desc: 'Strategic technical consultancy', icon: Coffee },
+  { id: 'coffee-consult', label: 'Coffee With Me', desc: 'Discuss ideas & Get Quick Fixes', icon: Coffee },
+];
+
+const HELP_OPTIONS = [
+  { id: 'audit', label: 'Audit (Review) my Website', desc: 'Technical performance & UX audit', icon: Search },
+  { id: 'chat', label: '15 Minutes Chat', desc: 'Quick technical Q&A session', icon: Clock },
+  { id: 'catchup', label: '1-2-Many Tech CatchUp', desc: 'Group sessions or team syncing', icon: Users },
 ];
 
 const workSchema = z.object({
-  projectName: z.string().min(2, 'Project name must be at least 2 characters'),
+  projectName: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid business email'),
   message: z.string().min(10, 'Please provide a bit more detail (min 10 chars)'),
 });
@@ -42,9 +48,10 @@ type WorkFormData = z.infer<typeof workSchema>;
 interface WorkModalProps {
   isOpen: boolean;
   onClose: () => void;
+  journeyType: 'work' | 'help';
 }
 
-const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
+const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) => {
   const [step, setStep] = useState<'selection' | 'pricing' | 'details' | 'success'>('selection');
   const [journey, setJourney] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
@@ -62,8 +69,14 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
 
   const handleSelection = (id: string) => {
     setJourney(id);
-    trackEvent('journey_select', { journeyId: id });
-    setStep('pricing');
+    trackEvent('journey_select', { journeyType, journeyId: id });
+    
+    // Help journey skips pricing for now (as per requirement to keep it simple / no pricing mentioned for help)
+    if (journeyType === 'help') {
+      setStep('details');
+    } else {
+      setStep('pricing');
+    }
   };
 
   const handlePlanSelect = (plan: any) => {
@@ -84,17 +97,17 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
         body: JSON.stringify({
           name: data.projectName,
           email: data.email,
-          message: `[Journey: ${journey}] [Plan: ${selectedPlan?.label}] ${data.message}`
+          message: `[Type: ${journeyType}] [Journey: ${journey}] ${selectedPlan ? `[Plan: ${selectedPlan.label}]` : ''} ${data.message}`
         }),
       });
 
       if (!response.ok) throw new Error('Failed to submit');
 
       trackEvent('modal_submit', { 
-        type: 'work',
+        type: journeyType,
         journey,
         plan: selectedPlan?.id,
-        projectName: data.projectName 
+        name: data.projectName 
       });
       
       setStep('success');
@@ -121,14 +134,19 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
   };
 
   const getTitle = () => {
+    if (step === 'success') return "Success!";
+    if (journeyType === 'help') {
+        return step === 'selection' ? "How Can I Help You?" : "Request Your " + journey?.replace('-', ' ');
+    }
     switch (step) {
       case 'selection': return "Start Your Journey";
       case 'pricing': return "Select Your Plan";
       case 'details': return "A Few More Details";
-      case 'success': return "Success!";
       default: return "Work With Me";
     }
   };
+
+  const options = journeyType === 'work' ? WORK_OPTIONS : HELP_OPTIONS;
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={getTitle()}>
@@ -139,12 +157,12 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">Request Received</h3>
           <p className="text-slate-400">
-            Thank you for choosing the <span className="text-blue-400 font-bold">{selectedPlan?.label}</span> plan. I'll reach out shortly.
+            Thank you for reaching out. I've received your inquiry for <span className="text-blue-400 font-bold">{journey?.replace('-', ' ')}</span> and will review it shortly.
           </p>
         </div>
       ) : step === 'selection' ? (
         <div className="grid grid-cols-1 gap-4 py-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {JOURNEY_OPTIONS.map((option) => {
+          {options.map((option) => {
             const Icon = option.icon;
             return (
               <button
@@ -180,7 +198,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
             ← BACK TO SERVICES
           </button>
           <div className="grid grid-cols-1 gap-4">
-            {journey && PRICING_MATRIX[journey].map((plan) => (
+            {journey && PRICING_MATRIX[journey] && PRICING_MATRIX[journey].map((plan) => (
               <button
                 key={plan.id}
                 onClick={() => handlePlanSelect(plan)}
@@ -201,10 +219,10 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4 animate-in fade-in slide-in-from-right-4 duration-500">
           <div className="flex items-center gap-2 mb-6">
             <button 
-              onClick={() => setStep('pricing')}
+              onClick={() => journeyType === 'work' ? setStep('pricing') : setStep('selection')}
               className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase"
             >
-              ← {selectedPlan?.label}
+              ← {selectedPlan?.label || 'Selection'}
             </button>
             <span className="text-xs text-slate-600">/</span>
             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{journey?.replace('-', ' ')}</span>
@@ -214,7 +232,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
             <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Your Name / Project Title</label>
             <input 
               {...register('projectName')}
-              placeholder="e.g. Samuel Soita / FinTech Platform"
+              placeholder="e.g. Samuel Soita / Website Audit"
               className={`w-full bg-white/5 border ${errors.projectName ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-slate-600`}
             />
             {errors.projectName && (
@@ -240,11 +258,11 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Project Details</label>
+            <label className="text-xs uppercase tracking-widest text-slate-500 font-bold">Details</label>
             <textarea 
               {...register('message')}
               rows={4}
-              placeholder="Tell me about your specific needs and timeline..."
+              placeholder="Tell me more about how I can help..."
               className={`w-full bg-white/5 border ${errors.message ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 transition-all resize-none placeholder:text-slate-600`}
             ></textarea>
             {errors.message && (
@@ -264,7 +282,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose }) => {
             ) : (
               <>
                 <Send size={18} />
-                Send Proposal Request
+                Send Request
               </>
             )}
           </button>

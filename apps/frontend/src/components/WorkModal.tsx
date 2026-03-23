@@ -9,19 +9,19 @@ import * as z from 'zod';
 // Define the pricing matrix
 const PRICING_MATRIX: Record<string, any[]> = {
   'deliver-project': [
-    { id: 'mvp-sprint', label: 'MVP Sprint', price: '$2,500', description: 'Core features, fast turnaround (2 weeks).' },
-    { id: 'product-launch', label: 'Product Launch', price: '$7,500', description: 'Full production-ready app, testing, deployment.' },
-    { id: 'enterprise', label: 'Enterprise Scale', price: '$15,000+', description: 'Scalable architecture, security audit, ongoing support.' },
+    { id: 'mvp-sprint', label: 'MVP Sprint', price: '$5,000+', description: 'Core features, fast turnaround (2-4 weeks).' },
+    { id: 'product-launch', label: 'Product Launch', price: '$15,000+', description: 'End-to-end production build, testing, deployment.' },
+    { id: 'enterprise', label: 'Enterprise Scale', price: '$50,000+', description: 'High-availability architecture, security audit, scale-out.' },
   ],
   'mentor-me': [
-    { id: 'focused-session', label: 'Focused Session', price: '$150/hr', description: 'Single session for specific technical blockages.' },
-    { id: 'monthly-growth', label: 'Monthly Growth', price: '$1,200/mo', description: 'Weekly sessions, code reviews, async support.' },
-    { id: 'career-accelerator', label: 'Career Accelerator', price: '$3,000/mo', description: 'Intensive daily support and personal roadmap.' },
+    { id: 'focused-session', label: 'Focused Session', price: '$250/hr', description: 'Single deep-dive for technical roadblocks.' },
+    { id: 'monthly-track', label: 'Monthly Growth', price: '$2,000/mo', description: 'Weekly sessions, code reviews, async support.' },
+    { id: 'accelerator', label: 'Career Accelerator', price: '$5,000/mo', description: 'Intensive support, daily access, personal roadmap.' },
   ],
   'coffee-consult': [
-    { id: 'quick-brainstorm', label: 'Quick Brainstorm', price: '$100', description: '30 min chat for high-level technical ideas.' },
-    { id: 'strategy-deep-dive', label: 'Strategy Deep Dive', price: '$450', description: '2 hour architecture and roadmap review.' },
-    { id: 'executive-partner', label: 'Executive Partner', price: '$1,500', description: 'Full day of strategic consulting and team assessment.' },
+    { id: 'strategy-chat', label: 'Strategy Chat', price: '$350', description: '45 min brainstorming and quick fixes.' },
+    { id: 'deep-dive', label: 'Strategy Deep Dive', price: '$1,500', description: 'Half-day architecture & roadmap deep dive.' },
+    { id: 'advisory-partner', label: 'Advisory Partner', price: '$4,500/mo', description: 'Ongoing strategic guidance and tech assessment.' },
   ],
 };
 

@@ -21,16 +21,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ name, role, image }) => {
           />
         </div>
         
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-white mb-1">{name}</h3>
-          <p className="text-slate-400 font-medium tracking-wide text-sm uppercase">{role}</p>
-        </div>
-        
-        <div className="flex gap-2">
-            {[1, 2, 3].map((_, i) => (
-                <div key={i} className="w-8 h-1 bg-white/10 rounded-full"></div>
-            ))}
-        </div>
       </div>
     </div>
   );

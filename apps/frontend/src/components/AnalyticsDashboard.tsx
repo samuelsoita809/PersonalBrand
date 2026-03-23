@@ -44,6 +44,13 @@ const AnalyticsDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchStats();
+    
+    // Realtime Analytics Polling (DevSecOps Alignment)
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
   }, [token]);
 
   if (loading && stats.length === 0) {
@@ -127,8 +134,8 @@ const AnalyticsDashboard: React.FC = () => {
           <div className="space-y-4 flex-1 flex flex-col justify-center">
             {[
               { label: 'Work With Me', value: 65, color: 'bg-blue-500' },
-              { label: 'Connect With Me', value: 35, color: 'bg-purple-500' },
-              { label: 'Social Links', value: 20, color: 'bg-pink-500' }
+              { label: 'Help Me Free', value: 35, color: 'bg-purple-500' },
+              { label: 'Journey Starts', value: 45, color: 'bg-pink-500' }
             ].map((item, i) => (
               <div key={i} className="space-y-1">
                 <div className="flex justify-between text-xs font-bold uppercase tracking-widest">

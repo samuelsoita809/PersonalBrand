@@ -206,7 +206,8 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
               Simple steps. Clear wins. Numbers that matter.
             </p>
           )}
-                   <div className={`grid grid-cols-1 ${journeyType === 'work' ? 'lg:grid-cols-3' : ''} gap-4`}>
+          
+          <div className={`grid grid-cols-1 ${journeyType === 'work' ? 'lg:grid-cols-3' : ''} gap-4`}>
             {options.map((option: any) => {
               const Icon = option.icon;
               const isWorkCard = journeyType === 'work';
@@ -270,36 +271,6 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
               )
             })}
           </div>
-
-          {journeyType === 'work' && (
-            <div className="pt-8 border-t border-white/5 space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold whitespace-nowrap">Core Engineering Practices</span>
-                <div className="h-px flex-1 bg-white/10" />
-              </div>
-              
-              <div className="flex flex-wrap justify-center gap-3">
-                {[
-                  { name: 'Test-Driven Development', desc: 'Reliability' },
-                  { name: 'Component Driven', desc: 'Modular UI' },
-                  { name: 'Dynamic Architecture', desc: 'Performance' },
-                  { name: 'API-First Design', desc: 'Alignment' },
-                  { name: 'Agile Data', desc: 'Flexibility' }
-                ].map((practice, i) => (
-                  <div key={i} className="flex flex-col items-center">
-                    <span className="text-[10px] text-white font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:border-blue-500/30 transition-colors cursor-default">
-                      {practice.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              
-              <p className="text-[10px] text-center text-slate-500 max-w-sm mx-auto leading-relaxed italic">
-                These industry-standard practices enable the performance and scale metrics shown above.
-              </p>
-            </div>
-          )}
         </div>
       ) : step === 'pricing' ? (
         <div className="space-y-4 py-4 animate-in fade-in slide-in-from-right-4 duration-500">

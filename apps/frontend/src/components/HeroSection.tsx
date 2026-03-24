@@ -14,7 +14,6 @@ const HERO_CONFIG = {
   intro: "Websites and apps that are easy to use, look great, and work fast. Get more customers with ease. No stress, no confusion — just simple, reliable solutions that help you grow.",
   profile: {
     name: "Samuel Soita",
-    role: "Founder & Lead Engineer",
     image: "/profile.png"
   },
   ctas: [

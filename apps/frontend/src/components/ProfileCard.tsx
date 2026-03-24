@@ -2,13 +2,11 @@ import React from 'react';
 
 interface ProfileCardProps {
   name?: string;
-  role?: string;
   image?: string;
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ 
   name = "Samuel Soita", 
-  role = "Founder & Lead Engineer", 
   image = "/profile.png" 
 }) => {
   return (
@@ -50,12 +48,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
 
         {/* Brand Text */}
-        <div className="text-center space-y-2">
+        <div className="text-center">
             <h3 className="text-2xl font-black text-white tracking-tight">{name}</h3>
-            <div className="flex items-center justify-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{role}</span>
-            </div>
         </div>
       </div>
     </div>

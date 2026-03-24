@@ -11,6 +11,11 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         logger.info('Home page mounted', { version: VERSION });
+        trackEvent('page_view', { 
+            path: '/',
+            title: 'Samuel Soita | Engineering Portfolio',
+            timestamp: new Date().toISOString()
+        });
     }, [trackEvent]);
 
     return (

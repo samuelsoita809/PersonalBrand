@@ -4,11 +4,11 @@
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "https://samuelsoitabackend-stage.vercel.app/api/:path*"
+            "destination": "https://samuelsoitabackend-stage.vercel.app/api/:path*?x-vercel-protection-bypass=vcp_2Nq13xmTMTta5fvWAwPwunf2ItxIReXwILinERLeg77Xwp4FPd1Jq1SM"
         },
         {
             "source": "/dashboard/:path*",
-            "destination": "https://samuelsoitadashboard-stage.vercel.app/:path*"
+            "destination": "https://samuelsoitadashboard-stage.vercel.app/:path*?x-vercel-protection-bypass=vcp_2Nq13xmTMTta5fvWAwPwunf2ItxIReXwILinERLeg77Xwp4FPd1Jq1SM"
         },
         {
             "source": "/(.*)",

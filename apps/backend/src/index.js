@@ -26,7 +26,11 @@ app.use(express.json());
 
 app.get("/api/v1/health", (req, res) => {
     logger.trackEvent(EVENTS.REQUEST_RECEIVED, { path: '/api/v1/health' });
-    res.status(200).json({ status: "ok", version: VERSION });
+    res.status(200).json({ 
+        status: "ok", 
+        version: VERSION,
+        database: !!(process.env.DATABASE_URL || process.env.DIRECT_URL)
+    });
 });
 
 

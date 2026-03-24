@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import { Send, CheckCircle2, AlertCircle, ChevronRight, Armchair, Rocket, Coffee, Search, Clock, Users } from 'lucide-react';
 import { useAnalytics } from '../context/analytics';
@@ -25,7 +25,23 @@ const PRICING_MATRIX: Record<string, any[]> = {
   ],
 };
 
-const WORK_OPTIONS = [
+interface Metric {
+  value: string;
+  text: string;
+}
+
+interface Option {
+  id: string;
+  label: string;
+  sublabel?: string;
+  desc?: string;
+  metrics?: Metric[];
+  valueLine?: string;
+  icon: any;
+  color: string;
+}
+
+const WORK_OPTIONS: Option[] = [
   { 
     id: 'deliver-project', 
     label: 'Deliver My Project', 
@@ -70,7 +86,7 @@ const WORK_OPTIONS = [
   },
 ];
 
-const HELP_OPTIONS = [
+const HELP_OPTIONS: Option[] = [
   { 
     id: 'audit', 
     label: 'Performance Audit', 
@@ -127,16 +143,15 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
   const [step, setStep] = useState<'selection' | 'pricing' | 'details' | 'success'>('selection');
   const [journey, setJourney] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
 
   // Track modal open
-  React.useEffect(() => {
+  useEffect(() => {
     if (isOpen) {
       trackEvent('modal_open', { journeyType });
     }
   }, [isOpen, journeyType, trackEvent]);
-
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -249,7 +264,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
           )}
           
           <div className={`grid grid-cols-1 ${journeyType === 'work' ? 'lg:grid-cols-3' : ''} gap-4`}>
-            {options.map((option: any) => {
+            {options.map((option) => {
               const Icon = option.icon;
               const isWorkCard = journeyType === 'work';
               
@@ -284,7 +299,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
 
                   {isWorkCard && option.metrics && (
                     <div className="grid grid-cols-2 gap-3 mb-6">
-                      {option.metrics.map((metric: any, idx: number) => (
+                      {option.metrics.map((metric, idx) => (
                         <div key={idx} className="space-y-0.5">
                           <div className={`text-lg font-black text-${option.color}-500 tracking-tighter`}>
                             {metric.value}
@@ -312,36 +327,6 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
               )
             })}
           </div>
-
-          {journeyType === 'work' && (
-            <div className="pt-8 border-t border-white/5 space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold whitespace-nowrap">The Engineering Playbook</span>
-                <div className="h-px flex-1 bg-white/10" />
-              </div>
-              
-              <div className="flex flex-wrap justify-center gap-3">
-                {[
-                  { name: 'TDD for Zero-Bugs' },
-                  { name: 'CDD for Scalable UI' },
-                  { name: 'Architecture First' },
-                  { name: 'API-First Design' },
-                  { name: 'Agile Data Flow' }
-                ].map((practice, i) => (
-                  <div key={i} className="flex flex-col items-center">
-                    <span className="text-[10px] text-white font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:border-blue-500/30 transition-colors cursor-default">
-                      {practice.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              
-              <p className="text-[10px] text-center text-slate-500 max-w-sm mx-auto leading-relaxed italic">
-                A disciplined, professional methodology behind every high-performance result.
-              </p>
-            </div>
-          )}
         </div>
       ) : step === 'pricing' ? (
         <div className="space-y-4 py-4 animate-in fade-in slide-in-from-right-4 duration-500">

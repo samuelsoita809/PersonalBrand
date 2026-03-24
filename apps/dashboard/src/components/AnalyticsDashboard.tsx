@@ -7,7 +7,7 @@ import { createLogger } from '@monorepo/shared';
 const logger = createLogger('AnalyticsDashboard');
 
 const AnalyticsDashboard: React.FC = () => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [stats, setStats] = useState<any[]>([]);
   const [timeSeries, setTimeSeries] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
@@ -29,6 +29,12 @@ const AnalyticsDashboard: React.FC = () => {
         fetch('/api/v1/analytics/timeseries', { headers }),
         fetch('/api/v1/analytics/history', { headers })
       ]);
+
+      const statuses = [summaryRes.status, seriesRes.status, historyRes.status];
+      if (statuses.some(s => s === 401 || s === 403)) {
+        logout();
+        return; // Component will unmount
+      }
 
       if (!summaryRes.ok || !seriesRes.ok || !historyRes.ok) {
         throw new Error('Failed to fetch complete analytics data');

@@ -33,10 +33,10 @@ const WORK_OPTIONS = [
     metrics: [
       { value: '2x', text: 'Faster Execution' },
       { value: '30%', text: 'Fewer Blockers' },
-      { value: 'Clean', text: 'Code Quality' },
-      { value: 'Ready', text: 'To Scale' }
+      { value: 'Clean', text: 'Architectural Logic' },
+      { value: 'Ready', text: 'Production Build' }
     ],
-    valueLine: 'From concept to code — done right, done fast.',
+    valueLine: 'Turning complex ideas into simple, high-performance reality.',
     icon: Rocket,
     color: 'blue'
   },
@@ -45,12 +45,12 @@ const WORK_OPTIONS = [
     label: 'Mentor Me', 
     sublabel: '(Growth, skills, career results)',
     metrics: [
-      { value: '1.5x', text: 'Learning Velocity' },
+      { value: '1.5x', text: 'Skill Velocity' },
       { value: '75%', text: 'Code Confidence' },
-      { value: 'Hands-on', text: 'Technical Skills' },
-      { value: 'Real', text: 'Project Logic' }
+      { value: 'Deep', text: 'Technical Audits' },
+      { value: 'Real', text: 'Career Projects' }
     ],
-    valueLine: 'Learn fast. Master the tech. Win big.',
+    valueLine: 'Skip the theory. Build real projects. Get hired.',
     icon: Armchair,
     color: 'purple'
   },
@@ -59,12 +59,12 @@ const WORK_OPTIONS = [
     label: 'Coffee With Me', 
     sublabel: '(Clarity, direction, fast decisions)',
     metrics: [
-      { value: 'Fast', text: 'Tech Decisions' },
-      { value: '40%', text: 'Better Clarity' },
-      { value: 'Quick', text: 'Bug Fixes' },
-      { value: 'Live', text: 'Strategy Chat' }
+      { value: 'Instant', text: 'Tech Clarity' },
+      { value: '40%', text: 'Better Direction' },
+      { value: '45min', text: 'Strategy Session' },
+      { value: 'True', text: 'Roadmap Focus' }
     ],
-    valueLine: 'Get clear. Fix fast. Move forward.',
+    valueLine: "Your project's bottleneck, solved in 45 minutes.",
     icon: Coffee,
     color: 'emerald'
   },
@@ -178,7 +178,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
         return step === 'selection' ? "How Can I Help You?" : "Request Your " + journey?.replace('-', ' ');
     }
     switch (step) {
-      case 'selection': return "Real Results. Real Growth.";
+      case 'selection': return "Authentic Solutions. Real Impact.";
       case 'pricing': return "Select Your Plan";
       case 'details': return "A Few More Details";
       default: return "Work With Me";
@@ -203,7 +203,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
         <div className="space-y-6 py-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
           {journeyType === 'work' && (
             <p className="text-center text-slate-400 text-sm italic">
-              Simple steps. Clear wins. Numbers that matter.
+              Authentic roadmaps. Clean builds. Zero friction.
             </p>
           )}
           
@@ -271,6 +271,36 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
               )
             })}
           </div>
+
+          {journeyType === 'work' && (
+            <div className="pt-8 border-t border-white/5 space-y-6">
+              <div className="flex items-center gap-2">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold whitespace-nowrap">The Engineering Playbook</span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+              
+              <div className="flex flex-wrap justify-center gap-3">
+                {[
+                  { name: 'TDD for Zero-Bugs' },
+                  { name: 'CDD for Scalable UI' },
+                  { name: 'Architecture First' },
+                  { name: 'API-First Design' },
+                  { name: 'Agile Data Flow' }
+                ].map((practice, i) => (
+                  <div key={i} className="flex flex-col items-center">
+                    <span className="text-[10px] text-white font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:border-blue-500/30 transition-colors cursor-default">
+                      {practice.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              
+              <p className="text-[10px] text-center text-slate-500 max-w-sm mx-auto leading-relaxed italic">
+                A disciplined, professional methodology behind every high-performance result.
+              </p>
+            </div>
+          )}
         </div>
       ) : step === 'pricing' ? (
         <div className="space-y-4 py-4 animate-in fade-in slide-in-from-right-4 duration-500">

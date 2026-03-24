@@ -216,39 +216,39 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
                 <button
                   key={option.id}
                   onClick={() => handleSelection(option.id)}
-                  className={`group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 text-left hover:bg-white/10 hover:border-${option.color || 'blue'}-500/30 transition-all overflow-hidden flex flex-col`}
+                  className={`group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 text-left hover:bg-white/10 hover:border-${option.color || 'blue'}-500/30 transition-all overflow-hidden flex flex-col`}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-10 h-10 rounded-xl bg-${option.color || 'blue'}-500/10 flex items-center justify-center text-${option.color || 'blue'}-400 group-hover:scale-110 transition-transform`}>
-                        <Icon size={20} />
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-${option.color || 'blue'}-500/10 flex items-center justify-center text-${option.color || 'blue'}-400 group-hover:scale-110 transition-transform`}>
+                        <Icon size={24} />
                     </div>
-                    {!isWorkCard && <ChevronRight size={18} className="text-slate-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />}
+                    {!isWorkCard && <ChevronRight size={20} className="text-slate-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />}
                   </div>
 
-                  <div className="space-y-0.5 mb-4 flex-1">
-                    <div className="text-base font-bold text-white group-hover:text-blue-400 transition-colors leading-tight">
+                  <div className="space-y-1 mb-6 flex-1">
+                    <div className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors leading-tight">
                       {option.label}
                     </div>
                     {option.sublabel && (
-                      <div className="text-[9px] text-slate-500 font-medium tracking-wide">
+                      <div className="text-[10px] text-slate-500 font-medium tracking-wide">
                         {option.sublabel}
                       </div>
                     )}
                     {option.desc && (
-                      <div className="text-xs text-slate-400">
+                      <div className="text-sm text-slate-400">
                         {option.desc}
                       </div>
                     )}
                   </div>
 
                   {isWorkCard && option.metrics && (
-                    <div className="grid grid-cols-2 gap-2 mb-4">
+                    <div className="grid grid-cols-2 gap-3 mb-6">
                       {option.metrics.map((metric: any, idx: number) => (
                         <div key={idx} className="space-y-0.5">
-                          <div className={`text-base font-black text-${option.color}-500 tracking-tighter`}>
+                          <div className={`text-lg font-black text-${option.color}-500 tracking-tighter`}>
                             {metric.value}
                           </div>
-                          <div className="text-[8px] text-slate-400 uppercase font-bold leading-none">
+                          <div className="text-[9px] text-slate-400 uppercase font-bold leading-none">
                             {metric.text}
                           </div>
                         </div>
@@ -257,13 +257,13 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
                   )}
 
                   {isWorkCard && option.valueLine && (
-                    <div className="pt-3 border-t border-white/5 text-[10px] text-slate-300 font-bold italic">
+                    <div className="pt-4 border-t border-white/5 text-[11px] text-slate-300 font-bold italic">
                       "{option.valueLine}"
                     </div>
                   )}
 
                   {isWorkCard && (
-                    <div className={`mt-4 w-full py-2 rounded-xl border border-${option.color}-500/30 text-${option.color}-400 text-[9px] font-bold uppercase tracking-widest text-center group-hover:bg-${option.color}-500/20 transition-all`}>
+                    <div className={`mt-6 w-full py-2.5 rounded-xl border border-${option.color}-500/30 text-${option.color}-400 text-[10px] font-bold uppercase tracking-widest text-center group-hover:bg-${option.color}-500/20 transition-all`}>
                       Get Started Now
                     </div>
                   )}

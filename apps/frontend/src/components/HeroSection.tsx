@@ -7,15 +7,13 @@ import { isFeatureEnabled } from '@monorepo/shared';
 
 // Lazy load modals for performance optimization (DevSecOps requirement)
 const WorkModal = lazy(() => import('./WorkModal'));
-const ConnectModal = lazy(() => import('./ConnectModal'));
 
 const HERO_CONFIG = {
-  heading: "Samuel Soita",
-  subheading: "Engineering the Future of Digital Innovation",
-  intro: "Specialized in crafting secure, high-performance systems and visually refined digital experiences. Building scalable, premium web applications that align advanced technology with distinct brand identity.",
+  heading: "Build Better Digital Experiences",
+  subheading: "Simple, fast, and beautiful platforms that win and get real results",
+  intro: "Websites and apps that are easy to use, look great, and work fast. Get more customers with ease. No stress, no confusion — just simple, reliable solutions that help you grow.",
   profile: {
     name: "Samuel Soita",
-    role: "Founder & Lead Engineer",
     image: "/profile.png"
   },
   ctas: [
@@ -36,7 +34,7 @@ const HeroSection: React.FC = () => {
   const { heading, subheading, intro, profile, ctas } = HERO_CONFIG;
   const { trackEvent } = useAnalytics();
   const [isWorkModalOpen, setIsWorkModalOpen] = useState(false);
-  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [journeyType, setJourneyType] = useState<'work' | 'help'>('work');
 
   // Feature Flag Check
   if (!isFeatureEnabled('NEW_HERO_SECTION')) {
@@ -51,15 +49,12 @@ const HeroSection: React.FC = () => {
   }, [trackEvent, heading]);
 
   const handleCtaClick = (id: string, label: string) => {
-    if (id === 'work') {
-      trackEvent('cta_work_click', { label });
+    trackEvent('cta_click', { ctaId: id, ctaLabel: label });
+    
+    if (id === 'work' || id === 'help') {
+      setJourneyType(id as 'work' | 'help');
       setIsWorkModalOpen(true);
-      trackEvent('modal_open', { type: 'work' });
-    } else if (id === 'help') {
-      trackEvent('cta_help_click', { label });
-      // For now, let's open the work modal but we could create a specialized one later
-      setIsWorkModalOpen(true); 
-      trackEvent('modal_open', { type: 'help' });
+      trackEvent('modal_open', { type: id });
     }
   };
 
@@ -84,25 +79,20 @@ const HeroSection: React.FC = () => {
 
         {/* Right Column: Profile Card */}
         <div className="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2">
-          <ProfileCard
-            name={profile.name}
-            role={profile.role}
-            image={profile.image}
-          />
+          <ProfileCard />
         </div>
 
       </div>
 
       {/* Modals with Suspense for optimized building */}
       <Suspense fallback={null}>
-        <WorkModal
-          isOpen={isWorkModalOpen}
-          onClose={() => setIsWorkModalOpen(false)}
-        />
-        <ConnectModal
-          isOpen={isConnectModalOpen}
-          onClose={() => setIsConnectModalOpen(false)}
-        />
+        {isWorkModalOpen && (
+          <WorkModal
+            isOpen={isWorkModalOpen}
+            onClose={() => setIsWorkModalOpen(false)}
+            journeyType={journeyType}
+          />
+        )}
       </Suspense>
     </section>
   );

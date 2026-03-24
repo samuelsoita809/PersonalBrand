@@ -20,12 +20,14 @@ const HERO_CONFIG = {
     {
       id: "work",
       label: "Work With Me",
-      type: "primary" as const
+      type: "primary" as const,
+      disabled: true
     },
     {
       id: "help",
       label: "Help Me Free",
-      type: "secondary" as const
+      type: "secondary" as const,
+      disabled: true
     }
   ]
 };

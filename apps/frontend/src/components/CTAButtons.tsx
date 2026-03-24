@@ -4,6 +4,7 @@ interface CTA {
   id: string;
   label: string;
   type: string;
+  disabled?: boolean;
 }
 
 interface CTAButtonsProps {
@@ -18,12 +19,17 @@ const CTAButtons: React.FC<CTAButtonsProps> = ({ ctas, onCtaClick }) => {
         <button
           key={cta.id}
           id={cta.id}
-          className={`px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 ${
+          disabled={cta.disabled}
+          className={`px-8 py-4 rounded-full font-bold transition-all transform ${
+            cta.disabled 
+              ? 'opacity-40 cursor-not-allowed grayscale' 
+              : 'hover:scale-105 active:scale-95'
+          } ${
             cta.type === 'primary'
               ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:bg-slate-200'
               : 'bg-transparent border border-white/20 text-white hover:bg-white/5'
           }`}
-          onClick={() => onCtaClick(cta.id, cta.label)}
+          onClick={() => !cta.disabled && onCtaClick(cta.id, cta.label)}
         >
           {cta.label}
         </button>

@@ -11,28 +11,28 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 }) => {
   return (
     <div className="relative group">
-      {/* Value Badges - Floating around the card */}
-      <div className="absolute -top-6 -left-6 z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-        <div className="bg-blue-600/10 backdrop-blur-md border border-blue-500/20 px-3 py-1.5 rounded-xl shadow-xl">
-          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">50+ Peers Mentored</span>
+      {/* Authentic Value Badges - Floating around the card */}
+      <div className="absolute -top-6 -left-10 z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+        <div className="bg-blue-600/10 backdrop-blur-md border border-blue-500/20 px-3 py-1.5 rounded-xl shadow-xl hover:scale-105 transition-transform cursor-default">
+          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Obsessed with Clean Architecture</span>
         </div>
       </div>
       
-      <div className="absolute -top-12 -right-4 z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-        <div className="bg-purple-600/10 backdrop-blur-md border border-purple-500/20 px-3 py-1.5 rounded-xl shadow-xl">
-          <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider">3+ Targeted Industries</span>
+      <div className="absolute -top-12 -right-6 z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+        <div className="bg-purple-600/10 backdrop-blur-md border border-purple-500/20 px-3 py-1.5 rounded-xl shadow-xl hover:scale-105 transition-transform cursor-default">
+          <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider">12+ Rapid Solutions Shipped</span>
         </div>
       </div>
 
-      <div className="absolute -bottom-4 -left-8 z-20 animate-in fade-in slide-in-from-top-4 duration-700 delay-500">
-        <div className="bg-emerald-600/10 backdrop-blur-md border border-emerald-500/20 px-3 py-1.5 rounded-xl shadow-xl">
-          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">12+ Projects Built</span>
+      <div className="absolute -bottom-4 -left-12 z-20 animate-in fade-in slide-in-from-top-4 duration-700 delay-500">
+        <div className="bg-emerald-600/10 backdrop-blur-md border border-emerald-500/20 px-3 py-1.5 rounded-xl shadow-xl hover:scale-105 transition-transform cursor-default">
+          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Performance-First Logic</span>
         </div>
       </div>
 
-      <div className="absolute -bottom-10 -right-6 z-20 animate-in fade-in slide-in-from-top-4 duration-700 delay-700">
-        <div className="bg-amber-600/10 backdrop-blur-md border border-amber-500/20 px-3 py-1.5 rounded-xl shadow-xl">
-          <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">100% Quality Focus</span>
+      <div className="absolute -bottom-10 -right-8 z-20 animate-in fade-in slide-in-from-top-4 duration-700 delay-700">
+        <div className="bg-amber-600/10 backdrop-blur-md border border-amber-500/20 px-3 py-1.5 rounded-xl shadow-xl hover:scale-105 transition-transform cursor-default">
+          <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Coffee & Scalable Code</span>
         </div>
       </div>
 

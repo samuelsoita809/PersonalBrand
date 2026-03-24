@@ -271,36 +271,6 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
               )
             })}
           </div>
-
-          {journeyType === 'work' && (
-            <div className="pt-8 border-t border-white/5 space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="h-px flex-1 bg-white/10" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold whitespace-nowrap">The Engineering Playbook</span>
-                <div className="h-px flex-1 bg-white/10" />
-              </div>
-              
-              <div className="flex flex-wrap justify-center gap-3">
-                {[
-                  { name: 'TDD for Zero-Bugs' },
-                  { name: 'CDD for Scalable UI' },
-                  { name: 'Architecture First' },
-                  { name: 'API-First Design' },
-                  { name: 'Agile Data Flow' }
-                ].map((practice, i) => (
-                  <div key={i} className="flex flex-col items-center">
-                    <span className="text-[10px] text-white font-bold bg-white/5 px-3 py-1 rounded-full border border-white/10 hover:border-blue-500/30 transition-colors cursor-default">
-                      {practice.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              
-              <p className="text-[10px] text-center text-slate-500 max-w-sm mx-auto leading-relaxed italic">
-                A disciplined, professional methodology behind every high-performance result.
-              </p>
-            </div>
-          )}
         </div>
       ) : step === 'pricing' ? (
         <div className="space-y-4 py-4 animate-in fade-in slide-in-from-right-4 duration-500">

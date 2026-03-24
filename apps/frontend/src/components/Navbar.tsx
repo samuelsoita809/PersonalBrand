@@ -12,18 +12,6 @@ const Navbar: React.FC = () => {
         </span>
       </div>
       
-      <div className="hidden md:flex items-center gap-8">
-        {['Solutions', 'Process', 'About'].map((item) => (
-          <a
-            key={item}
-            href={`#${item.toLowerCase()}`}
-            className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
-          >
-            {item}
-          </a>
-        ))}
-      </div>
-      
       <button className="px-5 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest">
         Menu
       </button>

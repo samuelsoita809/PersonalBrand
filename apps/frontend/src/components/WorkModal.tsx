@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import { Send, CheckCircle2, AlertCircle, ChevronRight, Armchair, Rocket, Coffee, Search, Clock, Users } from 'lucide-react';
 import { useAnalytics } from '../context/analytics';
@@ -25,7 +25,23 @@ const PRICING_MATRIX: Record<string, any[]> = {
   ],
 };
 
-const WORK_OPTIONS = [
+interface Metric {
+  value: string;
+  text: string;
+}
+
+interface Option {
+  id: string;
+  label: string;
+  sublabel?: string;
+  desc?: string;
+  metrics?: Metric[];
+  valueLine?: string;
+  icon: any;
+  color: string;
+}
+
+const WORK_OPTIONS: Option[] = [
   { 
     id: 'deliver-project', 
     label: 'Deliver My Project', 
@@ -70,10 +86,43 @@ const WORK_OPTIONS = [
   },
 ];
 
-const HELP_OPTIONS = [
-  { id: 'audit', label: 'Audit (Review) my Website', desc: 'Technical performance & UX audit', icon: Search },
-  { id: 'chat', label: '15 Minutes Chat', desc: 'Quick technical Q&A session', icon: Clock },
-  { id: 'catchup', label: '1-2-Many Tech CatchUp', desc: 'Group sessions or team syncing', icon: Users },
+const HELP_OPTIONS: Option[] = [
+  { 
+    id: 'audit', 
+    label: 'Performance Audit', 
+    sublabel: 'Identify critical bottlenecks',
+    metrics: [
+      { value: 'Zero', text: 'Friction' },
+      { value: 'Clear', text: 'Roadmap' }
+    ],
+    valueLine: 'A deep-dive review of your current performance metrics.',
+    icon: Search, 
+    color: 'blue' 
+  },
+  { 
+    id: 'chat', 
+    label: 'Strategic Fix', 
+    sublabel: 'Immediate clarity on blockers',
+    metrics: [
+      { value: 'Fast', text: 'Impact' },
+      { value: 'Instant', text: 'Clarity' }
+    ],
+    valueLine: 'A 15-minute high-impact session for technical bottlenecks.',
+    icon: Clock, 
+    color: 'purple' 
+  },
+  { 
+    id: 'catchup', 
+    label: 'Tech Session', 
+    sublabel: 'Alignment for team growth',
+    metrics: [
+      { value: 'Team', text: 'Synergy' },
+      { value: 'Aligned', text: 'Future' }
+    ],
+    valueLine: 'Synchronizing your technical stack with business goals.',
+    icon: Users, 
+    color: 'emerald' 
+  },
 ];
 
 const workSchema = z.object({
@@ -96,6 +145,13 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
   const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const { trackEvent } = useAnalytics();
+
+  // Track modal open
+  useEffect(() => {
+    if (isOpen) {
+      trackEvent('modal_open', { journeyType });
+    }
+  }, [isOpen, journeyType, trackEvent]);
 
   const {
     register,
@@ -208,7 +264,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
           )}
           
           <div className={`grid grid-cols-1 ${journeyType === 'work' ? 'lg:grid-cols-3' : ''} gap-4`}>
-            {options.map((option: any) => {
+            {options.map((option) => {
               const Icon = option.icon;
               const isWorkCard = journeyType === 'work';
               
@@ -243,7 +299,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
 
                   {isWorkCard && option.metrics && (
                     <div className="grid grid-cols-2 gap-3 mb-6">
-                      {option.metrics.map((metric: any, idx: number) => (
+                      {option.metrics.map((metric, idx) => (
                         <div key={idx} className="space-y-0.5">
                           <div className={`text-lg font-black text-${option.color}-500 tracking-tighter`}>
                             {metric.value}

@@ -26,9 +26,48 @@ const PRICING_MATRIX: Record<string, any[]> = {
 };
 
 const WORK_OPTIONS = [
-  { id: 'deliver-project', label: 'Deliver My Project', desc: 'End-to-end technical delivery', icon: Rocket },
-  { id: 'mentor-me', label: 'Mentor Me', desc: '1-on-1 technical guidance', icon: Armchair },
-  { id: 'coffee-consult', label: 'Coffee With Me', desc: 'Discuss ideas & Get Quick Fixes', icon: Coffee },
+  { 
+    id: 'deliver-project', 
+    label: 'Deliver My Project', 
+    sublabel: '(Execution, delivery, business results)',
+    metrics: [
+      { value: '2x', text: 'Faster Execution' },
+      { value: '30%', text: 'Fewer Blockers' },
+      { value: 'Clean', text: 'Code Quality' },
+      { value: 'Ready', text: 'To Scale' }
+    ],
+    valueLine: 'From concept to code — done right, done fast.',
+    icon: Rocket,
+    color: 'blue'
+  },
+  { 
+    id: 'mentor-me', 
+    label: 'Mentor Me', 
+    sublabel: '(Growth, skills, career results)',
+    metrics: [
+      { value: '1.5x', text: 'Learning Velocity' },
+      { value: '75%', text: 'Code Confidence' },
+      { value: 'Hands-on', text: 'Technical Skills' },
+      { value: 'Real', text: 'Project Logic' }
+    ],
+    valueLine: 'Learn fast. Master the tech. Win big.',
+    icon: Armchair,
+    color: 'purple'
+  },
+  { 
+    id: 'coffee-consult', 
+    label: 'Coffee With Me', 
+    sublabel: '(Clarity, direction, fast decisions)',
+    metrics: [
+      { value: 'Fast', text: 'Tech Decisions' },
+      { value: '40%', text: 'Better Clarity' },
+      { value: 'Quick', text: 'Bug Fixes' },
+      { value: 'Live', text: 'Strategy Chat' }
+    ],
+    valueLine: 'Get clear. Fix fast. Move forward.',
+    icon: Coffee,
+    color: 'emerald'
+  },
 ];
 
 const HELP_OPTIONS = [
@@ -139,7 +178,7 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
         return step === 'selection' ? "How Can I Help You?" : "Request Your " + journey?.replace('-', ' ');
     }
     switch (step) {
-      case 'selection': return "Start Your Journey";
+      case 'selection': return "Real Results. Real Growth.";
       case 'pricing': return "Select Your Plan";
       case 'details': return "A Few More Details";
       default: return "Work With Me";
@@ -161,33 +200,77 @@ const WorkModal: React.FC<WorkModalProps> = ({ isOpen, onClose, journeyType }) =
           </p>
         </div>
       ) : step === 'selection' ? (
-        <div className="grid grid-cols-1 gap-4 py-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {options.map((option) => {
-            const Icon = option.icon;
-            return (
-              <button
-                key={option.id}
-                onClick={() => handleSelection(option.id)}
-                className="group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 text-left hover:bg-white/10 hover:border-blue-500/30 transition-all overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Icon size={80} />
-                </div>
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex gap-4 items-center">
-                    <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+        <div className="space-y-6 py-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {journeyType === 'work' && (
+            <p className="text-center text-slate-400 text-sm italic">
+              Simple steps. Clear wins. Numbers that matter.
+            </p>
+          )}
+          
+          <div className={`grid grid-cols-1 ${journeyType === 'work' ? 'lg:grid-cols-3' : ''} gap-4`}>
+            {options.map((option: any) => {
+              const Icon = option.icon;
+              const isWorkCard = journeyType === 'work';
+              
+              return (
+                <button
+                  key={option.id}
+                  onClick={() => handleSelection(option.id)}
+                  className={`group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 text-left hover:bg-white/10 hover:border-${option.color || 'blue'}-500/30 transition-all overflow-hidden flex flex-col`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-${option.color || 'blue'}-500/10 flex items-center justify-center text-${option.color || 'blue'}-400 group-hover:scale-110 transition-transform`}>
                         <Icon size={24} />
                     </div>
-                    <div>
-                      <div className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">{option.label}</div>
-                      <div className="text-sm text-slate-400">{option.desc}</div>
-                    </div>
+                    {!isWorkCard && <ChevronRight size={20} className="text-slate-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />}
                   </div>
-                  <ChevronRight size={20} className="text-slate-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
-                </div>
-              </button>
-            )
-          })}
+
+                  <div className="space-y-1 mb-6 flex-1">
+                    <div className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors leading-tight">
+                      {option.label}
+                    </div>
+                    {option.sublabel && (
+                      <div className="text-[10px] text-slate-500 font-medium tracking-wide">
+                        {option.sublabel}
+                      </div>
+                    )}
+                    {option.desc && (
+                      <div className="text-sm text-slate-400">
+                        {option.desc}
+                      </div>
+                    )}
+                  </div>
+
+                  {isWorkCard && option.metrics && (
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      {option.metrics.map((metric: any, idx: number) => (
+                        <div key={idx} className="space-y-0.5">
+                          <div className={`text-lg font-black text-${option.color}-500 tracking-tighter`}>
+                            {metric.value}
+                          </div>
+                          <div className="text-[9px] text-slate-400 uppercase font-bold leading-none">
+                            {metric.text}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {isWorkCard && option.valueLine && (
+                    <div className="pt-4 border-t border-white/5 text-[11px] text-slate-300 font-bold italic">
+                      "{option.valueLine}"
+                    </div>
+                  )}
+
+                  {isWorkCard && (
+                    <div className={`mt-6 w-full py-2.5 rounded-xl border border-${option.color}-500/30 text-${option.color}-400 text-[10px] font-bold uppercase tracking-widest text-center group-hover:bg-${option.color}-500/20 transition-all`}>
+                      Get Started Now
+                    </div>
+                  )}
+                </button>
+              )
+            })}
+          </div>
         </div>
       ) : step === 'pricing' ? (
         <div className="space-y-4 py-4 animate-in fade-in slide-in-from-right-4 duration-500">

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { BarChart3, MousePointer2, ExternalLink, Users, RefreshCcw } from 'lucide-react';
+import { BarChart3, MousePointer2, ExternalLink, Users, RefreshCcw, Rocket, Armchair, Coffee } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { createLogger } from '@monorepo/shared';
 
@@ -149,6 +149,45 @@ const AnalyticsDashboard: React.FC = () => {
            </div>
         </div>
       )}
+
+      {/* ROI Service Interest - Derived from History */}
+      <div className="backdrop-blur-xl bg-white/5 border border-white/10 p-6 rounded-3xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h3 className="text-lg font-bold text-white mb-6">Service Interest Heatmap</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { id: 'deliver-project', label: 'Deliver', color: 'bg-blue-500', icon: Rocket },
+            { id: 'mentor-me', label: 'Mentor', color: 'bg-purple-500', icon: Armchair },
+            { id: 'coffee-consult', label: 'Strategy', color: 'bg-emerald-500', icon: Coffee }
+          ].map((service) => {
+            const count = history.filter(e => e.event_name === 'journey_select' && e.metadata?.journeyId === service.id).length;
+            const total = history.filter(e => e.event_name === 'journey_select').length || 1;
+            const percentage = Math.round((count / total) * 100);
+            
+            return (
+              <div key={service.id} className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded-lg ${service.color}/20 flex items-center justify-center text-white/80`}>
+                      <service.icon size={16} />
+                    </div>
+                    <span className="text-xs font-bold text-slate-300">{service.label}</span>
+                  </div>
+                  <span className="text-xs font-mono text-slate-500">{percentage}%</span>
+                </div>
+                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${service.color} transition-all duration-1000`} 
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <p className="text-[10px] text-slate-500 mt-6 italic">
+          * Based on real-time activity in the last 10 recorded events.
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, idx) => {

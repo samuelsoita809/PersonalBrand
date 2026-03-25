@@ -3,15 +3,13 @@
     "id": 1,
     "componentType": "Card",
     "title": "Project Alpha",
-    "description": "This is my first project",
-    "onClickType": "modal"
+    "description": "This is my first project"
   },
   {
     "id": 2,
     "componentType": "Card",
     "title": "Project Beta",
-    "description": "This is my second project",
-    "onClickType": "modal"
+    "description": "This is my second project"
   },
   {
     "id": 3,

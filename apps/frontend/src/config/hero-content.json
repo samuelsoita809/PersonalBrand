@@ -6,5 +6,16 @@
   "styling": {
     "heading_gradient": "bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500",
     "spacing": "py-24"
-  }
+  },
+  "profile": {
+    "name": "Samuel Soita",
+    "role": "Software Developer",
+    "image": "/profile.png"
+  },
+  "badges": [
+    "100+ People Helped",
+    "10+ Projects Delivered",
+    "3+ Industries Worked In",
+    "80% Clients Return or Refer"
+  ]
 }

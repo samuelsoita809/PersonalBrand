@@ -13,6 +13,11 @@
       "description": "Modal overlay displayed to user",
       "category": "interaction"
     },
+    "profile_card_view": {
+      "description": "User viewed the Hero Profile Card",
+      "category": "engagement",
+      "required_params": ["timestamp"]
+    },
     "navbar_logo_click": {
       "description": "User clicked the brand logo to return home",
       "category": "navigation",

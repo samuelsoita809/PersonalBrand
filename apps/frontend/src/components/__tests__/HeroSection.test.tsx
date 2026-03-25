@@ -1,22 +1,26 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import HeroSection from '../HeroSection';
 import React from 'react';
-import * as shared from '@monorepo/shared';
 import * as analytics from '../../context/analytics';
+import heroConfig from '../../config/hero-content.json';
 
 // Mock dependencies
-vi.mock('@monorepo/shared', () => ({
-  isFeatureEnabled: vi.fn()
-}));
-
 vi.mock('../../context/analytics', () => ({
   useAnalytics: vi.fn()
 }));
 
-// No more modals required for now as per CTA cleanup (Slices 3-6)
+// Mock the config for stability in tests
+vi.mock('../../config/hero-content.json', () => ({
+  default: {
+    heading: "Test Heading",
+    subheading: "Test Subheading",
+    paragraph: "Test Paragraph",
+    ctas: []
+  }
+}));
 
-describe('HeroSection Component', () => {
+describe('HeroSection Component (Slice 2)', () => {
   const mockTrackEvent = vi.fn();
 
   beforeEach(() => {
@@ -24,15 +28,25 @@ describe('HeroSection Component', () => {
     (analytics.useAnalytics as Mock).mockReturnValue({ trackEvent: mockTrackEvent });
   });
 
-  it('should not render when feature flag is disabled', () => {
-    (shared.isFeatureEnabled as Mock).mockReturnValue(false);
-    const { container } = render(<HeroSection />);
-    expect(container.firstChild).toBeNull();
+  it('renders the heading from config', () => {
+    render(<HeroSection />);
+    expect(screen.getByText('Test Heading')).toBeDefined();
   });
 
-  it('should render when feature flag is enabled', () => {
-    (shared.isFeatureEnabled as Mock).mockReturnValue(true);
+  it('renders the subheading from config', () => {
     render(<HeroSection />);
-    expect(screen.getByRole('heading', { level: 1 })).toBeDefined();
+    expect(screen.getByText('Test Subheading')).toBeDefined();
+  });
+
+  it('renders the paragraph from config', () => {
+    render(<HeroSection />);
+    expect(screen.getByText('Test Paragraph')).toBeDefined();
+  });
+
+  it('triggers hero_view analytics event on mount', () => {
+    render(<HeroSection />);
+    expect(mockTrackEvent).toHaveBeenCalledWith('hero_view', expect.objectContaining({
+      heading: 'Test Heading'
+    }));
   });
 });

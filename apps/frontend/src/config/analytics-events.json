@@ -1,25 +1,27 @@
 {
-  "events": [
-    {
-      "name": "hero_view",
+  "events": {
+    "hero_view": {
       "description": "Hero section visible above the fold",
-      "kpi": "Page engagement"
+      "category": "engagement",
+      "required_params": ["timestamp", "version"]
     },
-    {
-      "name": "cta_connect_click",
+    "cta_connect_click": {
       "description": "Visitor clicks 'Connect With Me' button",
-      "kpi": "Networking interest"
+      "category": "interaction"
     },
-    {
-      "name": "modal_open",
+    "modal_open": {
       "description": "Modal overlay displayed to user",
-      "kpi": "Interaction depth"
+      "category": "interaction"
     },
-    {
-      "name": "navbar_logo_click",
-      "description": "User clicked the logo in the navigation bar to return home",
-      "kpi": "Navigation usage",
-      "params": ["page_url", "session_id", "timestamp"]
+    "navbar_logo_click": {
+      "description": "User clicked the brand logo to return home",
+      "category": "navigation",
+      "required_params": ["path", "timestamp"]
+    },
+    "scroll_depth_milestone": {
+      "description": "User reached a specific scroll depth milestone",
+      "category": "engagement",
+      "required_params": ["milestone_percent", "timestamp"]
     }
-  ]
+  }
 }

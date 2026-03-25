@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { createLogger, VERSION } from '@monorepo/shared';
 import HeroSection from '../components/HeroSection';
-import Navbar from '../components/Navbar';
 import { useAnalytics } from '../context/analytics';
 
 const logger = createLogger('Frontend');
@@ -20,8 +19,6 @@ const HomePage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-[#0f172a] text-white flex flex-col items-center font-['Outfit',sans-serif] overflow-x-hidden">
-            {/* Navbar */}
-            <Navbar />
 
             {/* Background Glows */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">

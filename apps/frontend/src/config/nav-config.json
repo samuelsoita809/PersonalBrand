@@ -1,0 +1,8 @@
+{
+  "homeRoute": "/",
+  "logo": {
+    "text": "S",
+    "fullName": "Samuel Soita",
+    "ariaLabel": "Go to homepage"
+  }
+}

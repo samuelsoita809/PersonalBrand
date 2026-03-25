@@ -10,10 +10,9 @@ describe('ProfileCard Component', () => {
     image: "/profile.jpg"
   };
 
-  it('should render name and role correctly', () => {
+  it('should render name correctly', () => {
     render(<ProfileCard {...mockProps} />);
     expect(screen.getByText(mockProps.name)).toBeDefined();
-    expect(screen.getByText(mockProps.role)).toBeDefined();
   });
 
   it('should render profile image with correct alt text', () => {

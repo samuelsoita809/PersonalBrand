@@ -6,8 +6,6 @@ import { useAnalytics } from '../context/analytics';
 import { isFeatureEnabled } from '@monorepo/shared';
 
 // Lazy load modals for performance optimization (DevSecOps requirement)
-const WorkModal = lazy(() => import('./WorkModal'));
-
 const HERO_CONFIG = {
   heading: "Build Better Digital Experiences",
   subheading: "Simple, fast, and beautiful platforms that win and get real results",
@@ -16,25 +14,12 @@ const HERO_CONFIG = {
     name: "Samuel Soita",
     image: "/profile.png"
   },
-  ctas: [
-    {
-      id: "work",
-      label: "Work With Me",
-      type: "primary" as const
-    },
-    {
-      id: "help",
-      label: "Help Me Free",
-      type: "secondary" as const
-    }
-  ]
+  ctas: []
 };
 
 const HeroSection: React.FC = () => {
   const { heading, subheading, intro, profile, ctas } = HERO_CONFIG;
   const { trackEvent } = useAnalytics();
-  const [isWorkModalOpen, setIsWorkModalOpen] = useState(false);
-  const [journeyType, setJourneyType] = useState<'work' | 'help'>('work');
 
   // Feature Flag Check
   if (!isFeatureEnabled('NEW_HERO_SECTION')) {
@@ -50,12 +35,6 @@ const HeroSection: React.FC = () => {
 
   const handleCtaClick = (id: string, label: string) => {
     trackEvent('cta_click', { ctaId: id, ctaLabel: label });
-    
-    if (id === 'work' || id === 'help') {
-      setJourneyType(id as 'work' | 'help');
-      setIsWorkModalOpen(true);
-      trackEvent('modal_open', { type: id });
-    }
   };
 
   return (
@@ -83,17 +62,6 @@ const HeroSection: React.FC = () => {
         </div>
 
       </div>
-
-      {/* Modals with Suspense for optimized building */}
-      <Suspense fallback={null}>
-        {isWorkModalOpen && (
-          <WorkModal
-            isOpen={isWorkModalOpen}
-            onClose={() => setIsWorkModalOpen(false)}
-            journeyType={journeyType}
-          />
-        )}
-      </Suspense>
     </section>
   );
 };

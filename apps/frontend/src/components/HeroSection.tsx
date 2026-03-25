@@ -62,50 +62,55 @@ const HeroSection: React.FC = () => {
           />
         </div>
 
-        {/* Right Column: Trust Anchor (Profile + Badges) */}
-        <div className="lg:col-span-5 relative flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200">
-          
-          {/* Badge 1: Top-Left */}
-          {badges[0] && (
-            <Badge 
-              text={badges[0]} 
-              className="-top-8 -left-12 lg:-left-16" 
-              delay="delay-300" 
-            />
-          )}
+        {/* Right Column: Trust Anchor — padded wrapper keeps badges clear of the card */}
+        <div className="lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200">
 
-          {/* Badge 3: Top-Right */}
-          {badges[2] && (
-            <Badge 
-              text={badges[2]} 
-              className="-top-14 -right-4 lg:-right-8" 
-              delay="delay-500" 
-            />
-          )}
+          {/* Padded wrapper: padding = buffer between card and badge positions */}
+          <div className="relative py-14 px-10">
 
-          {/* Profile Card Center Anchor */}
-          <ProfileCard 
-            name={profile?.name} 
-            image={profile?.image} 
-          />
+            {/* ↖ Top-Left — 100+ People Helped */}
+            {badges[0] && (
+              <div className="absolute top-3 left-0 animate-in fade-in duration-700 delay-300">
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
+                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[0]}</span>
+                </div>
+              </div>
+            )}
 
-          {/* Badge 2: Bottom-Left */}
-          {badges[1] && (
-            <Badge 
-              text={badges[1]} 
-              className="-bottom-6 -left-14 lg:-left-20" 
-              delay="delay-700" 
-            />
-          )}
+            {/* ↗ Top-Right — 3+ Industries Worked In */}
+            {badges[2] && (
+              <div className="absolute top-3 right-0 animate-in fade-in duration-700 delay-500">
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
+                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[2]}</span>
+                </div>
+              </div>
+            )}
 
-          {/* Badge 4: Bottom-Right */}
-          {badges[3] && (
-            <Badge 
-              text={badges[3]} 
-              className="-bottom-12 -right-6 lg:-right-10" 
-              delay="delay-1000" 
+            {/* Profile Card — center anchor */}
+            <ProfileCard 
+              name={profile?.name} 
+              image={profile?.image} 
             />
-          )}
+
+            {/* ↙ Bottom-Left — 10+ Projects Delivered */}
+            {badges[1] && (
+              <div className="absolute bottom-3 left-0 animate-in fade-in duration-700 delay-700">
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
+                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[1]}</span>
+                </div>
+              </div>
+            )}
+
+            {/* ↘ Bottom-Right — 80% Clients Return or Refer */}
+            {badges[3] && (
+              <div className="absolute bottom-3 right-0 animate-in fade-in duration-700 delay-1000">
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
+                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[3]}</span>
+                </div>
+              </div>
+            )}
+
+          </div>
         </div>
 
       </div>

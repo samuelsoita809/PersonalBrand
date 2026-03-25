@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { BarChart3, MousePointer2, ExternalLink, Users, RefreshCcw, Rocket, Armchair, Coffee } from 'lucide-react';
+import { BarChart3, MousePointer2, ExternalLink, Users, RefreshCcw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { createLogger } from '@monorepo/shared';
 

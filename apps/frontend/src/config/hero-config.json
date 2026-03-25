@@ -7,16 +7,5 @@
     "role": "Founder & Lead Engineer",
     "image": "/profile.png"
   },
-  "ctas": [
-    {
-      "id": "work",
-      "label": "Work With Me",
-      "type": "primary"
-    },
-    {
-      "id": "connect",
-      "label": "Connect With Me",
-      "type": "secondary"
-    }
-  ]
+  "ctas": []
 }

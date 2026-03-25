@@ -6,11 +6,6 @@
       "kpi": "Page engagement"
     },
     {
-      "name": "cta_work_click",
-      "description": "Visitor clicks 'Work With Me' button",
-      "kpi": "Lead intent"
-    },
-    {
       "name": "cta_connect_click",
       "description": "Visitor clicks 'Connect With Me' button",
       "kpi": "Networking interest"

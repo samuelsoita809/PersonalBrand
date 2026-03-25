@@ -12,9 +12,7 @@ const Navbar: React.FC = () => {
         </span>
       </div>
       
-      <button className="px-5 py-2 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest">
-        Menu
-      </button>
+
     </nav>
   );
 };

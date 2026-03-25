@@ -10,7 +10,7 @@ export const configureSecurity = (app) => {
             directives: {
                 "script-src": ["'self'", "'unsafe-inline'", "https://vercel.live", "https://*.vercel.app"],
                 "img-src": ["'self'", "data:", "https://*"],
-                "connect-src": ["'self'", "https://*", "wss://*"],
+                "connect-src": ["'self'", "https://*", "wss://*", "http://localhost:*", "http://127.0.0.1:*"],
                 "frame-src": ["'self'", "https://vercel.live"],
             },
         },

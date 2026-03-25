@@ -33,8 +33,7 @@ const DashboardPage: React.FC = () => {
 
         <nav className="flex-1 px-4 py-6 space-y-2">
           {[
-            { name: 'Dashboard', icon: LayoutDashboard, active: true },
-            { name: 'Analytics', icon: Menu, active: false }
+            { name: 'Dashboard', icon: LayoutDashboard, active: true }
           ].map((item, idx) => (
             <button key={idx} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${item.active ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>
               <item.icon size={20} />
@@ -48,7 +47,6 @@ const DashboardPage: React.FC = () => {
       <main className="flex-1 overflow-y-auto p-10">
         <header className="mb-10 flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-bold gradient-text">System Intelligence</h1>
             <p className="text-slate-400 mt-2">Real-time performance metrics and engagement data.</p>
           </div>
           <button 

@@ -95,7 +95,7 @@ const AnalyticsDashboard: React.FC = () => {
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className="backdrop-blur-xl bg-white/5 border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-all group">
+            <div key={idx} className="glass-card p-6 rounded-2xl hover:bg-white/10 transition-all group hover:-translate-y-1 hover:shadow-blue-500/10 hover:shadow-2xl">
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
                   <Icon size={24} />
@@ -109,9 +109,9 @@ const AnalyticsDashboard: React.FC = () => {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {/* Mock Chart Area 1 */}
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 p-6 rounded-3xl h-64 flex flex-col">
+        <div className="glass-card p-6 rounded-3xl h-64 flex flex-col transition-all hover:shadow-blue-500/10 hover:shadow-2xl hover:-translate-y-1">
           <h3 className="text-lg font-bold text-white mb-6">Traffic Overview</h3>
           <div className="flex-1 flex items-end gap-2 px-2">
             {[40, 70, 45, 90, 65, 80, 55, 95, 75, 60, 85, 50].map((h, i) => (
@@ -129,7 +129,7 @@ const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Mock Chart Area 2 */}
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 p-6 rounded-3xl h-64 flex flex-col">
+        <div className="glass-card p-6 rounded-3xl h-64 flex flex-col transition-all hover:shadow-blue-500/10 hover:shadow-2xl hover:-translate-y-1">
           <h3 className="text-lg font-bold text-white mb-6">Engagement by CTA</h3>
           <div className="space-y-4 flex-1 flex flex-col justify-center">
             {[

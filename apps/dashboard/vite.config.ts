@@ -9,11 +9,11 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    port: 8082,
+    port: 8003,
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8083',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false,
       }
@@ -22,7 +22,7 @@ export default defineConfig({
   preview: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8083',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false,
       }

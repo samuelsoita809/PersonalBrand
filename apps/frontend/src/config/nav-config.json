@@ -1,5 +1,7 @@
 {
   "homeRoute": "/",
+  "dashboardRoute": "/dashboard",
+  "aboutRoute": "/about",
   "logo": {
     "text": "S",
     "fullName": "Samuel Soita",

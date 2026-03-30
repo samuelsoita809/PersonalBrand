@@ -24,6 +24,15 @@
         },
         "lint": {
             "outputs": []
+        },
+        "db:push": {
+            "cache": false
+        },
+        "test:e2e": {
+            "dependsOn": [
+                "build"
+            ],
+            "outputs": []
         }
     }
 }

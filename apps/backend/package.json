@@ -8,6 +8,7 @@
     "test": "vitest run",
     "dev": "node src/index.js",
     "start": "node src/index.js",
+    "db:push": "drizzle-kit push",
     "lint": "eslint ."
   },
   "keywords": [],

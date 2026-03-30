@@ -1,0 +1,85 @@
+name: CI Workflow
+
+on:
+  push:
+    branches: [ main, development, slice-15 ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Run Lint
+        run: npm run lint
+
+  test-unit-integration:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: brand_dev
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build Shared Package
+        run: npm run build --filter=@monorepo/shared
+
+      - name: Setup Database Schema
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/brand_dev
+        run: npm run db:push --filter=backend
+
+      - name: Run Tests
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/brand_dev
+          JWT_SECRET: test-secret-key-123
+        run: npm run test
+
+  test-e2e:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: [test-unit-integration] # E2E depends on unit tests passing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Start Servers & Run E2E
+        run: npm run test:e2e --filter=frontend
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/brand_dev
+          JWT_SECRET: test-secret-key-123

@@ -11,7 +11,8 @@ export const configureSecurity = (app) => {
                 "script-src": ["'self'", "'unsafe-inline'", "https://vercel.live", "https://*.vercel.app"],
                 "img-src": ["'self'", "data:", "https://*"],
                 "connect-src": ["'self'", "https://*", "wss://*", "http://localhost:*", "http://127.0.0.1:*"],
-                "frame-src": ["'self'", "https://vercel.live"],
+                "frame-src": ["'self'", "https://vercel.live", "http://localhost:*", "http://127.0.0.1:*"],
+                "frame-ancestors": ["'self'", "http://localhost:*", "http://127.0.0.1:*"],
             },
         },
     }));

@@ -47,4 +47,39 @@ describe('Analytics API', () => {
       expect(res.statusCode).toBe(401);
     });
   });
+
+  describe('GET /api/v1/analytics/page-views', () => {
+    it('should return 401 without token', async () => {
+      const res = await request(app).get('/api/v1/analytics/page-views');
+      expect(res.statusCode).toBe(401);
+    });
+
+    it('should return 403 for non-admin users', async () => {
+      // Mock a non-admin token
+      const { authService } = await import('../src/services/auth.js');
+      const token = await authService.generateToken({ id: 'user1', role: 'user' });
+      
+      const res = await request(app)
+        .get('/api/v1/analytics/page-views')
+        .set('Authorization', `Bearer ${token}`);
+      
+      expect(res.statusCode).toBe(403);
+    });
+
+    it('should return stats for admin users', async () => {
+      // Mock an admin token
+      const { authService } = await import('../src/services/auth.js');
+      const token = await authService.generateToken({ id: 'admin1', role: 'admin' });
+      
+      const res = await request(app)
+        .get('/api/v1/analytics/page-views')
+        .set('Authorization', `Bearer ${token}`);
+      
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('totalViews');
+      expect(res.body).toHaveProperty('uniqueViews');
+      expect(res.body).toHaveProperty('trends');
+      expect(Array.isArray(res.body.trends)).toBe(true);
+    });
+  });
 });

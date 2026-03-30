@@ -1,75 +1,123 @@
 import React, { useState } from 'react';
 import DynamicRenderer from '../components/DynamicRenderer';
-import { LayoutDashboard, Menu, X } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  Menu, 
+  X, 
+  BarChart2, 
+  ChevronDown, 
+  ChevronUp, 
+  PieChart 
+} from 'lucide-react';
 
 export interface DashboardSection {
-  id: number;
+  id: string;
   componentType: string;
   title: string;
+  description: string;
   props?: Record<string, unknown>;
 }
 
-const DASHBOARD_SECTIONS: DashboardSection[] = [
-  {
-    id: 1,
+const ALL_SECTIONS: Record<string, DashboardSection> = {
+  overview: {
+    id: "overview",
     componentType: "AnalyticsDashboard",
-    title: "Admin Engagement Analytics",
+    title: "Engagement Overview",
+    description: "Real-time performance metrics and engagement data.",
+    props: {}
+  },
+  page_views: {
+    id: "page_views",
+    componentType: "PageViewsAnalytics",
+    title: "Page Views Analytics",
+    description: "Detailed breakdown of page traffic, trends, and user devices.",
     props: {}
   }
-];
+};
 
 const DashboardPage: React.FC = () => {
-  const [sections] = useState<DashboardSection[]>(DASHBOARD_SECTIONS);
+  const [activeSectionId, setActiveSectionId] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [analyticsOpen, setAnalyticsOpen] = useState(true);
+
+  const activeSection = ALL_SECTIONS[activeSectionId] || ALL_SECTIONS.overview;
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background text-slate-200">
       {/* Sidebar */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white/5 border-r border-white/10 transition-all duration-300 flex flex-col`}>
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white/[0.02] border-r border-white/10 transition-all duration-300 flex flex-col z-20`}>
         <div className="p-6 flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-lg flex items-center justify-center font-bold">S</div>
-          {sidebarOpen && <span className="font-bold tracking-tight">Admin Console</span>}
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/20">S</div>
+          {sidebarOpen && <span className="font-bold tracking-tight text-white">Admin Console</span>}
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-2">
-          {[
-            { name: 'Dashboard', icon: LayoutDashboard, active: true }
-          ].map((item, idx) => (
-            <button key={idx} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${item.active ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>
-              <item.icon size={20} />
-              {sidebarOpen && <span className="font-medium">{item.name}</span>}
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
+          {/* Main Dashboard Link */}
+          <button 
+            onClick={() => setActiveSectionId('overview')}
+            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${activeSectionId === 'overview' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-sm' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+          >
+            <LayoutDashboard size={20} />
+            {sidebarOpen && <span className="font-medium">Dashboard</span>}
+          </button>
+
+          {/* Analytics Menu Group */}
+          <div className="space-y-1">
+            <button 
+              onClick={() => sidebarOpen && setAnalyticsOpen(!analyticsOpen)}
+              className={`w-full flex items-center justify-between p-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all`}
+            >
+              <div className="flex items-center gap-3">
+                <BarChart2 size={20} />
+                {sidebarOpen && <span className="font-medium">Analytics</span>}
+              </div>
+              {sidebarOpen && (analyticsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
             </button>
-          ))}
+
+            {sidebarOpen && analyticsOpen && (
+              <div className="pl-9 space-y-1 animate-in slide-in-from-top-2 duration-200">
+                <button 
+                  onClick={() => setActiveSectionId('page_views')}
+                  className={`w-full flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-all ${activeSectionId === 'page_views' ? 'text-blue-400 bg-blue-500/5' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <PieChart size={14} />
+                  Page Views
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-10">
-        <header className="mb-10 flex justify-between items-center">
-          <div>
-            <p className="text-slate-400 mt-2">Real-time performance metrics and engagement data.</p>
-          </div>
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 glass-card rounded-xl text-slate-400 hover:text-white"
-          >
-            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </header>
-
-        <div className="grid grid-cols-1 gap-8">
-          {sections.map((section) => (
-            <section key={section.id}>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                <h2 className="text-xl font-bold tracking-tight">{section.title}</h2>
+      <main className="flex-1 overflow-y-auto bg-[#0a0a0c] relative">
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
+        
+        <div className="p-10 relative z-10">
+          <header className="mb-10 flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest bg-blue-500/10 px-2 py-0.5 rounded">Admin</span>
+                <span className="text-[10px] text-slate-600">/</span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest">{activeSectionId.replace('_', ' ')}</span>
               </div>
-              <DynamicRenderer
-                componentName={section.componentType}
-                props={section.props}
-              />
-            </section>
-          ))}
+              <h1 className="text-3xl font-bold text-white tracking-tight">{activeSection.title}</h1>
+              <p className="text-slate-400 mt-2 text-sm">{activeSection.description}</p>
+            </div>
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-3 bg-white/5 border border-white/10 rounded-2xl text-slate-400 hover:text-white hover:bg-white/10 transition-all shadow-xl"
+            >
+              {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </header>
+
+          <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <DynamicRenderer
+              componentName={activeSection.componentType}
+              props={activeSection.props}
+            />
+          </section>
         </div>
       </main>
     </div>

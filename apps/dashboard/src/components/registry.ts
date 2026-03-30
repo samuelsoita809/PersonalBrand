@@ -7,4 +7,5 @@ export const componentRegistry: Record<string, React.LazyExoticComponent<React.C
   Bookings: lazy(() => import('./placeholder/index').then(m => ({ default: m.Bookings }))),
   Feedback: lazy(() => import('./placeholder/index').then(m => ({ default: m.Feedback }))),
   Finances: lazy(() => import('./placeholder/index').then(m => ({ default: m.Finances }))),
+  PageViewsAnalytics: lazy(() => import('./PageViewsAnalytics')),
 };

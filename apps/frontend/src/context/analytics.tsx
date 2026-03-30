@@ -14,8 +14,17 @@ const getSessionId = () => {
   return sid;
 };
 
+const getDeviceType = () => {
+    if (typeof window === 'undefined') return 'unknown';
+    const width = window.innerWidth;
+    if (width < 768) return 'Mobile';
+    if (width < 1024) return 'Tablet';
+    return 'Desktop';
+};
+
 export const useAnalytics = () => {
   const sessionId = useRef(getSessionId());
+  const deviceType = useRef(getDeviceType());
 
   const trackEvent = useCallback((eventName: string, data?: any) => {
     logger.info(`Tracking Event: ${eventName}`, { sid: sessionId.current, ...data });
@@ -29,8 +38,11 @@ export const useAnalytics = () => {
         metadata: {
           ...data,
           session_id: sessionId.current,
+          device_type: deviceType.current,
           url: window.location.href,
+          path: window.location.pathname,
           timestamp: new Date().toISOString(),
+          screen_resolution: typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : 'unknown',
         }
       })
     }).catch(err => logger.error('Failed to send analytics to backend', err));

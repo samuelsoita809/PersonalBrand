@@ -113,6 +113,109 @@ class AnalyticsService {
             return [];
         }
     }
+
+    /**
+     * Aggregates page view statistics with filtering
+     * @param {number} days - Date range in days
+     * @param {string} pageFilter - Filter by page name/URL
+     * @param {string} deviceFilter - Filter by device type
+     */
+    async getPageViewsStats(days = 7, pageFilter = null, deviceFilter = null) {
+        try {
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - days);
+
+            // Fetch all page_view events within range
+            // In a production app, we would use SQL aggregations for performance
+            const allEvents = await db.db.select().from(schema.analytics_events);
+            
+            const pageViews = allEvents.filter(e => 
+                e.event_name === 'page_view' && 
+                e.createdAt && e.createdAt >= cutoff
+            );
+
+            // Apply filters on metadata
+            const filtered = pageViews.filter(e => {
+                const meta = e.metadata || {};
+                const matchesPage = !pageFilter || meta.page_name === pageFilter || meta.url?.includes(pageFilter);
+                const matchesDevice = !deviceFilter || meta.device_type === deviceFilter;
+                return matchesPage && matchesDevice;
+            });
+
+            // Calculate KPIs
+            const totalViews = filtered.length;
+            const uniqueSessions = new Set(filtered.map(e => e.metadata?.session_id).filter(Boolean));
+            const uniqueViews = uniqueSessions.size;
+
+            // Group by Page
+            const pageMap = {};
+            filtered.forEach(e => {
+                const name = e.metadata?.page_name || e.metadata?.url || 'Unknown';
+                pageMap[name] = (pageMap[name] || 0) + 1;
+            });
+            const topPages = Object.entries(pageMap)
+                .map(([name, views]) => ({ name, views }))
+                .sort((a, b) => b.views - a.views)
+                .slice(0, 10);
+
+            // Group by Device
+            const deviceMap = {};
+            filtered.forEach(e => {
+                const device = e.metadata?.device_type || 'Desktop'; // Default
+                deviceMap[device] = (deviceMap[device] || 0) + 1;
+            });
+            const devices = Object.entries(deviceMap).map(([name, value]) => ({ name, value }));
+
+            // Time Series (Trends)
+            const grouped = {};
+            for (let i = 0; i < days; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                grouped[dateStr] = { date: dateStr, views: 0, unique: 0 };
+            }
+
+            const uniquePerDay = {}; // date -> Set(session_id)
+
+            filtered.forEach(e => {
+                const dateStr = e.createdAt.toISOString().split('T')[0];
+                if (grouped[dateStr]) {
+                    grouped[dateStr].views++;
+                    
+                    if (!uniquePerDay[dateStr]) uniquePerDay[dateStr] = new Set();
+                    if (e.metadata?.session_id) {
+                        uniquePerDay[dateStr].add(e.metadata.session_id);
+                    }
+                }
+            });
+
+            Object.keys(grouped).forEach(dateStr => {
+                grouped[dateStr].unique = uniquePerDay[dateStr]?.size || 0;
+            });
+
+            const trends = Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
+
+            return {
+                totalViews,
+                uniqueViews,
+                topPages,
+                devices,
+                trends,
+                isReal: true
+            };
+        } catch (error) {
+            logger.error('Failed to get page view stats:', error);
+            return {
+                totalViews: 0,
+                uniqueViews: 0,
+                topPages: [],
+                devices: [],
+                trends: [],
+                isReal: false,
+                error: error.message
+            };
+        }
+    }
 }
 
 export const analytics = new AnalyticsService();

@@ -184,6 +184,28 @@ app.get("/api/v1/analytics/summary", authenticateToken, async (req, res) => {
 });
 
 /**
+ * Page Views Analytics
+ * Detailed breakdown of page traffic.
+ */
+app.get("/api/v1/analytics/page-views", authenticateToken, async (req, res) => {
+    if (req.user?.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
+
+    const { days, page, device } = req.query;
+    
+    try {
+        const stats = await analytics.getPageViewsStats(
+            days ? parseInt(days) : 7,
+            page,
+            device
+        );
+        res.status(200).json(stats);
+    } catch (error) {
+        logger.error('Failed to fetch page views analytics:', error);
+        res.status(500).json({ error: "Failed to fetch page views analytics" });
+    }
+});
+
+/**
  * Analytics Time Series
  * Provides day-by-day stats for the dashboard charts.
  */
@@ -223,7 +245,7 @@ app.use((err, req, res, _next) => {
 });
 
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8083;
 
 if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
     app.listen(PORT, () => logger.info(`Backend running on port ${PORT}`));

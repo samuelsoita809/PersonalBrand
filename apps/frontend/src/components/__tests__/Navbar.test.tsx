@@ -31,7 +31,7 @@ describe('Navbar Component (Slice 1)', () => {
     (analytics.useAnalytics as Mock).mockReturnValue({ trackEvent: mockTrackEvent });
     
     render(<Navbar />);
-    const logoLink = screen.getByRole('link');
+    const logoLink = screen.getByRole('link', { name: /Go to homepage/i });
     fireEvent.click(logoLink);
     
     expect(mockTrackEvent).toHaveBeenCalledWith('navbar_logo_click', expect.anything());

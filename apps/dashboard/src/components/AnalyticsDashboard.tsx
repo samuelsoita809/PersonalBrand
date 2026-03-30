@@ -1,23 +1,42 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { BarChart3, MousePointer2, ExternalLink, Users, RefreshCcw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { createLogger } from '@monorepo/shared';
 
 const logger = createLogger('AnalyticsDashboard');
 
+interface StatItem {
+  label: string;
+  value: string | number;
+  icon: React.ElementType;
+  color: string;
+  bg: string;
+}
+
+interface TimeSeriesItem {
+  date: string;
+  views: number;
+}
+
+interface EventHistoryItem {
+  event_name: string;
+  createdAt: string;
+  context: string;
+  metadata?: Record<string, unknown>;
+}
+
 const AnalyticsDashboard: React.FC = () => {
   const { token, logout } = useAuth();
-  const [stats, setStats] = useState<any[]>([]);
-  const [timeSeries, setTimeSeries] = useState<any[]>([]);
-  const [history, setHistory] = useState<any[]>([]);
+  const [stats, setStats] = useState<StatItem[]>([]);
+  const [timeSeries, setTimeSeries] = useState<TimeSeriesItem[]>([]);
+  const [history, setHistory] = useState<EventHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dbError, setDbError] = useState<string | null>(null);
 
   const [isReal, setIsReal] = useState(true);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     // Only show loader on initial fetch
     if (stats.length === 0) setLoading(true);
     
@@ -61,22 +80,22 @@ const AnalyticsDashboard: React.FC = () => {
       setIsReal(summaryData.isReal ?? true);
       setDbError(summaryData.error || null);
       setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching analytics:', err);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      logger.error('Error fetching analytics:', errorMessage);
       // Don't show full screen error if we already have data
-      if (stats.length === 0) setError(err.message);
+      if (stats.length === 0) setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, logout, stats.length]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchStats();
     // Real-time polling every 10 seconds (as per live monitoring requirement)
     const interval = setInterval(fetchStats, 10000);
     return () => clearInterval(interval);
-  }, [token]);
+  }, [fetchStats]);
 
   if (loading && stats.length === 0) {
     return (

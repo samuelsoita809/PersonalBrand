@@ -2,8 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../src/index';
 
-// We'll use a real-ish test for the events endpoint if possible, 
-// but we might need to mock the database service.
 describe('Analytics API', () => {
   describe('POST /api/v1/analytics/events', () => {
     it('should track a page_view event', async () => {

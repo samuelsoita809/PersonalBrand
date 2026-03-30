@@ -37,7 +37,7 @@ jobs:
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5
+          --health-retries 10
 
     steps:
       - uses: actions/checkout@v4
@@ -54,12 +54,14 @@ jobs:
       - name: Setup Database Schema
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/brand_dev
+          NODE_ENV: test
         run: npm run db:push --filter=backend
 
       - name: Run Tests
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/brand_dev
           JWT_SECRET: test-secret-key-123
+          NODE_ENV: test
         run: npm run test
 
   test-e2e:
@@ -83,3 +85,4 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/brand_dev
           JWT_SECRET: test-secret-key-123
+          NODE_ENV: test

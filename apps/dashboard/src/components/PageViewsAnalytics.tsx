@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   Users, 
   Smartphone, 
@@ -36,7 +36,7 @@ const PageViewsAnalytics: React.FC = () => {
   const [deviceFilter, setDeviceFilter] = useState('');
   const [pageFilter, setPageFilter] = useState('');
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     setLoading(true);
     try {
       const query = new URLSearchParams({
@@ -54,17 +54,18 @@ const PageViewsAnalytics: React.FC = () => {
       const data = await response.json();
       setStats(data);
       setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching stats:', err);
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      logger.error('Error fetching stats:', errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  };
+  }, [days, deviceFilter, pageFilter, token]);
 
   useEffect(() => {
     fetchStats();
-  }, [days, deviceFilter, pageFilter, token]);
+  }, [fetchStats]);
 
   if (loading && !stats) {
     return (

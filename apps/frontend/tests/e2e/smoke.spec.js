@@ -10,9 +10,8 @@ test('Dashboard loads dynamic components', async ({ page }) => {
   // Verify main title or some key element from a card component
   await expect(page.locator('body')).toContainText('Samuel Soita');
 
-  // Navigate to dashboard
-  await page.click('text=Dashboard');
-  await expect(page).toHaveURL(/.*\/dashboard/);
+  // Navigate to dashboard via URL since the navbar link was removed
+  await page.goto('/dashboard');
   
   // Check if a card is rendered
   const card = page.locator('.glass-card').first();

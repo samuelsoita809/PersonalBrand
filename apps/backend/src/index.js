@@ -1,6 +1,5 @@
 import express from "express";
 import { createLogger, EVENTS, VERSION } from "@monorepo/shared";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import crypto from "crypto";
 
@@ -57,7 +56,7 @@ app.post("/api/v1/auth/login", async (req, res) => {
         const token = await authService.login(username, password);
         logger.info(`Successful login for user: ${username}`);
         res.status(200).json({ token });
-    } catch (error) {
+    } catch {
         logger.warn(`Failed login attempt for user: ${username}`);
         res.status(401).json({ error: "Invalid credentials" });
     }
@@ -215,7 +214,7 @@ app.get("/api/v1/analytics/timeseries", authenticateToken, async (req, res) => {
     try {
         const series = await analytics.getTimeSeries(7);
         res.status(200).json(series);
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "Failed to fetch time series" });
     }
 });
@@ -230,13 +229,14 @@ app.get("/api/v1/analytics/history", authenticateToken, async (req, res) => {
     try {
         const events = await analytics.getRecentEvents(20);
         res.status(200).json(events);
-    } catch (error) {
+    } catch {
         res.status(500).json({ error: "Failed to fetch history" });
     }
 });
 
 // Global Error Handler
-app.use((err, req, res, _next) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, _req, res, _next) => {
     logger.error('Unhandled Exception:', err);
     res.status(500).json({ 
         error: "Internal Server Error", 

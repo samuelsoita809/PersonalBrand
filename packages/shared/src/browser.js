@@ -14,7 +14,7 @@ class FeatureFlagService {
                 this.flags.ENABLE_AI_INSIGHTS = import.meta.env.VITE_ENABLE_AI_INSIGHTS === 'true' || true;
                 this.flags.ENABLE_NEW_DASHBOARD = import.meta.env.VITE_ENABLE_NEW_DASHBOARD === 'true' || false;
             }
-        } catch (e) {
+        } catch {
             // Ignore context errors
         }
     }

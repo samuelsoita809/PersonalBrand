@@ -20,18 +20,21 @@
             "dependsOn": [
                 "build"
             ],
+            "env": ["DATABASE_URL", "DIRECT_URL"],
             "outputs": []
         },
         "lint": {
             "outputs": []
         },
         "db:push": {
-            "cache": false
+            "cache": false,
+            "env": ["DATABASE_URL", "DIRECT_URL"]
         },
         "test:e2e": {
             "dependsOn": [
                 "build"
             ],
+            "env": ["DATABASE_URL", "DIRECT_URL"],
             "outputs": []
         }
     }

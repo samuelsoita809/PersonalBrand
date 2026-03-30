@@ -11,6 +11,6 @@ test('Dashboard loads dynamic components', async ({ page }) => {
   await expect(page.url()).toContain('/dashboard');
   
   // Check if a card is rendered
-  const card = page.locator('.MuiCard-root').first();
+  const card = page.locator('.glass-card').first();
   await expect(card).toBeVisible();
 });

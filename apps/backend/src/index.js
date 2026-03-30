@@ -245,7 +245,7 @@ app.use((err, _req, res, _next) => {
 });
 
 
-const PORT = process.env.PORT || 8083;
+const PORT = process.env.PORT || 8000;
 
 if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
     app.listen(PORT, () => logger.info(`Backend running on port ${PORT}`));

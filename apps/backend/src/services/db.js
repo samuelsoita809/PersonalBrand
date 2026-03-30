@@ -29,15 +29,23 @@ export const profileSchema = z.object({
 class DataService {
     constructor() {
         const connectionString = process.env.DATABASE_URL || process.env.DIRECT_URL;
+        
         if (!connectionString) {
             logger.warn('DATABASE_URL is missing. Please check Vercel environment variables.');
+            // Provide a minimal stub for local/test runs without a live DB
+            this.db = {
+                insert: () => ({ values: () => ({ onConflictDoUpdate: () => Promise.resolve() }), onConflictDoUpdate: () => Promise.resolve() }),
+                query: { profiles: { findFirst: () => Promise.resolve(null) } },
+                select: () => ({ from: () => Promise.resolve([]) }),
+            };
+        } else {
+            const client = postgres(connectionString, {
+                ssl: 'require',
+                connect_timeout: 10,
+                prepare: false // Required for pgbouncer pooling
+            });
+            this.db = drizzle(client, { schema });
         }
-        const client = postgres(connectionString, {
-            ssl: 'require',
-            connect_timeout: 10,
-            prepare: false // Required for pgbouncer pooling
-        });
-        this.db = drizzle(client, { schema });
         this.profileId = 'samuel-soita';
     }
 

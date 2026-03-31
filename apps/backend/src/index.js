@@ -130,6 +130,33 @@ app.post("/api/v1/analytics/events", async (req, res) => {
 });
 
 /**
+ * Page View Tracking
+ * Specialized endpoint for high-volume page view events.
+ */
+app.post("/api/v1/events/page-view", async (req, res) => {
+    const { url, path, session_id, user_id, device_type, metadata } = req.body;
+    
+    if (!url || !session_id) {
+        return res.status(400).json({ error: "URL and session_id are required" });
+    }
+
+    try {
+        await analytics.trackPageView({
+            url,
+            path: path || new URL(url).pathname,
+            session_id,
+            user_id,
+            device_type: device_type || 'Desktop',
+            metadata: metadata || {}
+        });
+        res.status(204).send();
+    } catch (error) {
+        logger.error('Failed to record page view:', error);
+        res.status(500).json({ error: "Failed to record page view" });
+    }
+});
+
+/**
  * Hero Lead Submission
  * Public endpoint to receive modal form submissions.
  */

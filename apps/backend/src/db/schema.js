@@ -23,3 +23,14 @@ export const analytics_events = pgTable('analytics_events', {
     message: text('message'),
     createdAt: timestamp('created_at').defaultNow(),
 });
+
+export const page_views = pgTable('page_views', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    page_url: text('page_url').notNull(),
+    page_path: varchar('page_path', { length: 255 }).notNull(),
+    session_id: varchar('session_id', { length: 255 }).notNull(),
+    user_id: varchar('user_id', { length: 255 }),
+    device_type: varchar('device_type', { length: 50 }),
+    timestamp: timestamp('timestamp').defaultNow(),
+    metadata: jsonb('metadata'),
+});

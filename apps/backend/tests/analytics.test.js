@@ -38,6 +38,67 @@ describe('Analytics API', () => {
       expect(res.statusCode).toBe(204);
     });
   });
+  
+  describe('POST /api/v1/events/page-view', () => {
+    it('should record a valid page view and reflect in stats', async () => {
+      // 1. Get initial stats
+      const { authService } = await import('../src/services/auth.js');
+      const adminToken = await authService.generateToken({ id: 'admin-final', role: 'admin' });
+      
+      const initialRes = await request(app)
+        .get('/api/v1/analytics/page-views')
+        .set('Authorization', `Bearer ${adminToken}`);
+      
+      const initialTotal = initialRes.body.totalViews || 0;
+
+      // 2. Post new page view
+      const payload = {
+        url: 'http://localhost:8001/final-test-page',
+        path: '/final-test-page',
+        session_id: `session-${Date.now()}`,
+        device_type: 'Desktop',
+        metadata: { referrer: 'direct-test' }
+      };
+
+      const res = await request(app)
+        .post('/api/v1/events/page-view')
+        .send(payload);
+
+      expect(res.statusCode).toBe(204);
+
+      // 3. Verify stats incremented
+      const finalRes = await request(app)
+        .get('/api/v1/analytics/page-views')
+        .set('Authorization', `Bearer ${adminToken}`);
+      
+      expect(finalRes.body.totalViews).toBe(initialTotal + 1);
+    });
+
+    it('should return 400 if url is missing', async () => {
+      const payload = {
+        session_id: 'test-session-456'
+      };
+
+      const res = await request(app)
+        .post('/api/v1/events/page-view')
+        .send(payload);
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe("URL and session_id are required");
+    });
+
+    it('should return 400 if session_id is missing', async () => {
+      const payload = {
+        url: 'http://localhost:8001/about'
+      };
+
+      const res = await request(app)
+        .post('/api/v1/events/page-view')
+        .send(payload);
+
+      expect(res.statusCode).toBe(400);
+    });
+  });
 
   describe('GET /api/v1/analytics/summary', () => {
     it('should return 401 without token', async () => {

@@ -9,10 +9,11 @@ import Badge from './Badge';
 const HeroSection: React.FC = () => {
   const { heading, subheading, paragraph, profile, badges = [] } = heroConfig;
   const { trackEvent } = useAnalytics();
+  const ctaTimeoutRef = React.useRef<number | undefined>(undefined);
 
   // Unified Tracking
   useEffect(() => {
-    // Hero Impression
+    // ... rest of useEffect ...
     trackEvent('hero_view', {
       heading,
       timestamp: new Date().toISOString(),
@@ -37,11 +38,20 @@ const HeroSection: React.FC = () => {
       });
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (ctaTimeoutRef.current) window.clearTimeout(ctaTimeoutRef.current);
+    };
   }, [trackEvent, heading]);
 
   const handleCtaClick = (id: string, label: string) => {
-    trackEvent('cta_click', { ctaId: id, ctaLabel: label });
+    if (ctaTimeoutRef.current) window.clearTimeout(ctaTimeoutRef.current);
+    
+    ctaTimeoutRef.current = window.setTimeout(() => {
+      const eventName = id === 'work_with_me' ? 'cta_click_work_with_me' : 'cta_click';
+      trackEvent(eventName, { ctaId: id, ctaLabel: label });
+      ctaTimeoutRef.current = undefined;
+    }, 300);
   };
 
   return (

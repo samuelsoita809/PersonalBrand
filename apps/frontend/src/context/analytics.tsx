@@ -86,13 +86,14 @@ export const useAnalytics = () => {
     }
 
     const isPageView = eventName === 'page_view';
-    const isCtaClick = eventName === 'cta_click';
+    const isCtaClick = eventName === 'cta_click' || eventName === 'cta_click_work_with_me';
     
     let endpoint = '/api/v1/analytics/events';
     if (isPageView) endpoint = '/api/v1/events/page-view';
     if (isCtaClick) endpoint = '/api/v1/events/cta-click';
     
     const baseMetadata = {
+      event_name: eventName,
       ...data,
       session_id: sid,
       device_type: getDeviceTypeCached(),

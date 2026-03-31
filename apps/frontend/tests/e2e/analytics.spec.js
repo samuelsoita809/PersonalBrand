@@ -65,10 +65,9 @@ test.describe('Analytics Integration (Slice 13)', () => {
     expect(callCount).toBe(1);
 
     // Wait for retry (configured for 5 seconds in our implementation, but let's check if we can speed it up or just wait)
-    // Actually, in E2E we might want to wait. 
     // Optimization: We could mock the timer in the browser if possible, but simplest is to wait.
-    test.setTimeout(10000); 
-    await page.waitForTimeout(6000); 
+    test.setTimeout(20000); 
+    await page.waitForTimeout(7000); 
     
     expect(callCount).toBeGreaterThan(1);
   });

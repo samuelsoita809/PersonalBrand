@@ -86,7 +86,11 @@ export const useAnalytics = () => {
     }
 
     const isPageView = eventName === 'page_view';
-    const endpoint = isPageView ? '/api/v1/events/page-view' : '/api/v1/analytics/events';
+    const isCtaClick = eventName === 'cta_click';
+    
+    let endpoint = '/api/v1/analytics/events';
+    if (isPageView) endpoint = '/api/v1/events/page-view';
+    if (isCtaClick) endpoint = '/api/v1/events/cta-click';
     
     const baseMetadata = {
       ...data,
@@ -98,18 +102,30 @@ export const useAnalytics = () => {
       screen_resolution: typeof window !== 'undefined' ? `${window.screen.width}x${window.screen.height}` : 'unknown',
     };
 
-    const payload = isPageView 
-      ? {
-          url: baseMetadata.url,
-          path: baseMetadata.path,
-          session_id: baseMetadata.session_id,
-          device_type: baseMetadata.device_type,
-          metadata: baseMetadata
-        }
-      : {
-          event_name: eventName,
-          metadata: baseMetadata
-        };
+    let payload: any;
+    if (isPageView) {
+      payload = {
+        url: baseMetadata.url,
+        path: baseMetadata.path,
+        session_id: baseMetadata.session_id,
+        device_type: baseMetadata.device_type,
+        metadata: baseMetadata
+      };
+    } else if (isCtaClick) {
+      payload = {
+        cta_name: data?.ctaLabel || data?.label || 'unknown',
+        cta_id: data?.ctaId || data?.id || 'unknown',
+        page_path: baseMetadata.path,
+        session_id: baseMetadata.session_id,
+        device_type: baseMetadata.device_type,
+        metadata: baseMetadata
+      };
+    } else {
+      payload = {
+        event_name: eventName,
+        metadata: baseMetadata
+      };
+    }
 
     // Send to backend
     fetch(endpoint, {

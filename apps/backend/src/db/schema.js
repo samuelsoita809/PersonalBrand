@@ -34,3 +34,14 @@ export const page_views = pgTable('page_views', {
     timestamp: timestamp('timestamp').defaultNow(),
     metadata: jsonb('metadata'),
 });
+
+export const cta_clicks = pgTable('cta_clicks', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    cta_name: varchar('cta_name', { length: 255 }).notNull(),
+    cta_id: varchar('cta_id', { length: 255 }).notNull(),
+    page_path: varchar('page_path', { length: 255 }).notNull(),
+    session_id: varchar('session_id', { length: 255 }).notNull(),
+    device_type: varchar('device_type', { length: 50 }),
+    timestamp: timestamp('timestamp').defaultNow(),
+    metadata: jsonb('metadata'),
+});

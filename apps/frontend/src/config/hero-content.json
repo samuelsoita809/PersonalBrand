@@ -17,5 +17,12 @@
     "10+ Projects Delivered",
     "3+ Industries Worked In",
     "80% Clients Return or Refer"
+  ],
+  "ctas": [
+    {
+      "id": "work_with_me",
+      "label": "Work with Me",
+      "type": "primary"
+    }
   ]
 }

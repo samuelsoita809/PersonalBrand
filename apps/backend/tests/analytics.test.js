@@ -141,4 +141,36 @@ describe('Analytics API', () => {
       expect(Array.isArray(res.body.trends)).toBe(true);
     });
   });
+
+  describe('POST /api/v1/events/cta-click', () => {
+    it('should record a valid CTA click', async () => {
+      const payload = {
+        cta_name: 'work_with_me',
+        cta_id: 'cta-123',
+        page_path: '/',
+        session_id: 'session-abc',
+        device_type: 'Desktop'
+      };
+      const res = await request(app)
+        .post('/api/v1/events/cta-click')
+        .send(payload);
+      
+      expect(res.statusCode).toBe(204);
+    });
+
+    it('should return 400 if cta_name is missing', async () => {
+      const res = await request(app)
+        .post('/api/v1/events/cta-click')
+        .send({ session_id: 'session-abc' });
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe("CTA name and session_id are required");
+    });
+
+    it('should return 400 if session_id is missing', async () => {
+      const res = await request(app)
+        .post('/api/v1/events/cta-click')
+        .send({ cta_name: 'work_with_me' });
+      expect(res.statusCode).toBe(400);
+    });
+  });
 });

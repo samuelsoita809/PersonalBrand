@@ -157,6 +157,33 @@ app.post("/api/v1/events/page-view", async (req, res) => {
 });
 
 /**
+ * CTA Click Tracking
+ * Specialized endpoint for tracking engagement with call-to-action buttons.
+ */
+app.post("/api/v1/events/cta-click", async (req, res) => {
+    const { cta_name, cta_id, page_path, session_id, device_type, metadata } = req.body;
+    
+    if (!cta_name || !session_id) {
+        return res.status(400).json({ error: "CTA name and session_id are required" });
+    }
+
+    try {
+        await analytics.trackCtaClick({
+            cta_name,
+            cta_id: cta_id || 'unknown',
+            page_path: page_path || '/',
+            session_id,
+            device_type: device_type || 'Desktop',
+            metadata: metadata || {}
+        });
+        res.status(204).send();
+    } catch (error) {
+        logger.error('Failed to record CTA click:', error);
+        res.status(500).json({ error: "Failed to record CTA click" });
+    }
+});
+
+/**
  * Hero Lead Submission
  * Public endpoint to receive modal form submissions.
  */

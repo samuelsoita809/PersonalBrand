@@ -55,6 +55,29 @@ class AnalyticsService {
         }
     }
 
+    /**
+     * Records a CTA click to the dedicated 'cta_clicks' table.
+     * @param {Object} data 
+     */
+    async trackCtaClick(data) {
+        try {
+            logger.info(`Tracking CTA click: ${data.cta_name}`, { sid: data.session_id });
+            
+            await db.db.insert(schema.cta_clicks).values({
+                id: crypto.randomUUID(),
+                cta_name: data.cta_name,
+                cta_id: data.cta_id,
+                page_path: data.page_path,
+                session_id: data.session_id,
+                device_type: data.device_type,
+                timestamp: new Date(),
+                metadata: data.metadata || {}
+            });
+        } catch (error) {
+            logger.error('Failed to track CTA click:', error);
+        }
+    }
+
     async getSummary() {
         try {
             logger.info('Fetching analytics summary stats');

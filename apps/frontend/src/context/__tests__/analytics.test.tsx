@@ -71,6 +71,20 @@ describe('useAnalytics Hook', () => {
     );
   });
 
+  it('routes cta_click events to the specialized endpoint', async () => {
+    const { result } = renderHook(() => useAnalytics());
+    
+    result.current.trackEvent('cta_click', { ctaId: 'work_with_me', ctaLabel: 'Work with Me' });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/v1/events/cta-click',
+      expect.objectContaining({
+        method: 'POST',
+        body: expect.stringContaining('"cta_name":"Work with Me"')
+      })
+    );
+  });
+
   it('routes other events to the standard analytics endpoint', async () => {
     const { result } = renderHook(() => useAnalytics());
     

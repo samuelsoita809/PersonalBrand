@@ -1,5 +1,10 @@
 {
   "events": {
+    "page_view": {
+      "description": "User views a page on the application",
+      "category": "navigation",
+      "required_params": ["timestamp", "path"]
+    },
     "hero_view": {
       "description": "Hero section visible above the fold",
       "category": "engagement",

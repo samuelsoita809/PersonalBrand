@@ -32,15 +32,39 @@ class AnalyticsService {
         }
     }
 
+    /**
+     * Records a page view to the dedicated 'page_views' table.
+     * @param {Object} data 
+     */
+    async trackPageView(data) {
+        try {
+            logger.info(`Tracking page view: ${data.url}`, { sid: data.session_id });
+            
+            await db.db.insert(schema.page_views).values({
+                id: crypto.randomUUID(),
+                page_url: data.url,
+                page_path: data.path,
+                session_id: data.session_id,
+                user_id: data.user_id,
+                device_type: data.device_type,
+                timestamp: new Date(),
+                metadata: data.metadata
+            });
+        } catch (error) {
+            logger.error('Failed to track page view:', error);
+        }
+    }
+
     async getSummary() {
         try {
             logger.info('Fetching analytics summary stats');
             const events = await db.db.select().from(schema.analytics_events);
+            const page_views = await db.db.select().from(schema.page_views);
             const leads = await db.db.select().from(schema.hero_leads);
             
             const stats = {
-                total_events: events.length,
-                page_views: events.filter(e => e.event_name === 'page_view').length,
+                total_events: events.length + page_views.length,
+                page_views: page_views.length,
                 cta_clicks: events.filter(e => e.event_name.startsWith('cta_')).length,
                 modal_opens: events.filter(e => e.event_name === 'modal_open').length,
                 leads: leads.length
@@ -74,7 +98,10 @@ class AnalyticsService {
             cutoff.setDate(cutoff.getDate() - days);
 
             const events = await db.db.select().from(schema.analytics_events);
-            const series = events.filter(e => e.createdAt && e.createdAt >= cutoff);
+            const pageViews = await db.db.select().from(schema.page_views);
+            
+            const event_series = events.filter(e => e.createdAt && e.createdAt >= cutoff);
+            const view_series = pageViews.filter(v => v.timestamp && v.timestamp >= cutoff);
             
             // Group by day
             const grouped = {};
@@ -85,11 +112,15 @@ class AnalyticsService {
                 grouped[dateStr] = { date: dateStr, views: 0, clicks: 0 };
             }
 
-            series.forEach(e => {
+            view_series.forEach(v => {
+                const dateStr = v.timestamp.toISOString().split('T')[0];
+                if (grouped[dateStr]) grouped[dateStr].views++;
+            });
+
+            event_series.forEach(e => {
                 if (e.createdAt && typeof e.createdAt.toISOString === 'function') {
                     const dateStr = e.createdAt.toISOString().split('T')[0];
                     if (grouped[dateStr]) {
-                        if (e.event_name === 'page_view') grouped[dateStr].views++;
                         if (e.event_name.startsWith('cta_')) grouped[dateStr].clicks++;
                     }
                 }
@@ -104,10 +135,38 @@ class AnalyticsService {
 
     async getRecentEvents(limit = 10) {
         try {
-            return await db.db.select()
+            // Fetch latest from both tables
+            const events = await db.db.select()
                 .from(schema.analytics_events)
                 .orderBy(db.db.desc(schema.analytics_events.createdAt))
-                .limit(limit);
+                .limit(50);
+            
+            const pageViews = await db.db.select()
+                .from(schema.page_views)
+                .orderBy(db.db.desc(schema.page_views.timestamp))
+                .limit(50);
+
+            // Transform page views to match event structure for the dashboard feed
+            const normalizedPageViews = pageViews.map(pv => ({
+                id: pv.id,
+                event_name: 'page_view',
+                metadata: {
+                    url: pv.page_url,
+                    path: pv.page_path,
+                    session_id: pv.session_id,
+                    device_type: pv.device_type,
+                    ...pv.metadata
+                },
+                context: 'frontend',
+                createdAt: pv.timestamp
+            }));
+
+            // Combine and sort
+            const combined = [...events, ...normalizedPageViews]
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                .slice(0, limit);
+
+            return combined;
         } catch (error) {
             logger.warn('Failed to fetch recent events, using empty list', error.message);
             return [];
@@ -125,20 +184,17 @@ class AnalyticsService {
             const cutoff = new Date();
             cutoff.setDate(cutoff.getDate() - days);
 
-            // Fetch all page_view events within range
-            // In a production app, we would use SQL aggregations for performance
-            const allEvents = await db.db.select().from(schema.analytics_events);
+            // Fetch all page view events within range
+            const allPageViews = await db.db.select().from(schema.page_views);
             
-            const pageViews = allEvents.filter(e => 
-                e.event_name === 'page_view' && 
-                e.createdAt && e.createdAt >= cutoff
+            const pageViewsInPeriod = allPageViews.filter(v => 
+                v.timestamp && v.timestamp >= cutoff
             );
 
-            // Apply filters on metadata
-            const filtered = pageViews.filter(e => {
-                const meta = e.metadata || {};
-                const matchesPage = !pageFilter || meta.page_name === pageFilter || meta.url?.includes(pageFilter);
-                const matchesDevice = !deviceFilter || meta.device_type === deviceFilter;
+            // Apply filters
+            const filtered = pageViewsInPeriod.filter(v => {
+                const matchesPage = !pageFilter || v.page_path === pageFilter || v.page_url?.includes(pageFilter);
+                const matchesDevice = !deviceFilter || v.device_type === deviceFilter;
                 return matchesPage && matchesDevice;
             });
 
@@ -177,14 +233,14 @@ class AnalyticsService {
 
             const uniquePerDay = {}; // date -> Set(session_id)
 
-            filtered.forEach(e => {
-                const dateStr = e.createdAt.toISOString().split('T')[0];
+            filtered.forEach(v => {
+                const dateStr = v.timestamp.toISOString().split('T')[0];
                 if (grouped[dateStr]) {
                     grouped[dateStr].views++;
                     
                     if (!uniquePerDay[dateStr]) uniquePerDay[dateStr] = new Set();
-                    if (e.metadata?.session_id) {
-                        uniquePerDay[dateStr].add(e.metadata.session_id);
+                    if (v.session_id) {
+                        uniquePerDay[dateStr].add(v.session_id);
                     }
                 }
             });

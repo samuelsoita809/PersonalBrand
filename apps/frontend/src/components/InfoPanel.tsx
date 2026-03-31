@@ -6,9 +6,12 @@ interface InfoPanelProps {
 }
 
 const InfoPanel: React.FC<InfoPanelProps> = ({ title, content }) => (
- <div className="bg-gray-100 p-6 rounded-lg shadow-md max-w-sm">
-   <h3 className="text-lg font-bold mb-2">{title}</h3>
-   <p className="text-gray-700">{content}</p>
+ <div className="glass-card p-6 rounded-2xl max-w-sm transition-all duration-300 hover:shadow-2xl hover:bg-white/10 group">
+   <div className="flex items-center gap-3 mb-4">
+     <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">i</div>
+     <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">{title}</h3>
+   </div>
+   <p className="text-slate-400 font-medium leading-relaxed">{content}</p>
  </div>
 );
 

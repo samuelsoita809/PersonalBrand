@@ -37,12 +37,33 @@ const ContactForm: React.FC = () => {
     }
   };
 
+  const textFieldSx = {
+    '& .MuiOutlinedInput-root': {
+      color: 'white',
+      backgroundColor: 'rgba(255,255,255,0.03)',
+      backdropFilter: 'blur(10px)',
+      borderRadius: '12px',
+      '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+      '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+      '&.Mui-focused fieldset': { borderColor: '#3b82f6', borderWidth: '2px' },
+    },
+    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.5)' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#3b82f6' },
+    '& .MuiFormHelperText-root': { color: '#f87171' },
+  };
+
   return (
-    <Paper elevation={3} sx={{ p: 4, maxWidth: 500, mx: 'auto', mt: 4 }}>
-      <Typography variant="h5" gutterBottom>
+    <div className="glass-card p-8 rounded-[2rem] max-w-lg mx-auto mt-8 relative overflow-hidden group shadow-2xl transition-all duration-500 hover:shadow-blue-500/10 hover:-translate-y-1">
+      <div className="absolute top-0 right-0 p-32 bg-blue-500/10 blur-[100px] rounded-full group-hover:bg-blue-500/20 transition-colors pointer-events-none" />
+      
+      <Typography variant="h4" gutterBottom sx={{ color: 'white', fontWeight: '800', position: 'relative' }}>
         Get in Touch
       </Typography>
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
+      <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.6)', mb: 4, position: 'relative' }}>
+        We'd love to hear from you. Drop us a message!
+      </Typography>
+
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ position: 'relative' }}>
         <TextField
           margin="normal"
           fullWidth
@@ -50,6 +71,7 @@ const ContactForm: React.FC = () => {
           {...register('name')}
           error={!!errors.name}
           helperText={errors.name?.message}
+          sx={textFieldSx}
         />
         <TextField
           margin="normal"
@@ -58,6 +80,7 @@ const ContactForm: React.FC = () => {
           {...register('email')}
           error={!!errors.email}
           helperText={errors.email?.message}
+          sx={textFieldSx}
         />
         <TextField
           margin="normal"
@@ -68,18 +91,29 @@ const ContactForm: React.FC = () => {
           {...register('message')}
           error={!!errors.message}
           helperText={errors.message?.message}
+          sx={textFieldSx}
         />
         <Button
           type="submit"
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2 }}
           disabled={isSubmitting}
+          sx={{ 
+            mt: 4, 
+            py: 1.5, 
+            borderRadius: '12px', 
+            fontWeight: 'bold', 
+            textTransform: 'none', 
+            fontSize: '1rem',
+            bgcolor: '#2563eb',
+            '&:hover': { bgcolor: '#1d4ed8' },
+            boxShadow: '0 8px 24px rgba(37, 99, 235, 0.4)'
+          }}
         >
           {isSubmitting ? 'Sending...' : 'Send Message'}
         </Button>
       </Box>
-    </Paper>
+    </div>
   );
 };
 

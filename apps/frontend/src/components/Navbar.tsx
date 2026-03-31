@@ -37,21 +37,7 @@ const Navbar: React.FC = () => {
             </span>
           </a>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center gap-8 border-l border-white/5 pl-12 h-10">
-            <a 
-              href={navConfig.aboutRoute} 
-              className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
-            >
-              About
-            </a>
-            <a 
-              href={navConfig.dashboardRoute} 
-              className="text-sm font-medium text-slate-400 hover:text-white transition-colors px-4 py-2 hover:bg-white/5 rounded-lg border border-transparent hover:border-white/10"
-            >
-              Dashboard
-            </a>
-          </div>
+          {/* Navigation Links removed as requested */}
         </div>
       </div>
     </nav>

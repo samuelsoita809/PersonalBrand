@@ -5,7 +5,7 @@ import crypto from "crypto";
 
 import { authenticateToken } from "./middleware/auth.js";
 
-import { db } from "./services/db.js";
+import { db, schema } from "./services/db.js";
 import { jobQueue } from "./services/jobs.js";
 import { analytics } from "./services/analytics.js";
 import { aiService } from "./services/ai.js";
@@ -196,7 +196,7 @@ app.post("/api/v1/hero/lead", async (req, res) => {
 
     try {
         const id = crypto.randomUUID();
-        await db.db.insert(db.schema.hero_leads).values({
+        await db.db.insert(schema.hero_leads).values({
             id,
             name,
             email,
@@ -213,6 +213,43 @@ app.post("/api/v1/hero/lead", async (req, res) => {
     } catch (error) {
         logger.error('Failed to record hero lead:', error);
         res.status(500).json({ error: "Failed to record lead" });
+    }
+});
+
+/**
+ * Project Request Submission (Slice 4)
+ * Multi-step form submission from the 'Deliver My Project' journey.
+ */
+app.post("/api/v1/project-requests", async (req, res) => {
+    const { name, email, project_type, selected_plan, description, metadata } = req.body;
+    
+    if (!name || !email || !project_type || !selected_plan || !description) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(schema.project_requests).values({
+            id,
+            name,
+            email,
+            project_type,
+            selected_plan,
+            description,
+            status: 'pending',
+            timestamp: new Date(),
+            metadata: metadata || {}
+        });
+        
+        logger.info(`New project request received: ${email} for ${selected_plan} plan`);
+        
+        // Mock notification for admin
+        logger.info(`[NOTIFICATION] New Project Request: ${name} (${selected_plan}) - ${project_type}`);
+        
+        res.status(201).json({ status: "success", requestId: id });
+    } catch (error) {
+        logger.error('Failed to record project request:', error);
+        res.status(500).json({ error: "Failed to process project request" });
     }
 });
 

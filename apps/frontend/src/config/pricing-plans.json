@@ -1,0 +1,60 @@
+{
+  "microValueLine": "From idea to live — done right, done fast.",
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter Plan",
+      "price": 150,
+      "delivery": "5–7 days",
+      "description": "Perfect for small project or MVP.",
+      "features": [
+        "1 Simple Project",
+        "Basic UI",
+        "Fast Delivery",
+        "Responsive Design"
+      ],
+      "keyResults": [
+        "3x Faster Delivery",
+        "25% Better Quality"
+      ]
+    },
+    {
+      "id": "growth",
+      "name": "Growth Plan",
+      "price": 400,
+      "delivery": "7–14 days",
+      "description": "Comprehensive build for businesses.",
+      "features": [
+        "Full Web/App Build",
+        "Custom Features",
+        "SEO Optimization",
+        "Priority Support"
+      ],
+      "popular": true,
+      "keyResults": [
+        "3x Faster Delivery",
+        "40% Fewer Delays",
+        "15%–40% ROI Growth"
+      ]
+    },
+    {
+      "id": "pro",
+      "name": "Pro Plan",
+      "price": 900,
+      "delivery": "14+ days",
+      "description": "Advanced systems with high-end integrations.",
+      "features": [
+        "Advanced System Build",
+        "Full Integrations",
+        "Performance Tuning",
+        "Lifetime Support"
+      ],
+      "keyResults": [
+        "3x Faster Delivery",
+        "40% Fewer Delays",
+        "25% Better Quality",
+        "15%–40% ROI Growth"
+      ]
+    }
+  ]
+}

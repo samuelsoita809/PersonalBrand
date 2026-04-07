@@ -55,7 +55,7 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-visible">
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10">
         
         {/* Left Column: Context-Rich Content */}
@@ -75,50 +75,26 @@ const HeroSection: React.FC = () => {
         {/* Right Column: Trust Anchor — padded wrapper keeps badges clear of the card */}
         <div className="lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200">
 
-          {/* Padded wrapper: padding = buffer between card and badge positions */}
-          <div className="relative py-14 px-10">
+          {/* Trust Anchor Wrapper — width matches card, absolute rows match diagram */}
+          <div className="relative w-fit flex flex-col items-center">
 
-            {/* ↖ Top-Left — 100+ People Helped */}
-            {badges[0] && (
-              <div className="absolute top-3 left-0 animate-in fade-in duration-700 delay-300">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
-                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[0]}</span>
-                </div>
-              </div>
-            )}
+            {/* Top Badges Row: Grid on mobile, absolute row on desktop */}
+            <div className="grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0">
+              {badges[0] && <Badge text={badges[0]} delay="delay-300" />}
+              {badges[2] && <Badge text={badges[2]} delay="delay-500" />}
+            </div>
 
-            {/* ↗ Top-Right — 3+ Industries Worked In */}
-            {badges[2] && (
-              <div className="absolute top-3 right-0 animate-in fade-in duration-700 delay-500">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
-                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[2]}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Profile Card — center anchor */}
+            {/* Profile Card — central anchor */}
             <ProfileCard 
               name={profile?.name} 
               image={profile?.image} 
             />
 
-            {/* ↙ Bottom-Left — 10+ Projects Delivered */}
-            {badges[1] && (
-              <div className="absolute bottom-3 left-0 animate-in fade-in duration-700 delay-700">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
-                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[1]}</span>
-                </div>
-              </div>
-            )}
-
-            {/* ↘ Bottom-Right — 80% Clients Return or Refer */}
-            {badges[3] && (
-              <div className="absolute bottom-3 right-0 animate-in fade-in duration-700 delay-1000">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default whitespace-nowrap">
-                  <span className="text-[10px] font-bold text-white/75 uppercase tracking-wider">{badges[3]}</span>
-                </div>
-              </div>
-            )}
+            {/* Bottom Badges Row: Grid on mobile, absolute row on desktop */}
+            <div className="grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0">
+              {badges[1] && <Badge text={badges[1]} delay="delay-700" />}
+              {badges[3] && <Badge text={badges[3]} delay="delay-1000" />}
+            </div>
 
           </div>
         </div>

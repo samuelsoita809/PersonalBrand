@@ -123,8 +123,18 @@ const AnalyticsDashboard: React.FC = () => {
             ))}
           </div>
           <div className="flex justify-between mt-4 text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
-            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
-            <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+            <span className="block">Jan</span>
+            <span className="hidden sm:block">Feb</span>
+            <span className="hidden md:block">Mar</span>
+            <span className="block">Apr</span>
+            <span className="hidden sm:block">May</span>
+            <span className="hidden md:block">Jun</span>
+            <span className="block">Jul</span>
+            <span className="hidden sm:block">Aug</span>
+            <span className="hidden md:block">Sep</span>
+            <span className="block">Oct</span>
+            <span className="hidden sm:block">Nov</span>
+            <span className="block">Dec</span>
           </div>
         </div>
 

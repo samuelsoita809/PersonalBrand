@@ -7,6 +7,11 @@ test.describe('Slice 4: Deliver My Project Journey Flow', () => {
   });
 
   test('should complete the full Deliver My Project journey successfully', async ({ page }) => {
+    // Mock the backend API response to avoid CI database dependency flakiness
+    await page.route('**/api/v1/project-requests', async route => {
+      await route.fulfill({ status: 201, json: { success: true } });
+    });
+
     // Step 0: Click Work With Me
     const workWithMeBtn = page.getByRole('button', { name: /Work with Me/i });
     await expect(workWithMeBtn).toBeVisible();

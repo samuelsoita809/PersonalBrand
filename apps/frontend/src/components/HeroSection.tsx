@@ -1,31 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import HeroText from './HeroText';
 import ProfileCard from './ProfileCard';
 import CTAButtons from './CTAButtons';
+import ServiceSelectionModal from './modals/ServiceSelectionModal';
+import DeliverProjectModal from './modals/DeliverProjectModal';
 import { useAnalytics } from '../context/analytics';
 import heroConfig from '../config/hero-content.json';
 import Badge from './Badge';
 
 const HeroSection: React.FC = () => {
-  const { heading, subheading, paragraph, profile, badges = [] } = heroConfig;
+  const { heading, subheading, paragraph, profile, badges = [] } = heroConfig as any;
   const { trackEvent } = useAnalytics();
-  const ctaTimeoutRef = React.useRef<number | undefined>(undefined);
+  
+  // Modal States
+  const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  
+  const ctaTimeoutRef = useRef<number | undefined>(undefined);
 
   // Unified Tracking
   useEffect(() => {
-    // ... rest of useEffect ...
     trackEvent('hero_view', {
       heading,
       timestamp: new Date().toISOString(),
-      version: '2.5.0-slice7'
+      version: '2.5.0-slice7-hardened'
     });
 
-    // Profile Card Impression
     trackEvent('profile_card_view', {
       timestamp: new Date().toISOString()
     });
 
-    // Milestone Tracking
     const milestones = [25, 50, 75, 100];
     const tracked = new Set<number>();
     const handleScroll = () => {
@@ -50,8 +54,19 @@ const HeroSection: React.FC = () => {
     ctaTimeoutRef.current = window.setTimeout(() => {
       const eventName = id === 'work_with_me' ? 'cta_click_work_with_me' : 'cta_click';
       trackEvent(eventName, { ctaId: id, ctaLabel: label });
+      
+      if (id === 'work_with_me') {
+        setIsSelectionModalOpen(true);
+      }
       ctaTimeoutRef.current = undefined;
     }, 300);
+  };
+
+  const handleServiceSelect = (serviceId: string) => {
+    setIsSelectionModalOpen(false);
+    if (serviceId === 'deliver_project') {
+      setIsProjectModalOpen(true);
+    }
   };
 
   return (
@@ -72,34 +87,43 @@ const HeroSection: React.FC = () => {
           />
         </div>
 
-        {/* Right Column: Trust Anchor — padded wrapper keeps badges clear of the card */}
+        {/* Right Column: Trust Anchor */}
         <div className="lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200">
-
-          {/* Trust Anchor Wrapper — width matches card, absolute rows match diagram */}
           <div className="relative w-fit flex flex-col items-center">
 
-            {/* Top Badges Row: Grid on mobile, absolute row on desktop */}
+            {/* Top Badges Row */}
             <div className="grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0">
               {badges[0] && <Badge text={badges[0]} delay="delay-300" />}
               {badges[2] && <Badge text={badges[2]} delay="delay-500" />}
             </div>
 
-            {/* Profile Card — central anchor */}
+            {/* Profile Card */}
             <ProfileCard 
               name={profile?.name} 
               image={profile?.image} 
             />
 
-            {/* Bottom Badges Row: Grid on mobile, absolute row on desktop */}
+            {/* Bottom Badges Row */}
             <div className="grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0">
               {badges[1] && <Badge text={badges[1]} delay="delay-700" />}
               {badges[3] && <Badge text={badges[3]} delay="delay-1000" />}
             </div>
-
           </div>
         </div>
-
       </div>
+
+      {/* Entry Step 1: Selection */}
+      <ServiceSelectionModal 
+        isOpen={isSelectionModalOpen} 
+        onClose={() => setIsSelectionModalOpen(false)} 
+        onSelectService={handleServiceSelect}
+      />
+
+      {/* Entry Step 3: Slice 4 Journey */}
+      <DeliverProjectModal 
+        isOpen={isProjectModalOpen} 
+        onClose={() => setIsProjectModalOpen(false)} 
+      />
     </section>
   );
 };

@@ -45,3 +45,15 @@ export const cta_clicks = pgTable('cta_clicks', {
     timestamp: timestamp('timestamp').defaultNow(),
     metadata: jsonb('metadata'),
 });
+
+export const project_requests = pgTable('project_requests', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    project_type: varchar('project_type', { length: 255 }).notNull(),
+    selected_plan: varchar('selected_plan', { length: 50 }).notNull(),
+    description: text('description').notNull(),
+    status: varchar('status', { length: 50 }).default('pending'),
+    timestamp: timestamp('timestamp').defaultNow(),
+    metadata: jsonb('metadata'),
+});

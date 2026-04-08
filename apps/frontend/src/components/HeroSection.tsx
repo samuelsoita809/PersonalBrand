@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import HeroText from './HeroText';
 import ProfileCard from './ProfileCard';
 import CTAButtons from './CTAButtons';
-import ServiceSelectionModal from './modals/ServiceSelectionModal';
 import DeliverProjectModal from './modals/DeliverProjectModal';
 import MentorMeModal from './modals/MentorMeModal';
+import CoffeeMeModal from './modals/CoffeeMeModal';
+import ServiceSelectionModal from './modals/ServiceSelectionModal';
 import { useAnalytics } from '../context/analytics';
 import heroConfig from '../config/hero-content.json';
 import Badge from './Badge';
@@ -17,6 +18,7 @@ const HeroSection: React.FC = () => {
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isMentorModalOpen, setIsMentorModalOpen] = useState(false);
+  const [isCoffeeModalOpen, setIsCoffeeModalOpen] = useState(false);
   
   const ctaTimeoutRef = useRef<number | undefined>(undefined);
 
@@ -70,6 +72,8 @@ const HeroSection: React.FC = () => {
       setIsProjectModalOpen(true);
     } else if (serviceId === 'mentor_me') {
       setIsMentorModalOpen(true);
+    } else if (serviceId === 'coffee_with_me') {
+      setIsCoffeeModalOpen(true);
     }
   };
 
@@ -133,6 +137,11 @@ const HeroSection: React.FC = () => {
       <MentorMeModal 
         isOpen={isMentorModalOpen} 
         onClose={() => setIsMentorModalOpen(false)} 
+      />
+
+      <CoffeeMeModal
+        isOpen={isCoffeeModalOpen}
+        onClose={() => setIsCoffeeModalOpen(false)}
       />
     </section>
   );

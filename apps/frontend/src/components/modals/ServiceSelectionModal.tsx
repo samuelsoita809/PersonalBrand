@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Rocket, Target } from 'lucide-react';
+import { X, Rocket, Target, Coffee } from 'lucide-react';
 
 interface ServiceSelectionModalProps {
   isOpen: boolean;
@@ -51,10 +51,7 @@ const ServiceSelectionModal: React.FC<ServiceSelectionModalProps> = ({ isOpen, o
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                  <h3 className="text-xl font-bold text-white">Deliver My Project</h3>
-                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 rounded-lg border border-blue-500/30">
-                    Active
-                  </span>
+                  <h3 className="text-xl font-bold text-white">Deliver My Project — Done Right</h3>
                 </div>
                 <p className="text-slate-400 text-sm italic">
                   (Execution, delivery, business results)
@@ -75,18 +72,32 @@ const ServiceSelectionModal: React.FC<ServiceSelectionModalProps> = ({ isOpen, o
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                  <h3 className="text-xl font-bold text-white">Mentor Me</h3>
-                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 rounded-lg border border-emerald-500/30">
-                    New
-                  </span>
+                  <h3 className="text-xl font-bold text-white">Mentor Me: Grow Your Skills Faster</h3>
                 </div>
                 <p className="text-slate-400 text-sm italic">
                   (Growth, skills, career results)
                 </p>
               </div>
-              
-              {/* Subtle accent hover effect */}
               <div className="absolute right-0 top-0 h-full w-1 bg-emerald-500 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
+            </button>
+
+            {/* Path: Coffee With Me */}
+            <button
+              onClick={() => onSelectService('coffee_with_me')}
+              className="group relative flex items-center p-6 bg-slate-800/40 hover:bg-slate-800 border border-slate-700/50 hover:border-amber-500/50 rounded-2xl transition-all duration-300 text-left overflow-hidden translate-y-0 active:translate-y-1"
+            >
+              <div className="mr-6 p-4 bg-amber-500/10 rounded-xl group-hover:bg-amber-500/20 transition-colors">
+                <Coffee className="text-amber-400 group-hover:text-amber-300 group-hover:scale-110 transition-transform duration-300" size={32} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <h3 className="text-xl font-bold text-white">Coffee With Me: Get Clarity Fast</h3>
+                </div>
+                <p className="text-slate-400 text-sm italic">
+                  (Clarity, direction, fast decisions)
+                </p>
+              </div>
+              <div className="absolute right-0 top-0 h-full w-1 bg-amber-500 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
             </button>
           </div>
         </div>

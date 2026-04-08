@@ -70,3 +70,15 @@ export const mentor_requests = pgTable('mentor_requests', {
     timestamp: timestamp('timestamp').defaultNow(),
     metadata: jsonb('metadata'),
 });
+
+export const coffee_requests = pgTable('coffee_requests', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    option: varchar('option', { length: 50 }).notNull(),
+    plan_tier: varchar('plan_tier', { length: 50 }).notNull(),
+    description: text('description').notNull(),
+    status: varchar('status', { length: 50 }).default('pending'),
+    timestamp: timestamp('timestamp').defaultNow(),
+    metadata: jsonb('metadata'),
+});

@@ -1,0 +1,54 @@
+{
+  "options": [
+    {
+      "id": "15_min_chat",
+      "title": "15-Minute Quick Chat",
+      "subtitle": "Fast answers, quick clarity",
+      "icon": "Coffee",
+      "features": ["Ask anything", "Immediate direction", "Quick fixes"],
+      "keyResults": ["2x Faster Decisions", "60% Clearer Direction", "70% Less Confusion"]
+    },
+    {
+      "id": "audit",
+      "title": "Audit My Website",
+      "subtitle": "Review, feedback, improvement plan",
+      "icon": "Search",
+      "features": ["UX/UI review", "Performance insights", "Actionable fixes"],
+      "keyResults": ["2x Faster Decisions", "60% Clearer Direction", "70% Less Confusion"]
+    },
+    {
+      "id": "tech_catchup",
+      "title": "Tech Catch-Up",
+      "subtitle": "Group session, shared learning",
+      "icon": "Users",
+      "features": ["Live discussion", "Common challenges", "Shared solutions"],
+      "keyResults": ["2x Faster Decisions", "60% Clearer Direction", "70% Less Confusion"]
+    }
+  ],
+  "plans": [
+    {
+      "id": "starter",
+      "title": "Starter",
+      "price": "$15+",
+      "features": ["Basic session", "Limited scope", "Summary notes"]
+    },
+    {
+      "id": "growth",
+      "title": "Growth",
+      "price": "$50+",
+      "features": ["Deeper insights", "More time", "Action checklist"]
+    },
+    {
+      "id": "pro",
+      "title": "Pro",
+      "price": "$100+",
+      "features": ["Full breakdown", "Action plan", "Follow-up support"]
+    }
+  ],
+  "results": [
+    "2x Faster Decision-Making",
+    "60% Clearer Direction in One Session",
+    "70% Less Confusion on What to Do Next"
+  ],
+  "tagline": "Get clear. Move fast. Take action."
+}

@@ -292,6 +292,43 @@ app.post("/api/v1/mentor-requests", async (req, res) => {
 });
 
 /**
+ * Coffee Request Submission (Slice 6)
+ * Multi-step form submission from the 'Coffee With Me' journey.
+ */
+app.post("/api/v1/coffee-requests", async (req, res) => {
+    const { name, email, option, plan_tier, description, metadata } = req.body;
+    
+    if (!name || !email || !option || !plan_tier || !description) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(schema.coffee_requests).values({
+            id,
+            name,
+            email,
+            option,
+            plan_tier,
+            description,
+            status: 'pending',
+            timestamp: new Date(),
+            metadata: metadata || {}
+        });
+        
+        logger.info(`New coffee request received: ${email} for ${option} (${plan_tier})`);
+        
+        // Mock notification for admin
+        logger.info(`[NOTIFICATION] New Coffee Consultancy Request: ${name} - Option: ${option}, Tier: ${plan_tier}`);
+        
+        res.status(201).json({ status: "success", requestId: id });
+    } catch (error) {
+        logger.error('Failed to record coffee request:', error);
+        res.status(500).json({ error: "Failed to process coffee request" });
+    }
+});
+
+/**
  * Analytics Summary
  * Protected endpoint for the Admin Dashboard.
  */

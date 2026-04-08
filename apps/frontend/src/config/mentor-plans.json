@@ -1,0 +1,60 @@
+{
+  "microValueLine": "Learn fast. Grow strong. Win big.",
+  "plans": [
+    {
+      "id": "starter_mentor",
+      "name": "Starter Mentorship",
+      "price": 50,
+      "delivery": "monthly",
+      "description": "Perfect for getting started and unblocked.",
+      "features": [
+        "2 sessions/month",
+        "Basic guidance",
+        "Q&A support",
+        "Career overview"
+      ],
+      "keyResults": [
+        "2x Faster Skill Growth",
+        "80% Job-Ready Confidence"
+      ]
+    },
+    {
+      "id": "growth_mentor",
+      "name": "Growth Mentorship",
+      "price": 120,
+      "delivery": "weekly",
+      "description": "Structured learning for faster progress.",
+      "features": [
+        "Weekly sessions",
+        "Project guidance",
+        "Code reviews",
+        "Priority Q&A"
+      ],
+      "popular": true,
+      "keyResults": [
+        "2x Faster Skill Growth",
+        "80% Job-Ready Confidence",
+        "50% Faster Career Transition"
+      ]
+    },
+    {
+      "id": "pro_mentor",
+      "name": "Pro Mentorship",
+      "price": 250,
+      "delivery": "intensive",
+      "description": "Intensive 1-on-1 for complete mastery.",
+      "features": [
+        "1-on-1 intensive",
+        "Real project building",
+        "Career roadmap",
+        "Unlimited Q&A"
+      ],
+      "keyResults": [
+        "2x Faster Skill Growth",
+        "80% Job-Ready Confidence",
+        "50% Faster Career Transition",
+        "Real Project Experience"
+      ]
+    }
+  ]
+}

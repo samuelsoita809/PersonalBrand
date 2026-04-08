@@ -4,6 +4,7 @@ import ProfileCard from './ProfileCard';
 import CTAButtons from './CTAButtons';
 import ServiceSelectionModal from './modals/ServiceSelectionModal';
 import DeliverProjectModal from './modals/DeliverProjectModal';
+import MentorMeModal from './modals/MentorMeModal';
 import { useAnalytics } from '../context/analytics';
 import heroConfig from '../config/hero-content.json';
 import Badge from './Badge';
@@ -15,6 +16,7 @@ const HeroSection: React.FC = () => {
   // Modal States
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [isMentorModalOpen, setIsMentorModalOpen] = useState(false);
   
   const ctaTimeoutRef = useRef<number | undefined>(undefined);
 
@@ -66,6 +68,8 @@ const HeroSection: React.FC = () => {
     setIsSelectionModalOpen(false);
     if (serviceId === 'deliver_project') {
       setIsProjectModalOpen(true);
+    } else if (serviceId === 'mentor_me') {
+      setIsMentorModalOpen(true);
     }
   };
 
@@ -123,6 +127,12 @@ const HeroSection: React.FC = () => {
       <DeliverProjectModal 
         isOpen={isProjectModalOpen} 
         onClose={() => setIsProjectModalOpen(false)} 
+      />
+
+      {/* Entry Step 4: Slice 5 Journey */}
+      <MentorMeModal 
+        isOpen={isMentorModalOpen} 
+        onClose={() => setIsMentorModalOpen(false)} 
       />
     </section>
   );

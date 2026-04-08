@@ -254,6 +254,44 @@ app.post("/api/v1/project-requests", async (req, res) => {
 });
 
 /**
+ * Mentor Request Submission (Slice 5)
+ * Multi-step form submission from the 'Mentor Me' journey.
+ */
+app.post("/api/v1/mentor-requests", async (req, res) => {
+    const { name, email, level, goal, plan, description, metadata } = req.body;
+    
+    if (!name || !email || !level || !goal || !plan || !description) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(schema.mentor_requests).values({
+            id,
+            name,
+            email,
+            level,
+            goal,
+            plan,
+            description,
+            status: 'pending',
+            timestamp: new Date(),
+            metadata: metadata || {}
+        });
+        
+        logger.info(`New mentor request received: ${email} for ${plan} plan`);
+        
+        // Mock notification for admin
+        logger.info(`[NOTIFICATION] New Mentor Request: ${name} (${plan}) - Goal: ${goal}`);
+        
+        res.status(201).json({ status: "success", requestId: id });
+    } catch (error) {
+        logger.error('Failed to record mentor request:', error);
+        res.status(500).json({ error: "Failed to process mentor request" });
+    }
+});
+
+/**
  * Analytics Summary
  * Protected endpoint for the Admin Dashboard.
  */

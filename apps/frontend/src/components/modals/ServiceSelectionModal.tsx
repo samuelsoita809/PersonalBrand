@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Rocket } from 'lucide-react';
+import { X, Rocket, Target } from 'lucide-react';
 
 interface ServiceSelectionModalProps {
   isOpen: boolean;
@@ -65,12 +65,29 @@ const ServiceSelectionModal: React.FC<ServiceSelectionModalProps> = ({ isOpen, o
               <div className="absolute right-0 top-0 h-full w-1 bg-blue-500 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
             </button>
 
-            {/* Inactive paths hidden as requested */}
-            <div className="pt-4 text-center">
-              <p className="text-xs text-slate-500 font-medium tracking-widest uppercase">
-                More Pathways Coming Soon
-              </p>
-            </div>
+            {/* Path: Mentor Me */}
+            <button
+              onClick={() => onSelectService('mentor_me')}
+              className="group relative flex items-center p-6 bg-slate-800/40 hover:bg-slate-800 border border-slate-700/50 hover:border-emerald-500/50 rounded-2xl transition-all duration-300 text-left overflow-hidden translate-y-0 active:translate-y-1"
+            >
+              <div className="mr-6 p-4 bg-emerald-500/10 rounded-xl group-hover:bg-emerald-500/20 transition-colors">
+                <Target className="text-emerald-400 group-hover:text-emerald-300 group-hover:scale-110 transition-transform duration-300" size={32} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-1">
+                  <h3 className="text-xl font-bold text-white">Mentor Me</h3>
+                  <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 rounded-lg border border-emerald-500/30">
+                    New
+                  </span>
+                </div>
+                <p className="text-slate-400 text-sm italic">
+                  (Growth, skills, career results)
+                </p>
+              </div>
+              
+              {/* Subtle accent hover effect */}
+              <div className="absolute right-0 top-0 h-full w-1 bg-emerald-500 transform translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
+            </button>
           </div>
         </div>
 

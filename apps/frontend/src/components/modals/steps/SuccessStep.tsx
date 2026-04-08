@@ -3,9 +3,20 @@ import { CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface SuccessStepProps {
   onClose: () => void;
+  title?: string;
+  description?: string;
+  steps?: { title: string; description: string }[];
 }
 
-const SuccessStep: React.FC<SuccessStepProps> = ({ onClose }) => {
+const SuccessStep: React.FC<SuccessStepProps> = ({ 
+  onClose, 
+  title = "Project Request Sent!", 
+  description = "Thank you for reaching out. I've received your project details and will review them personally. Expect a response within the next 24 hours.",
+  steps = [
+    { title: "Step 1", description: "Initial review of your project requirements." },
+    { title: "Step 2", description: "Strategy call to align on technical details." }
+  ]
+}) => {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in zoom-in-95 duration-700">
       <div className="mb-8 p-4 bg-green-500/10 rounded-full animate-bounce duration-1000">
@@ -13,23 +24,20 @@ const SuccessStep: React.FC<SuccessStepProps> = ({ onClose }) => {
       </div>
 
       <h2 className="text-4xl font-black text-white mb-4 tracking-tight">
-        Project Request Sent!
+        {title}
       </h2>
       
       <p className="text-lg text-slate-400 max-w-md mx-auto mb-10 leading-relaxed">
-        Thank you for reaching out. I've received your project details and will review them personally. 
-        Expect a response within the next <span className="text-white font-bold">24 hours</span>.
+        {description}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-lg mb-12 text-left">
-        <div className="p-4 bg-white/5 border border-white/5 rounded-2xl">
-          <p className="text-xs text-slate-500 uppercase font-bold mb-1">Step 1</p>
-          <p className="text-sm text-slate-300">Initial review of your project requirements.</p>
-        </div>
-        <div className="p-4 bg-white/5 border border-white/5 rounded-2xl opacity-60">
-          <p className="text-xs text-slate-500 uppercase font-bold mb-1">Step 2</p>
-          <p className="text-sm text-slate-300">Strategy call to align on technical details.</p>
-        </div>
+        {steps.map((step, index) => (
+          <div key={index} className={`p-4 bg-white/5 border border-white/5 rounded-2xl ${index > 0 ? 'opacity-60' : ''}`}>
+            <p className="text-xs text-slate-500 uppercase font-bold mb-1">{step.title}</p>
+            <p className="text-sm text-slate-300">{step.description}</p>
+          </div>
+        ))}
       </div>
 
       <button 

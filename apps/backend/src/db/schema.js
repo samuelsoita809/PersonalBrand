@@ -57,3 +57,16 @@ export const project_requests = pgTable('project_requests', {
     timestamp: timestamp('timestamp').defaultNow(),
     metadata: jsonb('metadata'),
 });
+
+export const mentor_requests = pgTable('mentor_requests', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    level: varchar('level', { length: 50 }).notNull(),
+    goal: varchar('goal', { length: 255 }).notNull(),
+    plan: varchar('plan', { length: 50 }).notNull(),
+    description: text('description').notNull(),
+    status: varchar('status', { length: 50 }).default('pending'),
+    timestamp: timestamp('timestamp').defaultNow(),
+    metadata: jsonb('metadata'),
+});

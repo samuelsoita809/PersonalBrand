@@ -5,15 +5,14 @@ import coffeeConfig from '../../../config/coffee-config.json';
 interface CoffeePlanStepProps {
   selectedPlanId: string;
   onSelect: (planId: string) => void;
-  onBack: () => void;
 }
 
-const CoffeePlanStep: React.FC<CoffeePlanStepProps> = ({ selectedPlanId, onSelect, onBack }) => {
+const CoffeePlanStep: React.FC<CoffeePlanStepProps> = ({ selectedPlanId, onSelect }) => {
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="text-center space-y-2">
         <p className="text-amber-400 font-bold tracking-widest uppercase text-xs">Pricing Tiers</p>
-        <h3 className="text-2xl sm:text-3xl font-black text-white italic">
+        <h3 className="text-2xl sm:text-3xl font-black text-white italic tracking-tight">
            Scale Your Clarity
         </h3>
       </div>
@@ -60,15 +59,6 @@ const CoffeePlanStep: React.FC<CoffeePlanStepProps> = ({ selectedPlanId, onSelec
             </button>
           </div>
         ))}
-      </div>
-
-      <div className="flex justify-center">
-        <button 
-          onClick={onBack}
-          className="text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2"
-        >
-          ← Change Consultancy Option
-        </button>
       </div>
     </div>
   );

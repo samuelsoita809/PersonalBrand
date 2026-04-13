@@ -296,9 +296,9 @@ app.post("/api/v1/mentor-requests", async (req, res) => {
  * Multi-step form submission from the 'Coffee With Me' journey.
  */
 app.post("/api/v1/coffee-requests", async (req, res) => {
-    const { name, email, option, plan_tier, description, metadata } = req.body;
+    const { name, email, plan, idea, urgency, metadata } = req.body;
     
-    if (!name || !email || !option || !plan_tier || !description) {
+    if (!name || !email || !plan || !idea || !urgency) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -308,18 +308,18 @@ app.post("/api/v1/coffee-requests", async (req, res) => {
             id,
             name,
             email,
-            option,
-            plan_tier,
-            description,
+            plan,
+            idea,
+            urgency,
             status: 'pending',
-            timestamp: new Date(),
+            createdAt: new Date(),
             metadata: metadata || {}
         });
         
-        logger.info(`New coffee request received: ${email} for ${option} (${plan_tier})`);
+        logger.info(`New coffee request received: ${email} for ${plan} plan`);
         
         // Mock notification for admin
-        logger.info(`[NOTIFICATION] New Coffee Consultancy Request: ${name} - Option: ${option}, Tier: ${plan_tier}`);
+        logger.info(`[NOTIFICATION] New Coffee Consultancy Request: ${name} - Plan: ${plan}, Urgency: ${urgency}`);
         
         res.status(201).json({ status: "success", requestId: id });
     } catch (error) {

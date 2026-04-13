@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import CoffeeOptionsStep from './steps/CoffeeOptionsStep';
 import CoffeePlanStep from './steps/CoffeePlanStep';
 import CoffeeFormStep from './steps/CoffeeFormStep';
 import SuccessStep from './steps/SuccessStep';
 import { useAnalytics } from '../../context/analytics';
 
-export type CoffeeStep = 'option' | 'plan' | 'form' | 'success';
+export type CoffeeStep = 'plan' | 'form' | 'success';
 
 interface CoffeeMeModalProps {
   isOpen: boolean;
@@ -14,60 +13,55 @@ interface CoffeeMeModalProps {
 }
 
 export interface CoffeeFormData {
-  optionId: string;
   planId: string;
   name: string;
   email: string;
-  description: string;
+  idea: string;
+  urgency: 'low' | 'medium' | 'high';
 }
 
 const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
-  const [currentStep, setCurrentStep] = useState<CoffeeStep>('option');
+  const [currentStep, setCurrentStep] = useState<CoffeeStep>('plan');
   const [formData, setFormData] = useState<CoffeeFormData>({
-    optionId: '',
     planId: '',
     name: '',
     email: '',
-    description: ''
+    idea: '',
+    urgency: 'medium'
   });
   const { trackEvent } = useAnalytics();
 
   if (!isOpen) return null;
 
   const handleNext = (data?: Partial<CoffeeFormData>) => {
+    const updatedData = data ? { ...formData, ...data } : formData;
     if (data) {
-      setFormData((prev) => ({ ...prev, ...data }));
+      setFormData(updatedData);
     }
 
-    if (currentStep === 'option') {
-      if (data?.optionId) {
-        trackEvent('coffee_option_selected', { optionId: data.optionId });
-      }
-      setCurrentStep('plan');
-    }
-    else if (currentStep === 'plan') {
-      if (data?.planId) {
-        trackEvent('coffee_plan_selected', { planId: data.planId });
+    if (currentStep === 'plan') {
+      if (updatedData.planId) {
+        trackEvent('coffee_plan_selected', { planId: updatedData.planId });
       }
       setCurrentStep('form');
     }
     else if (currentStep === 'form') {
-      handleSubmit(data as CoffeeFormData);
+      handleSubmit(updatedData);
     }
   };
 
   const handleBack = () => {
-    if (currentStep === 'plan') setCurrentStep('option');
-    else if (currentStep === 'form') setCurrentStep('plan');
+    if (currentStep === 'form') setCurrentStep('plan');
   };
 
   const handleSubmit = async (finalData: CoffeeFormData) => {
     try {
       const submissionData = {
-        ...formData,
-        ...finalData,
-        option: formData.optionId || finalData.optionId,
-        plan_tier: formData.planId || finalData.planId
+        name: finalData.name,
+        email: finalData.email,
+        plan: finalData.planId,
+        idea: finalData.idea,
+        urgency: finalData.urgency
       };
 
       const response = await fetch('/api/v1/coffee-requests', {
@@ -78,9 +72,9 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
 
       if (!response.ok) throw new Error('Failed to submit request');
       
-      trackEvent('coffee_submitted', { 
-        option: submissionData.option,
-        plan: submissionData.plan_tier
+      trackEvent('coffee_request_submitted', { 
+        plan: submissionData.plan,
+        urgency: submissionData.urgency
       });
       
       setCurrentStep('success');
@@ -91,16 +85,14 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
   };
 
   const stepTitle = {
-    option: 'Coffee With Me: Get Clarity Fast',
-    plan: 'Choose Your Consultancy Plan',
-    form: 'Define Your Quick Wins',
+    plan: 'Coffee With Me: Choose Your Plan',
+    form: 'Define Your Idea & Urgency',
     success: 'Request Received!'
   };
 
   const progress = {
-    option: 25,
-    plan: 50,
-    form: 75,
+    plan: 33,
+    form: 66,
     success: 100
   };
 
@@ -118,7 +110,7 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/5">
           <div>
-            <h2 className="text-2xl font-bold text-white">{stepTitle[currentStep]}</h2>
+            <h2 className="text-2xl font-bold text-white tracking-tight italic">{stepTitle[currentStep]}</h2>
             {currentStep !== 'success' && (
               <div className="mt-2 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                 <div 
@@ -138,17 +130,10 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-800">
-          {currentStep === 'option' && (
-            <CoffeeOptionsStep 
-              selectedOptionId={formData.optionId} 
-              onSelect={(optionId: string) => handleNext({ optionId })} 
-            />
-          )}
           {currentStep === 'plan' && (
             <CoffeePlanStep 
               selectedPlanId={formData.planId} 
               onSelect={(planId: string) => handleNext({ planId })} 
-              onBack={handleBack}
             />
           )}
           {currentStep === 'form' && (
@@ -162,10 +147,10 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
             <SuccessStep 
               onClose={onClose} 
               title="Consultancy Request Received!"
-              description="Request received. We’ll reach out shortly to schedule our session. Get clear. Move fast. Take action."
+              description="Your idea has been captured. I'll personally review your submission and we'll reach out shortly to schedule our session. Get clear. Move fast. Take action."
               steps={[
-                { title: "Review", description: "I'll personally review your request and notes." },
-                { title: "Schedule", description: "You'll receive a link to pick a slot that works for you." }
+                { title: "Review", description: "Expert review of your idea and challenges." },
+                { title: "Schedule", description: "Picking the best slot to achieve your wins." }
               ]}
             />
           )}

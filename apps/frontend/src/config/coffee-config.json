@@ -1,48 +1,22 @@
 {
-  "options": [
-    {
-      "id": "15_min_chat",
-      "title": "15-Minute Quick Chat",
-      "subtitle": "Fast answers, quick clarity",
-      "icon": "Coffee",
-      "features": ["Ask anything", "Immediate direction", "Quick fixes"],
-      "keyResults": ["2x Faster Decisions", "60% Clearer Direction", "70% Less Confusion"]
-    },
-    {
-      "id": "audit",
-      "title": "Audit My Website",
-      "subtitle": "Review, feedback, improvement plan",
-      "icon": "Search",
-      "features": ["UX/UI review", "Performance insights", "Actionable fixes"],
-      "keyResults": ["2x Faster Decisions", "60% Clearer Direction", "70% Less Confusion"]
-    },
-    {
-      "id": "tech_catchup",
-      "title": "Tech Catch-Up",
-      "subtitle": "Group session, shared learning",
-      "icon": "Users",
-      "features": ["Live discussion", "Common challenges", "Shared solutions"],
-      "keyResults": ["2x Faster Decisions", "60% Clearer Direction", "70% Less Confusion"]
-    }
-  ],
   "plans": [
     {
       "id": "starter",
       "title": "Starter",
       "price": "$15+",
-      "features": ["Basic session", "Limited scope", "Summary notes"]
+      "features": ["15-Minute Focus", "Immediate Direction", "Summary Notes"]
     },
     {
       "id": "growth",
       "title": "Growth",
       "price": "$50+",
-      "features": ["Deeper insights", "More time", "Action checklist"]
+      "features": ["30-Minute Deep Dive", "Action Checklist", "Quick Fix Consultation"]
     },
     {
       "id": "pro",
       "title": "Pro",
       "price": "$100+",
-      "features": ["Full breakdown", "Action plan", "Follow-up support"]
+      "features": ["60-Minute Strategy", "Full Tech Breakdown", "Follow-up Support"]
     }
   ],
   "results": [

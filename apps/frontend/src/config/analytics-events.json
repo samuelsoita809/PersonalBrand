@@ -32,6 +32,16 @@
       "description": "User reached a specific scroll depth milestone",
       "category": "engagement",
       "required_params": ["milestone_percent", "timestamp"]
+    },
+    "coffee_plan_selected": {
+      "description": "User selects a pricing plan in Coffee With Me journey",
+      "category": "conversion",
+      "required_params": ["planId"]
+    },
+    "coffee_request_submitted": {
+      "description": "User successfully submits a coffee consultancy request",
+      "category": "conversion",
+      "required_params": ["plan", "urgency"]
     }
   }
 }

@@ -6,7 +6,7 @@ test.describe('Slice 6: Coffee With Me Journey Flow', () => {
     await page.goto('http://localhost:8001/');
   });
 
-  test('should complete the full 4-step Coffee With Me journey successfully', async ({ page }) => {
+  test('should complete the full 3-step Coffee With Me journey successfully', async ({ page }) => {
     // Mock the backend API response
     await page.route('**/api/v1/coffee-requests', async route => {
       await route.fulfill({ status: 201, json: { success: true } });
@@ -26,27 +26,28 @@ test.describe('Slice 6: Coffee With Me Journey Flow', () => {
     await expect(coffeeBtn).toBeVisible();
     await coffeeBtn.click();
 
-    // Step 3.1: Selection of Consultancy Option (Audit My Website)
-    const auditOption = page.getByText('Audit My Website');
-    await expect(auditOption).toBeVisible();
-    await auditOption.click();
-
-    // Step 3.2: Selection of Pricing Plan (Growth)
+    // Step 3.1: Selection of Pricing Plan (Growth)
     const growthPlan = page.getByText('Growth');
     await expect(growthPlan).toBeVisible();
     await growthPlan.click();
 
-    // Step 3.3: Consultancy Details Form
-    await expect(page.getByRole('heading', { name: /Define Your Quick Wins/i })).toBeVisible();
+    // Step 3.2: Consultancy Details Form
+    await expect(page.getByText(/Define Your Idea & Urgency/i)).toBeVisible();
     await page.getByLabel(/Full Name/i).fill('E2E Consultant');
     await page.getByLabel(/Email Address/i).fill('consultant@example.com');
-    await page.getByLabel(/What do you need help with\?/i).fill('I need a full SEO and UX audit for my SaaS platform.');
+    
+    // Select urgency (Medium)
+    const mediumUrgency = page.getByRole('button', { name: /Medium/i });
+    await expect(mediumUrgency).toBeVisible();
+    await mediumUrgency.click();
+
+    await page.getByLabel(/Tell me about your idea or problem/i).fill('I need a full strategy breakdown for my new micro-saas project aiming for $1k MRR.');
 
     await page.getByRole('button', { name: /Submit Request/i }).click();
 
     // Step 4: Success Confirmation
     await expect(page.getByText(/Consultancy Request Received!/i)).toBeVisible();
-    await expect(page.getByText(/Request received. We’ll reach out shortly/i)).toBeVisible();
+    await expect(page.getByText(/Your idea has been captured/i)).toBeVisible();
 
     const closeBtn = page.getByRole('button', { name: /Return to Site/i });
     await expect(closeBtn).toBeVisible();

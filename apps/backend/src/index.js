@@ -329,6 +329,42 @@ app.post("/api/v1/coffee-requests", async (req, res) => {
 });
 
 /**
+ * Free Help Request Submission
+ * Entry point for the 'Help Me Free' funnel.
+ */
+app.post("/api/v1/free-requests", async (req, res) => {
+    const { name, email, service, message, metadata } = req.body;
+    
+    if (!name || !email || !service || !message) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(schema.free_requests).values({
+            id,
+            name,
+            email,
+            service,
+            message,
+            status: 'pending',
+            createdAt: new Date(),
+            metadata: metadata || {}
+        });
+        
+        logger.info(`New free request received: ${email} for ${service}`);
+        
+        // Mock notification for admin
+        logger.info(`[NOTIFICATION] New Free Help Request: ${name} - Service: ${service}`);
+        
+        res.status(201).json({ status: "success", requestId: id });
+    } catch (error) {
+        logger.error('Failed to record free request:', error);
+        res.status(500).json({ error: "Failed to process free request" });
+    }
+});
+
+/**
  * Analytics Summary
  * Protected endpoint for the Admin Dashboard.
  */

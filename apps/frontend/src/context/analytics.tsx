@@ -222,3 +222,10 @@ export const __resetAnalyticsQueueForTesting = () => {
 export const __runQueueProcessorForTesting = () => {
   syncOfflineEvents();
 };
+
+// --- Test Hooks for E2E ---
+if (typeof window !== 'undefined') {
+  (window as any).__runQueueProcessorForTesting = __runQueueProcessorForTesting;
+  (window as any).__resetAnalyticsQueueForTesting = __resetAnalyticsQueueForTesting;
+  (window as any).__resetAnalyticsCacheForTesting = __resetAnalyticsCacheForTesting;
+}

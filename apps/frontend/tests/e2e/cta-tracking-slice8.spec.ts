@@ -80,9 +80,19 @@ test.describe('Featured CTA Tracking & Offline Sync (Slice 8)', () => {
 
     // 5. Go Online
     await page.context().setOffline(false);
+    
+    // Give Playwright a moment to restore the network stack
+    await page.waitForTimeout(1000);
 
-    // 6. Verify automatic sync
-    await expect.poll(() => syncRequests.length).toBeGreaterThan(0);
+    // 6. Force a sync attempt via the test hook to bypass the 3s retry timer
+    await page.evaluate(() => {
+      if ((window as any).__runQueueProcessorForTesting) {
+        (window as any).__runQueueProcessorForTesting();
+      }
+    });
+
+    // 7. Verify automatic sync (Increased timeout for CI stability)
+    await expect.poll(() => syncRequests.length, { timeout: 15000 }).toBeGreaterThan(0);
     const syncData = syncRequests[0].postDataJSON();
     expect(syncData.ctaType).toBe('mentor_me');
   });

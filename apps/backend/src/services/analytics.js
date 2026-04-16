@@ -123,13 +123,13 @@ class AnalyticsService {
             cutoff.setDate(cutoff.getDate() - 7);
             
             const rawTrend = await db.db.select({
-                date: sql`DATE(${schema.events.timestamp})`,
+                date: sql`${schema.events.timestamp}::date::text`,
                 count: count()
             })
             .from(schema.events)
             .where(gte(schema.events.timestamp, cutoff))
-            .groupBy(sql`DATE(${schema.events.timestamp})`)
-            .orderBy(asc(sql`DATE(${schema.events.timestamp})`));
+            .groupBy(sql`${schema.events.timestamp}::date`)
+            .orderBy(asc(sql`${schema.events.timestamp}::date`));
 
             // Normalize time series for frontend (ensures every day has an entry)
             const trendMap = {};
@@ -141,7 +141,7 @@ class AnalyticsService {
             }
 
             rawTrend.forEach(row => {
-                const dateStr = row.date;
+                const dateStr = String(row.date);
                 if (trendMap[dateStr]) trendMap[dateStr].clicks = Number(row.count);
             });
 
@@ -221,15 +221,15 @@ class AnalyticsService {
 
             const [viewSeries, clickSeries] = await Promise.all([
                 db.db.select({
-                    date: sql`DATE(${schema.page_views.timestamp})`,
+                    date: sql`${schema.page_views.timestamp}::date::text`,
                     count: count()
                 })
                 .from(schema.page_views)
                 .where(gte(schema.page_views.timestamp, cutoff))
-                .groupBy(sql`DATE(${schema.page_views.timestamp})`),
+                .groupBy(sql`${schema.page_views.timestamp}::date`),
 
                 db.db.select({
-                    date: sql`DATE(${schema.analytics_events.createdAt})`,
+                    date: sql`${schema.analytics_events.createdAt}::date::text`,
                     count: count()
                 })
                 .from(schema.analytics_events)
@@ -237,7 +237,7 @@ class AnalyticsService {
                     gte(schema.analytics_events.createdAt, cutoff),
                     like(schema.analytics_events.event_name, 'cta_%')
                 ))
-                .groupBy(sql`DATE(${schema.analytics_events.createdAt})`)
+                .groupBy(sql`${schema.analytics_events.createdAt}::date`)
             ]);
             
             // Group by day into final format
@@ -250,11 +250,13 @@ class AnalyticsService {
             }
 
             viewSeries.forEach(v => {
-                if (grouped[v.date]) grouped[v.date].views = Number(v.count);
+                const dateStr = String(v.date);
+                if (grouped[dateStr]) grouped[dateStr].views = Number(v.count);
             });
 
             clickSeries.forEach(c => {
-                if (grouped[c.date]) grouped[c.date].clicks = Number(c.count);
+                const dateStr = String(c.date);
+                if (grouped[dateStr]) grouped[dateStr].clicks = Number(c.count);
             });
 
             return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
@@ -337,24 +339,28 @@ class AnalyticsService {
                 .where(whereClause)
                 .groupBy(schema.page_views.device_type),
 
-                // 4. Trends
+                // 4. Trends (Optimized with explicit casting)
                 db.db.select({
-                    date: sql`DATE(${schema.page_views.timestamp})`,
+                    date: sql`${schema.page_views.timestamp}::date::text`,
                     views: count(),
                     unique: count(schema.page_views.session_id)
                 })
                 .from(schema.page_views)
                 .where(whereClause)
-                .groupBy(sql`DATE(${schema.page_views.timestamp})`)
-                .orderBy(asc(sql`DATE(${schema.page_views.timestamp})`))
+                .groupBy(sql`${schema.page_views.timestamp}::date`)
+                .orderBy(asc(sql`${schema.page_views.timestamp}::date`))
             ]);
 
             return {
-                totalViews: Number(summary[0].total),
-                uniqueViews: Number(summary[0].unique),
+                totalViews: summary[0] ? Number(summary[0].total) : 0,
+                uniqueViews: summary[0] ? Number(summary[0].unique) : 0,
                 topPages: topPages.map(p => ({ ...p, views: Number(p.views) })),
                 devices: devices.map(d => ({ ...d, value: Number(d.value) })),
-                trends: trends.map(t => ({ ...t, views: Number(t.views), unique: Number(t.unique) })),
+                trends: trends.map(t => ({
+                    date: String(t.date),
+                    views: Number(t.views),
+                    unique: Number(t.unique)
+                })),
                 isReal: true
             };
         } catch (error) {

@@ -71,6 +71,9 @@ const HeroSection: React.FC = () => {
   };
 
   const handleServiceSelect = (serviceId: string) => {
+    // Slice 8 Tracking: Capture the specific intent
+    trackEvent(serviceId);
+    
     setIsSelectionModalOpen(false);
     if (serviceId === 'deliver_project') {
       setIsProjectModalOpen(true);

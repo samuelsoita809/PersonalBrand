@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, timestamp, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, text, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
 
 export const profiles = pgTable('profiles', {
     id: varchar('id', { length: 255 }).primaryKey(),
@@ -92,4 +92,11 @@ export const free_requests = pgTable('free_requests', {
     status: varchar('status', { length: 50 }).default('pending'),
     createdAt: timestamp('created_at').defaultNow(),
     metadata: jsonb('metadata'),
+});
+
+export const events = pgTable('events', {
+    event_id: varchar('event_id', { length: 255 }).primaryKey(),
+    cta_type: varchar('cta_type', { length: 50 }).notNull(),
+    timestamp: timestamp('timestamp').defaultNow(),
+    session_id: varchar('session_id', { length: 100 }).notNull(),
 });

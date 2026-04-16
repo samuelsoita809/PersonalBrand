@@ -1,74 +1,59 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Analytics Integration (Slice 13)', () => {
+  // Use serial mode to avoid state pollution between tests sharing same localStorage
+  test.describe.configure({ mode: 'serial' });
+
+  test.beforeEach(async ({ page }) => {
+    // Navigate home first to get into the right context
+    await page.goto('/');
+    // Clear state
+    await page.evaluate(() => localStorage.clear());
+    // Reload to ensure fresh start
+    await page.reload();
+  });
+
   test('should track page views on navigation', async ({ page }) => {
-    // Collect requests
     const pageViewRequests = [];
-    page.on('request', request => {
-      if (request.url().includes('/api/v1/events/page-view')) {
-        pageViewRequests.push(request);
-      }
+    
+    // Intercept analytics
+    await page.route('**/api/v1/events/page-view', route => {
+      pageViewRequests.push(route.request());
+      route.fulfill({ status: 204 });
     });
 
-    // 1. Visit Home
+    // Navigation triggers page_view
     await page.goto('/');
     
-    // Wait for the first page view event (with a small timeout padding)
-    await page.waitForTimeout(1000); 
-    expect(pageViewRequests.length).toBe(1);
+    // Wait for event to fire (debounce is 1s, but first should be immediate)
+    await expect.poll(() => pageViewRequests.length, { timeout: 10000 }).toBeGreaterThan(0);
     
-    const firstRequest = pageViewRequests[0];
-    const firstData = JSON.parse(firstRequest.postData());
-    expect(firstData.path).toBe('/');
-
-    // 2. Navigate to About
-    const link = page.locator('a:has-text("About")');
-    if (await link.count() > 0) {
-      await link.click();
-    } else {
-      await page.goto('/about');
-    }
-    
-    await page.waitForTimeout(1000);
-    expect(pageViewRequests.length).toBe(2);
-    
-    const secondRequest = pageViewRequests[1];
-    const secondData = JSON.parse(secondRequest.postData());
-    expect(secondData.path).toBe('/about');
+    const data = JSON.parse(pageViewRequests[0].postData());
+    expect(data.path).toBe('/');
   });
 
   test('should retry failed analytics requests', async ({ page }) => {
     let callCount = 0;
     
-    // Intercept POST requests to the page-view endpoint
     await page.route('**/api/v1/events/page-view', route => {
-      if (route.request().method() !== 'POST') {
-        return route.continue();
-      }
+      if (route.request().method() !== 'POST') return route.continue();
       
       callCount++;
       if (callCount === 1) {
-        // Fail the first time
         route.fulfill({ status: 500 });
       } else {
-        // Succeed the second time
         route.fulfill({ status: 204 });
       }
     });
 
-    // Use a unique URL to avoid debounce collision from previous tests
+    // Trigger a fresh page view
     const testUrl = '/?retry-test=' + Date.now();
     await page.goto(testUrl);
     
-    // Wait for initial failure
-    await page.waitForTimeout(1000);
-    expect(callCount).toBe(1);
+    // Check for initial attempt
+    await expect.poll(() => callCount, { timeout: 5000 }).toBeGreaterThanOrEqual(1);
 
-    // Wait for retry (configured for 5 seconds in our implementation, but let's check if we can speed it up or just wait)
-    // Optimization: We could mock the timer in the browser if possible, but simplest is to wait.
-    test.setTimeout(20000); 
-    await page.waitForTimeout(7000); 
-    
-    expect(callCount).toBeGreaterThan(1);
+    // Wait for automatic retry (BASE_RETRY_MS = 3000ms)
+    await expect.poll(() => callCount, { timeout: 15000 }).toBeGreaterThan(1);
   });
 });

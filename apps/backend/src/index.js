@@ -184,6 +184,32 @@ app.post("/api/v1/events/cta-click", async (req, res) => {
 });
 
 /**
+ * Work With Me CTA Analytics (Slice 8)
+ * Root-level endpoint for specialized CTA tracking.
+ */
+app.post("/api/events", async (req, res) => {
+    const { ctaType, sessionId } = req.body;
+    
+    const validCtaTypes = ["deliver_project", "mentor_me", "coffee_with_me"];
+    
+    if (!ctaType || !validCtaTypes.includes(ctaType)) {
+        return res.status(400).json({ error: "Invalid or missing ctaType" });
+    }
+
+    if (!sessionId) {
+        return res.status(400).json({ error: "sessionId is required" });
+    }
+
+    try {
+        await analytics.trackFeaturedCta({ ctaType, sessionId });
+        res.status(204).send();
+    } catch (error) {
+        logger.error('Failed to record featured CTA click:', error);
+        res.status(500).json({ error: "Failed to record event" });
+    }
+});
+
+/**
  * Hero Lead Submission
  * Public endpoint to receive modal form submissions.
  */
@@ -433,6 +459,22 @@ app.get("/api/v1/analytics/history", authenticateToken, async (req, res) => {
         res.status(200).json(events);
     } catch {
         res.status(500).json({ error: "Failed to fetch history" });
+    }
+});
+
+/**
+ * Featured CTA Analytics (Slice 8)
+ * Provides detailed stats for the Work With Me journey.
+ */
+app.get("/api/v1/analytics/featured-cta", authenticateToken, async (req, res) => {
+    if (req.user?.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
+
+    try {
+        const stats = await analytics.getFeaturedCtaStats();
+        res.status(200).json(stats);
+    } catch (error) {
+        logger.error('Failed to fetch featured CTA stats:', error);
+        res.status(500).json({ error: "Failed to fetch featured CTA stats" });
     }
 });
 

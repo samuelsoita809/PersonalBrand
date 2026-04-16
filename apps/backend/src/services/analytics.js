@@ -1,4 +1,5 @@
 import { db } from './db.js';
+import { eq, sql, desc, count, gte, and, like, between, asc } from 'drizzle-orm';
 import { createLogger } from '@monorepo/shared';
 import * as schema from '../db/schema.js';
 import crypto from 'crypto';
@@ -78,55 +79,168 @@ class AnalyticsService {
         }
     }
 
-    async getSummary() {
+    /**
+     * Records a "Work With Me" CTA click to the dedicated 'events' table (Slice 8).
+     * @param {Object} data 
+     */
+    async trackFeaturedCta(data) {
         try {
-            logger.info('Fetching analytics summary stats');
-            const events = await db.db.select().from(schema.analytics_events);
-            const page_views = await db.db.select().from(schema.page_views);
-            const leads = await db.db.select().from(schema.hero_leads);
+            logger.info(`Tracking Featured CTA: ${data.ctaType}`, { sid: data.sessionId });
             
-            const stats = {
-                total_events: events.length + page_views.length,
-                page_views: page_views.length,
-                cta_clicks: events.filter(e => e.event_name.startsWith('cta_')).length,
-                modal_opens: events.filter(e => e.event_name === 'modal_open').length,
-                leads: leads.length
+            await db.db.insert(schema.events).values({
+                event_id: crypto.randomUUID(),
+                cta_type: data.ctaType,
+                session_id: data.sessionId,
+                timestamp: new Date()
+            });
+        } catch (error) {
+            logger.error('Failed to record featured CTA event:', error);
+            throw error;
+        }
+    }
+
+    async getFeaturedCtaStats() {
+        try {
+            logger.info('Aggregating Featured CTA stats via SQL');
+            
+            // 1. Total Clicks by type (Grouped SQL)
+            const typeCounts = await db.db.select({
+                type: schema.events.cta_type,
+                count: count()
+            }).from(schema.events).groupBy(schema.events.cta_type);
+            
+            const counts = {
+                deliver_project: 0,
+                mentor_me: 0,
+                coffee_with_me: 0
+            };
+            typeCounts.forEach(c => {
+                if (counts[c.type] !== undefined) counts[c.type] = Number(c.count);
+            });
+
+            // 2. Time Series (Last 7 days filtered at DB level)
+            const cutoff = new Date();
+            cutoff.setDate(cutoff.getDate() - 7);
+            
+            const rawTrend = await db.db.select({
+                date: sql`DATE(${schema.events.timestamp})`,
+                count: count()
+            })
+            .from(schema.events)
+            .where(gte(schema.events.timestamp, cutoff))
+            .groupBy(sql`DATE(${schema.events.timestamp})`)
+            .orderBy(asc(sql`DATE(${schema.events.timestamp})`));
+
+            // Normalize time series for frontend (ensures every day has an entry)
+            const trendMap = {};
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                trendMap[dateStr] = { date: dateStr, clicks: 0 };
+            }
+
+            rawTrend.forEach(row => {
+                const dateStr = row.date;
+                if (trendMap[dateStr]) trendMap[dateStr].clicks = Number(row.count);
+            });
+
+            const timeSeries = Object.values(trendMap).sort((a, b) => a.date.localeCompare(b.date));
+
+            // 3. Funnel Counts (Fast SQL counts)
+            const [pCount, mCount, cCount] = await Promise.all([
+                db.db.select({ count: count() }).from(schema.project_requests),
+                db.db.select({ count: count() }).from(schema.mentor_requests),
+                db.db.select({ count: count() }).from(schema.coffee_requests)
+            ]);
+
+            const conversions = {
+                deliver_project: Number(pCount[0].count),
+                mentor_me: Number(mCount[0].count),
+                coffee_with_me: Number(cCount[0].count)
             };
 
-            // Calculation Rules for Product Specification
+            // 4. CTR Source (Filtered count)
+            const heroViews = await db.db.select({ count: count() })
+                .from(schema.analytics_events)
+                .where(eq(schema.analytics_events.event_name, 'hero_view'));
+            
+            const totalViews = Number(heroViews[0].count) || 1;
+
+            return {
+                counts,
+                timeSeries,
+                conversions,
+                totalViews,
+                isReal: true
+            };
+        } catch (error) {
+            logger.error('Failed to get optimized featured CTA stats:', error);
+            return { counts: {}, timeSeries: [], conversions: {}, totalViews: 0, isReal: false };
+        }
+    }
+
+    async getSummary() {
+        try {
+            logger.info('Fetching optimized summary stats via SQL');
+            
+            const [totalEvents, pageViews, ctaClicks, modalOpens, leadsCount] = await Promise.all([
+                db.db.select({ count: count() }).from(schema.analytics_events),
+                db.db.select({ count: count() }).from(schema.page_views),
+                db.db.select({ count: count() }).from(schema.analytics_events).where(like(schema.analytics_events.event_name, 'cta_%')),
+                db.db.select({ count: count() }).from(schema.analytics_events).where(eq(schema.analytics_events.event_name, 'modal_open')),
+                db.db.select({ count: count() }).from(schema.hero_leads)
+            ]);
+
+            const stats = {
+                total_events: Number(totalEvents[0].count) + Number(pageViews[0].count),
+                page_views: Number(pageViews[0].count),
+                cta_clicks: Number(ctaClicks[0].count),
+                modal_opens: Number(modalOpens[0].count),
+                leads: Number(leadsCount[0].count)
+            };
+
             stats.ctr = stats.page_views > 0 ? (stats.cta_clicks / stats.page_views).toFixed(4) : 0;
             stats.modal_rate = stats.cta_clicks > 0 ? (stats.modal_opens / stats.cta_clicks).toFixed(4) : 0;
 
             return { ...stats, isReal: true };
         } catch (error) {
-            logger.warn('Failed to fetch analytics from database, using empty defaults', error.message);
-            // Graceful fallback to prevent 500 errors in the dashboard
+            logger.warn('Failed to fetch analytics summary:', error.message);
             return {
-                total_events: 0,
-                page_views: 0,
-                cta_clicks: 0,
-                modal_opens: 0,
-                leads: 0,
-                ctr: 0,
-                modal_rate: 0,
-                isReal: false,
-                error: error.message
+                total_events: 0, page_views: 0, cta_clicks: 0, modal_opens: 0, leads: 0,
+                ctr: 0, modal_rate: 0, isReal: false, error: error.message
             };
         }
     }
 
     async getTimeSeries(days = 7) {
         try {
+            logger.info('Fetching optimized time series via SQL');
             const cutoff = new Date();
             cutoff.setDate(cutoff.getDate() - days);
 
-            const events = await db.db.select().from(schema.analytics_events);
-            const pageViews = await db.db.select().from(schema.page_views);
+            const [viewSeries, clickSeries] = await Promise.all([
+                db.db.select({
+                    date: sql`DATE(${schema.page_views.timestamp})`,
+                    count: count()
+                })
+                .from(schema.page_views)
+                .where(gte(schema.page_views.timestamp, cutoff))
+                .groupBy(sql`DATE(${schema.page_views.timestamp})`),
+
+                db.db.select({
+                    date: sql`DATE(${schema.analytics_events.createdAt})`,
+                    count: count()
+                })
+                .from(schema.analytics_events)
+                .where(and(
+                    gte(schema.analytics_events.createdAt, cutoff),
+                    like(schema.analytics_events.event_name, 'cta_%')
+                ))
+                .groupBy(sql`DATE(${schema.analytics_events.createdAt})`)
+            ]);
             
-            const event_series = events.filter(e => e.createdAt && e.createdAt >= cutoff);
-            const view_series = pageViews.filter(v => v.timestamp && v.timestamp >= cutoff);
-            
-            // Group by day
+            // Group by day into final format
             const grouped = {};
             for (let i = 0; i < days; i++) {
                 const d = new Date();
@@ -135,63 +249,47 @@ class AnalyticsService {
                 grouped[dateStr] = { date: dateStr, views: 0, clicks: 0 };
             }
 
-            view_series.forEach(v => {
-                const dateStr = v.timestamp.toISOString().split('T')[0];
-                if (grouped[dateStr]) grouped[dateStr].views++;
+            viewSeries.forEach(v => {
+                if (grouped[v.date]) grouped[v.date].views = Number(v.count);
             });
 
-            event_series.forEach(e => {
-                if (e.createdAt && typeof e.createdAt.toISOString === 'function') {
-                    const dateStr = e.createdAt.toISOString().split('T')[0];
-                    if (grouped[dateStr]) {
-                        if (e.event_name.startsWith('cta_')) grouped[dateStr].clicks++;
-                    }
-                }
+            clickSeries.forEach(c => {
+                if (grouped[c.date]) grouped[c.date].clicks = Number(c.count);
             });
 
             return Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
         } catch (error) {
-            logger.warn('Failed to fetch time series, using empty dataset', error.message);
+            logger.warn('Failed to fetch time series:', error.message);
             return [];
         }
     }
 
     async getRecentEvents(limit = 10) {
         try {
-            // Fetch latest from both tables
+            logger.info('Fetching recent events with strict SQL limits');
             const events = await db.db.select()
                 .from(schema.analytics_events)
-                .orderBy(db.db.desc(schema.analytics_events.createdAt))
-                .limit(50);
+                .orderBy(desc(schema.analytics_events.createdAt))
+                .limit(limit);
             
             const pageViews = await db.db.select()
                 .from(schema.page_views)
-                .orderBy(db.db.desc(schema.page_views.timestamp))
-                .limit(50);
+                .orderBy(desc(schema.page_views.timestamp))
+                .limit(limit);
 
-            // Transform page views to match event structure for the dashboard feed
             const normalizedPageViews = pageViews.map(pv => ({
                 id: pv.id,
                 event_name: 'page_view',
-                metadata: {
-                    url: pv.page_url,
-                    path: pv.page_path,
-                    session_id: pv.session_id,
-                    device_type: pv.device_type,
-                    ...pv.metadata
-                },
+                metadata: { ...pv.metadata, url: pv.page_url, path: pv.page_path },
                 context: 'frontend',
                 createdAt: pv.timestamp
             }));
 
-            // Combine and sort
-            const combined = [...events, ...normalizedPageViews]
+            return [...events, ...normalizedPageViews]
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 .slice(0, limit);
-
-            return combined;
         } catch (error) {
-            logger.warn('Failed to fetch recent events, using empty list', error.message);
+            logger.warn('Failed to fetch recent events:', error.message);
             return [];
         }
     }
@@ -204,95 +302,64 @@ class AnalyticsService {
      */
     async getPageViewsStats(days = 7, pageFilter = null, deviceFilter = null) {
         try {
+            logger.info('Fetching optimized page view stats via SQL');
             const cutoff = new Date();
             cutoff.setDate(cutoff.getDate() - days);
 
-            // Fetch all page view events within range
-            const allPageViews = await db.db.select().from(schema.page_views);
-            
-            const pageViewsInPeriod = allPageViews.filter(v => 
-                v.timestamp && v.timestamp >= cutoff
-            );
+            let whereClause = gte(schema.page_views.timestamp, cutoff);
+            if (pageFilter) whereClause = and(whereClause, eq(schema.page_views.page_path, pageFilter));
+            if (deviceFilter) whereClause = and(whereClause, eq(schema.page_views.device_type, deviceFilter));
 
-            // Apply filters
-            const filtered = pageViewsInPeriod.filter(v => {
-                const matchesPage = !pageFilter || v.page_path === pageFilter || v.page_url?.includes(pageFilter);
-                const matchesDevice = !deviceFilter || v.device_type === deviceFilter;
-                return matchesPage && matchesDevice;
-            });
+            const [summary, topPages, devices, trends] = await Promise.all([
+                // 1. Summary
+                db.db.select({
+                    total: count(),
+                    unique: count(schema.page_views.session_id)
+                }).from(schema.page_views).where(whereClause),
 
-            // Calculate KPIs
-            const totalViews = filtered.length;
-            const uniqueSessions = new Set(filtered.map(e => e.metadata?.session_id).filter(Boolean));
-            const uniqueViews = uniqueSessions.size;
+                // 2. Top Pages
+                db.db.select({
+                    name: schema.page_views.page_path,
+                    views: count()
+                })
+                .from(schema.page_views)
+                .where(whereClause)
+                .groupBy(schema.page_views.page_path)
+                .orderBy(desc(count()))
+                .limit(10),
 
-            // Group by Page
-            const pageMap = {};
-            filtered.forEach(e => {
-                const name = e.metadata?.page_name || e.metadata?.url || 'Unknown';
-                pageMap[name] = (pageMap[name] || 0) + 1;
-            });
-            const topPages = Object.entries(pageMap)
-                .map(([name, views]) => ({ name, views }))
-                .sort((a, b) => b.views - a.views)
-                .slice(0, 10);
+                // 3. Devices
+                db.db.select({
+                    name: schema.page_views.device_type,
+                    value: count()
+                })
+                .from(schema.page_views)
+                .where(whereClause)
+                .groupBy(schema.page_views.device_type),
 
-            // Group by Device
-            const deviceMap = {};
-            filtered.forEach(e => {
-                const device = e.metadata?.device_type || 'Desktop'; // Default
-                deviceMap[device] = (deviceMap[device] || 0) + 1;
-            });
-            const devices = Object.entries(deviceMap).map(([name, value]) => ({ name, value }));
-
-            // Time Series (Trends)
-            const grouped = {};
-            for (let i = 0; i < days; i++) {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                const dateStr = d.toISOString().split('T')[0];
-                grouped[dateStr] = { date: dateStr, views: 0, unique: 0 };
-            }
-
-            const uniquePerDay = {}; // date -> Set(session_id)
-
-            filtered.forEach(v => {
-                const dateStr = v.timestamp.toISOString().split('T')[0];
-                if (grouped[dateStr]) {
-                    grouped[dateStr].views++;
-                    
-                    if (!uniquePerDay[dateStr]) uniquePerDay[dateStr] = new Set();
-                    if (v.session_id) {
-                        uniquePerDay[dateStr].add(v.session_id);
-                    }
-                }
-            });
-
-            Object.keys(grouped).forEach(dateStr => {
-                grouped[dateStr].unique = uniquePerDay[dateStr]?.size || 0;
-            });
-
-            const trends = Object.values(grouped).sort((a, b) => a.date.localeCompare(b.date));
+                // 4. Trends
+                db.db.select({
+                    date: sql`DATE(${schema.page_views.timestamp})`,
+                    views: count(),
+                    unique: count(schema.page_views.session_id)
+                })
+                .from(schema.page_views)
+                .where(whereClause)
+                .groupBy(sql`DATE(${schema.page_views.timestamp})`)
+                .orderBy(asc(sql`DATE(${schema.page_views.timestamp})`))
+            ]);
 
             return {
-                totalViews,
-                uniqueViews,
-                topPages,
-                devices,
-                trends,
+                totalViews: Number(summary[0].total),
+                uniqueViews: Number(summary[0].unique),
+                topPages: topPages.map(p => ({ ...p, views: Number(p.views) })),
+                devices: devices.map(d => ({ ...d, value: Number(d.value) })),
+                trends: trends.map(t => ({ ...t, views: Number(t.views), unique: Number(t.unique) })),
                 isReal: true
             };
         } catch (error) {
-            logger.error('Failed to get page view stats:', error);
-            return {
-                totalViews: 0,
-                uniqueViews: 0,
-                topPages: [],
-                devices: [],
-                trends: [],
-                isReal: false,
-                error: error.message
-            };
+            logger.error('Failed to get optimized page view stats:', error);
+            return { totalViews: 0, uniqueViews: 0, topPages: [], devices: [], trends: [], isReal: false };
         }
     }
 }

@@ -82,3 +82,14 @@ export const coffee_requests = pgTable('coffee_requests', {
     createdAt: timestamp('created_at').defaultNow(),
     metadata: jsonb('metadata'),
 });
+
+export const free_requests = pgTable('free_requests', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    service: varchar('service', { length: 255 }).notNull(),
+    message: text('message').notNull(),
+    status: varchar('status', { length: 50 }).default('pending'),
+    createdAt: timestamp('created_at').defaultNow(),
+    metadata: jsonb('metadata'),
+});

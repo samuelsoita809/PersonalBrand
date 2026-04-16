@@ -1,0 +1,27 @@
+{
+  "title": "Help Me Free",
+  "subtitle": "Value-first help to unblock your project and build trust.",
+  "services": [
+    {
+      "id": "website_audit",
+      "title": "Website Audit",
+      "icon": "Search",
+      "description": "🧾 Get a professional review of your site's performance, UX, and conversion opportunities.",
+      "intentLabel": "What is your website URL and what would you like me to focus on?"
+    },
+    {
+      "id": "quick_chat",
+      "title": "15-Minute Chat",
+      "icon": "MessageCircle",
+      "description": "💬 Quick consultation to unblock your technical or business project project.",
+      "intentLabel": "What is the #1 challenge you want to solve in 15 minutes?"
+    },
+    {
+      "id": "tech_catchup",
+      "title": "Tech CatchUp",
+      "icon": "Users",
+      "description": "👥 Join our community group session to discuss trends, tools, and best practices.",
+      "intentLabel": "What topics are you most interested in discussing during the catchup?"
+    }
+  ]
+}

@@ -77,7 +77,7 @@ const PlanStep: React.FC<PlanStepProps> = ({ selectedPlanId, onNext }) => {
                   : 'bg-white/5 text-slate-300 group-hover:bg-white/10 group-hover:text-white'
               }`}
             >
-              {selectedPlanId === plan.id ? 'Selected 🚀' : 'Get Started Now'}
+              {selectedPlanId === plan.id ? <span className="flex items-center justify-center gap-2">Selected <Check size={16} /></span> : 'Get Started Now'}
             </button>
           </div>
         ))}

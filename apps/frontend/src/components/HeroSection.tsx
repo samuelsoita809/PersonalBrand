@@ -6,6 +6,7 @@ import DeliverProjectModal from './modals/DeliverProjectModal';
 import MentorMeModal from './modals/MentorMeModal';
 import CoffeeMeModal from './modals/CoffeeMeModal';
 import ServiceSelectionModal from './modals/ServiceSelectionModal';
+import HelpMeFreeModal from './modals/HelpMeFreeModal';
 import { useAnalytics } from '../context/analytics';
 import heroConfig from '../config/hero-content.json';
 import Badge from './Badge';
@@ -19,6 +20,7 @@ const HeroSection: React.FC = () => {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isMentorModalOpen, setIsMentorModalOpen] = useState(false);
   const [isCoffeeModalOpen, setIsCoffeeModalOpen] = useState(false);
+  const [isHelpFreeModalOpen, setIsHelpFreeModalOpen] = useState(false);
   
   const ctaTimeoutRef = useRef<number | undefined>(undefined);
 
@@ -61,6 +63,8 @@ const HeroSection: React.FC = () => {
       
       if (id === 'work_with_me') {
         setIsSelectionModalOpen(true);
+      } else if (id === 'help_me_free') {
+        setIsHelpFreeModalOpen(true);
       }
       ctaTimeoutRef.current = undefined;
     }, 300);
@@ -142,6 +146,11 @@ const HeroSection: React.FC = () => {
       <CoffeeMeModal
         isOpen={isCoffeeModalOpen}
         onClose={() => setIsCoffeeModalOpen(false)}
+      />
+
+      <HelpMeFreeModal
+        isOpen={isHelpFreeModalOpen}
+        onClose={() => setIsHelpFreeModalOpen(false)}
       />
     </section>
   );

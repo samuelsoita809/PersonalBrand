@@ -1,47 +1,45 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import CoffeePlanStep from './steps/CoffeePlanStep';
-import CoffeeFormStep from './steps/CoffeeFormStep';
+import FreeServiceStep from './steps/FreeServiceStep';
+import FreeFormStep from './steps/FreeFormStep';
 import SuccessStep from './steps/SuccessStep';
 import { useAnalytics } from '../../context/analytics';
 
-export type CoffeeStep = 'plan' | 'form' | 'success';
+export type FreeStep = 'service' | 'form' | 'success';
 
-interface CoffeeMeModalProps {
+interface HelpMeFreeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export interface CoffeeFormData {
-  planId: string;
+export interface FreeFormData {
+  serviceId: string;
   name: string;
   email: string;
-  idea: string;
-  urgency: 'low' | 'medium' | 'high';
+  message: string;
 }
 
-const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
-  const [currentStep, setCurrentStep] = useState<CoffeeStep>('plan');
-  const [formData, setFormData] = useState<CoffeeFormData>({
-    planId: '',
+const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) => {
+  const [currentStep, setCurrentStep] = useState<FreeStep>('service');
+  const [formData, setFormData] = useState<FreeFormData>({
+    serviceId: '',
     name: '',
     email: '',
-    idea: '',
-    urgency: 'medium'
+    message: ''
   });
   const { trackEvent } = useAnalytics();
 
   if (!isOpen) return null;
 
-  const handleNext = (data?: Partial<CoffeeFormData>) => {
+  const handleNext = (data?: Partial<FreeFormData>) => {
     const updatedData = data ? { ...formData, ...data } : formData;
     if (data) {
       setFormData(updatedData);
     }
 
-    if (currentStep === 'plan') {
-      if (updatedData.planId) {
-        trackEvent('coffee_plan_selected', { planId: updatedData.planId });
+    if (currentStep === 'service') {
+      if (updatedData.serviceId) {
+        trackEvent('free_service_selected', { serviceId: updatedData.serviceId });
       }
       setCurrentStep('form');
     }
@@ -51,30 +49,26 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'form') setCurrentStep('plan');
+    if (currentStep === 'form') setCurrentStep('service');
   };
 
-  const handleSubmit = async (finalData: CoffeeFormData) => {
+  const handleSubmit = async (finalData: FreeFormData) => {
     try {
-      const submissionData = {
-        name: finalData.name,
-        email: finalData.email,
-        plan: finalData.planId,
-        idea: finalData.idea,
-        urgency: finalData.urgency
-      };
-
-      const response = await fetch('/api/v1/coffee-requests', {
+      const response = await fetch('/api/v1/free-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionData)
+        body: JSON.stringify({
+          name: finalData.name,
+          email: finalData.email,
+          service: finalData.serviceId,
+          message: finalData.message
+        })
       });
 
       if (!response.ok) throw new Error('Failed to submit request');
       
-      trackEvent('coffee_request_submitted', { 
-        plan: submissionData.plan,
-        urgency: submissionData.urgency
+      trackEvent('free_request_submitted', { 
+        service: finalData.serviceId
       });
       
       setCurrentStep('success');
@@ -85,13 +79,13 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
   };
 
   const stepTitle = {
-    plan: 'Coffee With Me: Choose Your Plan',
-    form: 'Define Your Idea & Urgency',
+    service: 'Help Me Free: Select Your Service',
+    form: 'Tell Me More',
     success: 'Request Received!'
   };
 
   const progress = {
-    plan: 33,
+    service: 33,
     form: 66,
     success: 100
   };
@@ -130,14 +124,15 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-800">
-          {currentStep === 'plan' && (
-            <CoffeePlanStep 
-              selectedPlanId={formData.planId} 
-              onSelect={(planId: string) => handleNext({ planId })} 
+          {currentStep === 'service' && (
+            <FreeServiceStep 
+              selectedServiceId={formData.serviceId} 
+              onSelect={(serviceId: string) => handleNext({ serviceId })} 
             />
           )}
           {currentStep === 'form' && (
-            <CoffeeFormStep 
+            <FreeFormStep 
+              serviceId={formData.serviceId}
               initialData={formData}
               onNext={(data) => handleNext(data)}
               onBack={handleBack}
@@ -146,11 +141,11 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
           {currentStep === 'success' && (
             <SuccessStep 
               onClose={onClose} 
-              title="Consultancy Request Received!"
-              description="Your idea has been captured. I'll personally review your submission and we'll reach out shortly to schedule our session. Get clear. Move fast. Take action."
+              title="Help Request Received!"
+              description="I've received your request for free help. I personally review every submission to ensure I can provide the best value possible. Expect a response soon."
               steps={[
-                { title: "Review", description: "Expert review of your idea and challenges." },
-                { title: "Schedule", description: "Picking the best slot to achieve your wins." }
+                { title: "Review", description: "Analyzing your request and context." },
+                { title: "Reach Out", description: "I'll contact you via email with the next steps." }
               ]}
             />
           )}
@@ -160,4 +155,4 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default CoffeeMeModal;
+export default HelpMeFreeModal;

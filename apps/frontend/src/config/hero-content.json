@@ -23,6 +23,11 @@
       "id": "work_with_me",
       "label": "Work with Me",
       "type": "primary"
+    },
+    {
+      "id": "help_me_free",
+      "label": "Help Me Free",
+      "type": "primary"
     }
   ]
 }

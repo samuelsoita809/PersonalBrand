@@ -19,8 +19,8 @@ const SuccessStep: React.FC<SuccessStepProps> = ({
 }) => {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in zoom-in-95 duration-700">
-      <div className="mb-8 p-4 bg-green-500/10 rounded-full animate-bounce duration-1000">
-        <CheckCircle2 size={80} className="text-green-500" />
+      <div className="mb-8 p-4 bg-blue-500/10 rounded-full animate-bounce duration-1000">
+        <CheckCircle2 size={80} className="text-blue-500" />
       </div>
 
       <h2 className="text-4xl font-black text-white mb-4 tracking-tight">

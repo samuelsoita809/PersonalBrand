@@ -2,12 +2,21 @@ import React from 'react';
 import { Check, Star, Shield, Trophy } from 'lucide-react';
 import coffeeConfig from '../../../config/coffee-config.json';
 
+interface CoffeePlan {
+  id: string;
+  title: string;
+  price: string;
+  features: string[];
+}
+
 interface CoffeePlanStepProps {
   selectedPlanId: string;
   onSelect: (planId: string) => void;
 }
 
 const CoffeePlanStep: React.FC<CoffeePlanStepProps> = ({ selectedPlanId, onSelect }) => {
+  const plans = coffeeConfig.plans as CoffeePlan[];
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="text-center space-y-2">
@@ -18,7 +27,7 @@ const CoffeePlanStep: React.FC<CoffeePlanStepProps> = ({ selectedPlanId, onSelec
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {coffeeConfig.plans.map((plan) => (
+        {plans.map((plan) => (
           <div 
             key={plan.id}
             className={`relative p-8 rounded-3xl border transition-all cursor-pointer group flex flex-col ${

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import app from '../src/index.js';
 
@@ -21,7 +21,8 @@ describe('Free Help Request API', () => {
     });
 
     it('should return 400 if name is missing', async () => {
-        const { name, ...invalidRequest } = validRequest;
+        const invalidRequest = { ...validRequest };
+        delete invalidRequest.name;
         const response = await request(app)
             .post('/api/v1/free-requests')
             .send(invalidRequest);
@@ -31,7 +32,8 @@ describe('Free Help Request API', () => {
     });
 
     it('should return 400 if email is missing', async () => {
-        const { email, ...invalidRequest } = validRequest;
+        const invalidRequest = { ...validRequest };
+        delete invalidRequest.email;
         const response = await request(app)
             .post('/api/v1/free-requests')
             .send(invalidRequest);
@@ -41,7 +43,8 @@ describe('Free Help Request API', () => {
     });
 
     it('should return 400 if service is missing', async () => {
-        const { service, ...invalidRequest } = validRequest;
+        const invalidRequest = { ...validRequest };
+        delete invalidRequest.service;
         const response = await request(app)
             .post('/api/v1/free-requests')
             .send(invalidRequest);
@@ -51,7 +54,8 @@ describe('Free Help Request API', () => {
     });
 
     it('should return 400 if message is missing', async () => {
-        const { message, ...invalidRequest } = validRequest;
+        const invalidRequest = { ...validRequest };
+        delete invalidRequest.message;
         const response = await request(app)
             .post('/api/v1/free-requests')
             .send(invalidRequest);

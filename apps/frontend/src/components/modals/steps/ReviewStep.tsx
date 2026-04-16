@@ -3,6 +3,14 @@ import { ArrowLeft, CheckCircle2, Loader2, Zap } from 'lucide-react';
 import type { FormData } from '../DeliverProjectModal';
 import pricingData from '../../../config/pricing-plans.json';
 
+interface PricingPlan {
+  id: string;
+  name: string;
+  price: number;
+  delivery: string;
+  keyResults: string[];
+}
+
 interface ReviewStepProps {
   formData: FormData;
   onNext: () => void;
@@ -11,7 +19,7 @@ interface ReviewStepProps {
 
 const ReviewStep: React.FC<ReviewStepProps> = ({ formData, onNext, onBack }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const selectedPlan = pricingData.plans.find(p => p.id === formData.planId) as any;
+  const selectedPlan = pricingData.plans.find(p => p.id === formData.planId) as PricingPlan | undefined;
 
   const handleConfirm = async () => {
     setIsSubmitting(true);

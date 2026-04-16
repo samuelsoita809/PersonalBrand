@@ -7,7 +7,8 @@ import {
   BarChart2, 
   ChevronDown, 
   ChevronUp, 
-  PieChart 
+  PieChart,
+  Filter
 } from 'lucide-react';
 
 export interface DashboardSection {
@@ -31,6 +32,13 @@ const ALL_SECTIONS: Record<string, DashboardSection> = {
     componentType: "PageViewsAnalytics",
     title: "Page Views Analytics",
     description: "Detailed breakdown of page traffic, trends, and user devices.",
+    props: {}
+  },
+  cta_performance: {
+    id: "cta_performance",
+    componentType: "CtaAnalyticsDashboard",
+    title: "CTA Funnel Performance",
+    description: "Measuring intent, interaction, and conversion for Work With Me services.",
     props: {}
   }
 };
@@ -82,6 +90,13 @@ const DashboardPage: React.FC = () => {
                 >
                   <PieChart size={14} />
                   Page Views
+                </button>
+                <button 
+                  onClick={() => setActiveSectionId('cta_performance')}
+                  className={`w-full flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-all ${activeSectionId === 'cta_performance' ? 'text-blue-400 bg-blue-500/5' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <Filter size={14} />
+                  CTA Performance
                 </button>
               </div>
             )}

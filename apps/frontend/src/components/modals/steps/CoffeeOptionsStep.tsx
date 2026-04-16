@@ -2,6 +2,16 @@ import React from 'react';
 import { Coffee, Search, Users, Zap, TrendingUp, Check } from 'lucide-react';
 import coffeeConfig from '../../../config/coffee-config.json';
 
+interface CoffeeOption {
+  id: string;
+  icon?: string;
+  title: string;
+  subtitle?: string;
+  price: string;
+  features: string[];
+  keyResults?: string[];
+}
+
 interface CoffeeOptionsStepProps {
   selectedOptionId: string;
   onSelect: (optionId: string) => void;
@@ -17,6 +27,8 @@ const CoffeeOptionsStep: React.FC<CoffeeOptionsStepProps> = ({ selectedOptionId,
     }
   };
 
+  const options = coffeeConfig.plans as CoffeeOption[];
+
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Micro Value Line - High Trust Header */}
@@ -28,7 +40,7 @@ const CoffeeOptionsStep: React.FC<CoffeeOptionsStepProps> = ({ selectedOptionId,
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {coffeeConfig.options.map((option) => (
+        {options.map((option) => (
           <div 
             key={option.id}
             className={`relative p-8 rounded-3xl border transition-all cursor-pointer group flex flex-col ${
@@ -41,12 +53,15 @@ const CoffeeOptionsStep: React.FC<CoffeeOptionsStepProps> = ({ selectedOptionId,
             <div className={`mb-6 p-4 w-fit rounded-2xl transition-colors ${
               selectedOptionId === option.id ? 'bg-blue-500/20 text-blue-400' : 'bg-white/5 text-slate-400 group-hover:bg-white/10 group-hover:text-blue-400'
             }`}>
-              {getIcon(option.icon)}
+              {getIcon(option.icon || 'Coffee')}
             </div>
             
             <div className="mb-6">
-              <h3 className="text-xl font-black text-white mb-2">{option.title}</h3>
-              <p className="text-sm text-slate-400 leading-relaxed font-medium">{option.subtitle}</p>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-black text-white">{option.title}</h3>
+                <span className="text-blue-400 font-black text-lg italic tracking-tighter">{option.price}</span>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed font-medium">{option.subtitle || 'Direct interaction & high-impact consultancy.'}</p>
             </div>
 
             {/* Key Results Cluster - ROI Focused */}
@@ -56,7 +71,7 @@ const CoffeeOptionsStep: React.FC<CoffeeOptionsStepProps> = ({ selectedOptionId,
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Results You Get</span>
               </div>
               <ul className="space-y-2">
-                {option.keyResults?.map((result: string, i: number) => (
+                {(option.keyResults || coffeeConfig.results).map((result: string, i: number) => (
                   <li key={i} className="flex items-center gap-2 text-sm font-bold text-blue-100">
                     <Zap size={12} className="text-blue-400 fill-blue-400" />
                     <span>{result}</span>

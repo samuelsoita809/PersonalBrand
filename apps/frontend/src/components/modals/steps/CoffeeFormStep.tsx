@@ -42,18 +42,18 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
 
   return (
     <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="mb-8 p-6 bg-amber-500/5 rounded-3xl border border-amber-500/10 flex items-center justify-between">
+      <div className="mb-8 p-6 bg-blue-500/5 rounded-3xl border border-blue-500/10 flex items-center justify-between">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1">Selected Plan</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-1">Selected Plan</p>
           <div className="flex items-center gap-3">
              <span className="text-white font-black text-xl italic tracking-tight">{initialData.planId.toUpperCase()}</span>
-             <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-tighter">Verified Priority</span>
+             <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-tighter">Verified Priority</span>
           </div>
         </div>
         <button 
           onClick={onBack}
           aria-label="Back to Plans"
-          className="p-3 bg-white/5 text-slate-400 hover:text-amber-400 hover:bg-amber-400/10 rounded-2xl transition-all"
+          className="p-3 bg-white/5 text-slate-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-2xl transition-all"
         >
           <ArrowLeft size={20} />
         </button>
@@ -68,7 +68,7 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
               id="name"
               placeholder="Your name"
               className={`w-full px-5 py-4 bg-slate-950/50 border rounded-2xl text-white font-medium outline-none transition-all ${
-                errors.name ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-amber-500'
+                errors.name ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
               }`}
             />
             {errors.name && <p className="text-xs text-red-500 font-bold mt-1 ml-1">{errors.name.message}</p>}
@@ -82,7 +82,7 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
               type="email"
               placeholder="your@email.com"
               className={`w-full px-5 py-4 bg-slate-950/50 border rounded-2xl text-white font-medium outline-none transition-all ${
-                errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-amber-500'
+                errors.email ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
               }`}
             />
             {errors.email && <p className="text-xs text-red-500 font-bold mt-1 ml-1">{errors.email.message}</p>}
@@ -94,7 +94,7 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
           <div className="grid grid-cols-3 gap-3">
             {[
               { id: 'low', label: 'Low', icon: ShieldCheck, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20' },
-              { id: 'medium', label: 'Medium', icon: Zap, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' },
+              { id: 'medium', label: 'Medium', icon: Zap, color: 'text-purple-400', bg: 'bg-purple-400/10', border: 'border-purple-400/20' },
               { id: 'high', label: 'High', icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/20' }
             ].map((u) => (
               <button
@@ -103,7 +103,7 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
                 onClick={() => handleUrgencyChange(u.id as any)}
                 className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all ${
                   selectedUrgency === u.id 
-                    ? `bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-500/20`
+                    ? `bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/20`
                     : `bg-slate-950/50 border-white/10 text-slate-400 hover:border-white/20`
                 }`}
               >
@@ -118,7 +118,7 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
           <div className="flex items-center justify-between ml-1">
             <label htmlFor="idea" className="text-xs font-black uppercase tracking-widest text-slate-400">Tell me about your idea or problem</label>
             {isVague && (
-              <span className="text-[10px] font-black text-amber-500 animate-pulse">⚠️ DETAILS MATTER</span>
+              <span className="text-[10px] font-black text-blue-500 animate-pulse">⚠️ DETAILS MATTER</span>
             )}
           </div>
           <textarea
@@ -126,12 +126,12 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
             id="idea"
             placeholder="Describe your challenge in detail. More context = better results. What are you building? Where are you stuck?"
             className={`w-full px-5 py-4 min-h-[160px] bg-slate-950/50 border rounded-2xl text-white font-medium outline-none transition-all resize-none ${
-              errors.idea ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-amber-500'
+              errors.idea ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
             }`}
           />
           {errors.idea && <p className="text-xs text-red-500 font-bold mt-1 ml-1">{errors.idea.message}</p>}
           {isVague && (
-            <p className="text-[10px] text-amber-500/80 font-bold mt-2 ml-1 italic">
+            <p className="text-[10px] text-blue-500/80 font-bold mt-2 ml-1 italic">
               Pro tip: Providing more details about your current roadblocks helps me prepare a more impactful session for you.
             </p>
           )}
@@ -142,7 +142,7 @@ const CoffeeFormStep: React.FC<CoffeeFormStepProps> = ({ initialData, onNext, on
             type="submit"
             className={`flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all ${
               isValid 
-                ? 'bg-amber-600 text-white shadow-xl shadow-amber-500/25 hover:bg-amber-500 hover:-translate-y-1' 
+                ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/25 hover:bg-blue-500 hover:-translate-y-1' 
                 : 'bg-white/5 text-slate-500 cursor-not-allowed'
             }`}
           >

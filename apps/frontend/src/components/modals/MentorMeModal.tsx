@@ -113,7 +113,7 @@ const MentorMeModal: React.FC<MentorMeModalProps> = ({ isOpen, onClose }) => {
             {currentStep !== 'success' && (
               <div className="mt-2 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-emerald-500 transition-all duration-500 ease-out"
+                  className="h-full bg-blue-500 transition-all duration-500 ease-out"
                   style={{ width: `${progress[currentStep]}%` }}
                 />
               </div>

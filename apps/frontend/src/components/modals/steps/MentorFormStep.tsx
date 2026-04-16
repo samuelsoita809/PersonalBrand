@@ -45,7 +45,7 @@ const MentorFormStep: React.FC<MentorFormStepProps> = ({ initialData, onNext, on
             id="name"
             {...register('name')}
             className={`w-full px-4 py-3 bg-slate-950/50 border rounded-xl text-white outline-none transition-all ${
-              errors.name ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500'
+              errors.name ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
             }`}
             placeholder="Your name"
           />
@@ -58,7 +58,7 @@ const MentorFormStep: React.FC<MentorFormStepProps> = ({ initialData, onNext, on
             id="email"
             {...register('email')}
             className={`w-full px-4 py-3 bg-slate-950/50 border rounded-xl text-white outline-none transition-all ${
-              errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500'
+              errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
             }`}
             placeholder="your@email.com"
           />
@@ -73,7 +73,7 @@ const MentorFormStep: React.FC<MentorFormStepProps> = ({ initialData, onNext, on
             id="level"
             {...register('level')}
             className={`w-full px-4 py-3 bg-slate-950/50 border rounded-xl text-white outline-none transition-all appearance-none cursor-pointer ${
-              errors.level ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500'
+              errors.level ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
             }`}
           >
             <option value="" className="bg-slate-900">Select Level</option>
@@ -90,7 +90,7 @@ const MentorFormStep: React.FC<MentorFormStepProps> = ({ initialData, onNext, on
             id="goal"
             {...register('goal')}
             className={`w-full px-4 py-3 bg-slate-950/50 border rounded-xl text-white outline-none transition-all appearance-none cursor-pointer ${
-              errors.goal ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500'
+              errors.goal ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
             }`}
           >
             <option value="" className="bg-slate-900">Select Goal</option>
@@ -109,7 +109,7 @@ const MentorFormStep: React.FC<MentorFormStepProps> = ({ initialData, onNext, on
           id="description"
           {...register('description')}
           className={`w-full px-4 py-3 min-h-[120px] bg-slate-950/50 border rounded-xl text-white outline-none transition-all resize-none ${
-            errors.description ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-emerald-500'
+            errors.description ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
           }`}
           placeholder="Tell me more about what you want to achieve..."
         />
@@ -127,7 +127,7 @@ const MentorFormStep: React.FC<MentorFormStepProps> = ({ initialData, onNext, on
         </button>
         <button 
           type="submit"
-          className="flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all"
+          className="flex items-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg transition-all"
         >
           Submit Request
           <ArrowRight size={18} />

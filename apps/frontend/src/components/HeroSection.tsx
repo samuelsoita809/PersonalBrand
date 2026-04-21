@@ -26,7 +26,7 @@ const HeroSection: React.FC = () => {
 
   // Unified Tracking
   useEffect(() => {
-    trackEvent('hero_view', {
+    trackEvent('hero section viewed', {
       heading,
       timestamp: new Date().toISOString(),
       version: '2.5.0-slice7-hardened'
@@ -58,7 +58,7 @@ const HeroSection: React.FC = () => {
     if (ctaTimeoutRef.current) window.clearTimeout(ctaTimeoutRef.current);
     
     ctaTimeoutRef.current = window.setTimeout(() => {
-      const eventName = id === 'work_with_me' ? 'cta_click_work_with_me' : 'cta_click';
+      const eventName = id === 'work_with_me' ? 'Work with me CTA Clicked' : 'Help Me Free CTA Clicked';
       trackEvent(eventName, { ctaId: id, ctaLabel: label });
       
       if (id === 'work_with_me') {
@@ -71,8 +71,16 @@ const HeroSection: React.FC = () => {
   };
 
   const handleServiceSelect = (serviceId: string) => {
-    // Slice 8 Tracking: Capture the specific intent
-    trackEvent(serviceId);
+    // Slice 8/11 Tracking: Capture the specific intent with exact strings
+    const eventMap: Record<string, string> = {
+      'deliver_project': 'Work With Me - Delivery Project option clicked',
+      'mentor_me': 'Work With Me - Mentor Me option clicked',
+      'coffee_with_me': 'Work With Me - Coffee With Me option clicked'
+    };
+    
+    if (eventMap[serviceId]) {
+      trackEvent(eventMap[serviceId]);
+    }
     
     setIsSelectionModalOpen(false);
     if (serviceId === 'deliver_project') {

@@ -31,8 +31,22 @@ const DeliverProjectModal: React.FC<DeliverProjectModalProps> = ({ isOpen, onClo
     description: ''
   });
   const { trackEvent } = useAnalytics();
+  const isCompleted = React.useRef(false);
 
-  if (!isOpen) return null;
+  // Track abandonment on close if not completed
+  const handleClose = React.useCallback(() => {
+    if (!isCompleted.current) {
+      trackEvent('Work With Me - Delivery Project Journey Not Completed / Abandoned');
+    }
+    onClose();
+  }, [onClose, trackEvent]);
+
+  if (!isOpen) {
+    // Reset state when closed
+    if (currentStep !== 'plan') setCurrentStep('plan');
+    isCompleted.current = false;
+    return null;
+  }
 
   const handleNext = (data?: Partial<FormData>) => {
     if (data) {
@@ -63,8 +77,8 @@ const DeliverProjectModal: React.FC<DeliverProjectModalProps> = ({ isOpen, onClo
 
       if (!response.ok) throw new Error('Failed to submit request');
       
-      trackEvent('form_submitted', { 
-        formType: 'deliver_project',
+      isCompleted.current = true;
+      trackEvent('Work With Me - Delivery Project Journey Completed', { 
         plan: formData.planId 
       });
       
@@ -94,7 +108,7 @@ const DeliverProjectModal: React.FC<DeliverProjectModalProps> = ({ isOpen, onClo
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-300"
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Modal Container */}
@@ -114,7 +128,7 @@ const DeliverProjectModal: React.FC<DeliverProjectModalProps> = ({ isOpen, onClo
             )}
           </div>
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"
           >
             <X size={24} />
@@ -144,7 +158,7 @@ const DeliverProjectModal: React.FC<DeliverProjectModalProps> = ({ isOpen, onClo
             />
           )}
           {currentStep === 'success' && (
-            <SuccessStep onClose={onClose} />
+            <SuccessStep onClose={handleClose} />
           )}
         </div>
       </div>

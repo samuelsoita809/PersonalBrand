@@ -30,8 +30,22 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
     urgency: 'medium'
   });
   const { trackEvent } = useAnalytics();
+  const isCompleted = React.useRef(false);
 
-  if (!isOpen) return null;
+  // Track abandonment on close if not completed
+  const handleClose = React.useCallback(() => {
+    if (!isCompleted.current) {
+      trackEvent('Work With Me - Coffee With Me Journey Not Completed / Abandoned');
+    }
+    onClose();
+  }, [onClose, trackEvent]);
+
+  if (!isOpen) {
+    // Reset state when closed
+    if (currentStep !== 'plan') setCurrentStep('plan');
+    isCompleted.current = false;
+    return null;
+  }
 
   const handleNext = (data?: Partial<CoffeeFormData>) => {
     const updatedData = data ? { ...formData, ...data } : formData;
@@ -72,7 +86,8 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
 
       if (!response.ok) throw new Error('Failed to submit request');
       
-      trackEvent('coffee_request_submitted', { 
+      isCompleted.current = true;
+      trackEvent('Work With Me - Coffee With Me Journey Completed', { 
         plan: submissionData.plan,
         urgency: submissionData.urgency
       });
@@ -101,7 +116,7 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-300"
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Modal Container */}
@@ -121,7 +136,7 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
             )}
           </div>
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"
           >
             <X size={24} />
@@ -145,7 +160,7 @@ const CoffeeMeModal: React.FC<CoffeeMeModalProps> = ({ isOpen, onClose }) => {
           )}
           {currentStep === 'success' && (
             <SuccessStep 
-              onClose={onClose} 
+              onClose={handleClose} 
               title="Consultancy Request Received!"
               description="Your idea has been captured. I'll personally review your submission and we'll reach out shortly to schedule our session. Get clear. Move fast. Take action."
               steps={[

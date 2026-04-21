@@ -32,8 +32,22 @@ const MentorMeModal: React.FC<MentorMeModalProps> = ({ isOpen, onClose }) => {
     description: ''
   });
   const { trackEvent } = useAnalytics();
+  const isCompleted = React.useRef(false);
 
-  if (!isOpen) return null;
+  // Track abandonment on close if not completed
+  const handleClose = React.useCallback(() => {
+    if (!isCompleted.current) {
+      trackEvent('Work With Me - Mentor Me Journey Not Completed / Abandoned');
+    }
+    onClose();
+  }, [onClose, trackEvent]);
+
+  if (!isOpen) {
+    // Reset state when closed
+    if (currentStep !== 'plan') setCurrentStep('plan');
+    isCompleted.current = false;
+    return null;
+  }
 
   const handleNext = (data?: Partial<MentorFormData>) => {
     if (data) {
@@ -71,7 +85,8 @@ const MentorMeModal: React.FC<MentorMeModalProps> = ({ isOpen, onClose }) => {
 
       if (!response.ok) throw new Error('Failed to submit request');
       
-      trackEvent('mentor_submitted', { 
+      isCompleted.current = true;
+      trackEvent('Work With Me - Mentor Me Journey Completed', { 
         plan: submissionData.plan,
         goal: submissionData.goal
       });
@@ -100,7 +115,7 @@ const MentorMeModal: React.FC<MentorMeModalProps> = ({ isOpen, onClose }) => {
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-300"
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Modal Container */}
@@ -120,7 +135,7 @@ const MentorMeModal: React.FC<MentorMeModalProps> = ({ isOpen, onClose }) => {
             )}
           </div>
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"
           >
             <X size={24} />
@@ -144,7 +159,7 @@ const MentorMeModal: React.FC<MentorMeModalProps> = ({ isOpen, onClose }) => {
           )}
           {currentStep === 'success' && (
             <SuccessStep 
-              onClose={onClose} 
+              onClose={handleClose} 
               title="Mentorship Request Received!"
               description="I'm excited to help you grow. I've received your learning goals and will review them to see how we can best work together. Expect a response within 24 hours."
               steps={[

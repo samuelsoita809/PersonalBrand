@@ -6,6 +6,7 @@ interface SuccessStepProps {
   title?: string;
   description?: string;
   steps?: { title: string; description: string }[];
+  action?: { label: string; url: string; icon?: React.ReactNode };
 }
 
 const SuccessStep: React.FC<SuccessStepProps> = ({ 
@@ -15,7 +16,8 @@ const SuccessStep: React.FC<SuccessStepProps> = ({
   steps = [
     { title: "Step 1", description: "Initial review of your project requirements." },
     { title: "Step 2", description: "Strategy call to align on technical details." }
-  ]
+  ],
+  action
 }) => {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center animate-in fade-in zoom-in-95 duration-700">
@@ -40,9 +42,21 @@ const SuccessStep: React.FC<SuccessStepProps> = ({
         ))}
       </div>
 
+      {action && (
+        <a 
+          href={action.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-10 py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-blue-500/20 mb-4 uppercase tracking-widest text-sm"
+        >
+          {action.icon || <ArrowRight size={20} />}
+          {action.label}
+        </a>
+      )}
+
       <button 
         onClick={onClose}
-        className="flex items-center gap-2 px-10 py-4 bg-white text-black font-bold rounded-2xl hover:bg-slate-200 transition-all transform hover:scale-105 active:scale-95 shadow-xl"
+        className="flex items-center gap-2 px-10 py-4 bg-white/5 text-slate-300 font-bold rounded-2xl hover:bg-white/10 transition-all transform hover:scale-105 active:scale-95 border border-white/10"
       >
         Return to Site
         <ArrowRight size={20} />

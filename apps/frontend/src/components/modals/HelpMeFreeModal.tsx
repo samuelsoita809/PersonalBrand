@@ -4,6 +4,7 @@ import FreeServiceStep from './steps/FreeServiceStep';
 import FreeFormStep from './steps/FreeFormStep';
 import SuccessStep from './steps/SuccessStep';
 import { useAnalytics } from '../../context/analytics';
+import freeConfig from '../../config/free-services.json';
 
 export type FreeStep = 'service' | 'form' | 'success';
 
@@ -16,6 +17,8 @@ export interface FreeFormData {
   serviceId: string;
   name: string;
   email: string;
+  url?: string;
+  frequency?: string;
   message: string;
 }
 
@@ -25,6 +28,8 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
     serviceId: '',
     name: '',
     email: '',
+    url: '',
+    frequency: '',
     message: ''
   });
   const { trackEvent } = useAnalytics();
@@ -61,14 +66,19 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
           name: finalData.name,
           email: finalData.email,
           service: finalData.serviceId,
-          message: finalData.message
+          message: finalData.message,
+          metadata: {
+            url: finalData.url,
+            frequency: finalData.frequency
+          }
         })
       });
 
       if (!response.ok) throw new Error('Failed to submit request');
       
       trackEvent('free_request_submitted', { 
-        service: finalData.serviceId
+        service: finalData.serviceId,
+        frequency: finalData.frequency
       });
       
       setCurrentStep('success');
@@ -78,10 +88,65 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
     }
   };
 
+  const getSuccessContent = () => {
+    const service = freeConfig.services.find(s => s.id === formData.serviceId);
+    
+    switch (formData.serviceId) {
+      case 'website_audit':
+        return {
+          title: "Audit Request Received!",
+          description: "I've queued your site for a professional review. While I dive into the details, check out this quick wins checklist.",
+          steps: [
+            { title: "Initial Scan", description: "Running automated performance and SEO checks." },
+            { title: "Manual Review", description: "I'll personally analyze your UX and conversion paths." }
+          ],
+          action: {
+            label: "Download Quick Audit Checklist",
+            url: "#", // Placeholder for actual resource
+            icon: null
+          }
+        };
+      case 'quick_chat':
+        return {
+          title: "Let's Talk!",
+          description: "Your request is in. To get moving faster, pick a slot on my calendar that works best for you.",
+          steps: [
+            { title: "Select Time", description: "Choose a 15-minute window for our deep dive." },
+            { title: "Confirmation", description: "You'll receive a calendar invite with the meeting link." }
+          ],
+          action: {
+            label: "Book on Calendly",
+            url: "https://calendly.com/samuelsoita79",
+            icon: null
+          }
+        };
+      case 'tech_catchup':
+        return {
+          title: "You're on the List!",
+          description: `Great choice! I'll be sending you updates on a ${formData.frequency || 'regular'} basis. Get ready for some technical deep dives.`,
+          steps: [
+            { title: "Confirmation", description: "Check your inbox for a welcome email." },
+            { title: "First Session", description: "I'll notify you before our next community catchup." }
+          ]
+        };
+      default:
+        return {
+          title: "Request Received!",
+          description: "I've received your request and will get back to you soon.",
+          steps: [
+            { title: "Review", description: "Analyzing your request." },
+            { title: "Response", description: "Expect an email within 24 hours." }
+          ]
+        };
+    }
+  };
+
+  const successContent = getSuccessContent();
+
   const stepTitle = {
     service: 'Help Me Free: Select Your Service',
     form: 'Tell Me More',
-    success: 'Request Received!'
+    success: successContent.title
   };
 
   const progress = {
@@ -141,12 +206,10 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
           {currentStep === 'success' && (
             <SuccessStep 
               onClose={onClose} 
-              title="Help Request Received!"
-              description="I've received your request for free help. I personally review every submission to ensure I can provide the best value possible. Expect a response soon."
-              steps={[
-                { title: "Review", description: "Analyzing your request and context." },
-                { title: "Reach Out", description: "I'll contact you via email with the next steps." }
-              ]}
+              title={successContent.title}
+              description={successContent.description}
+              steps={successContent.steps}
+              action={successContent.action}
             />
           )}
         </div>

@@ -61,11 +61,12 @@ describe('HelpMeFreeModal Component', () => {
 
     // Step 3: Success
     await waitFor(() => {
-      expect(screen.getByText(/Help Request Received!/i)).toBeDefined();
+      expect(screen.getAllByText(/Let's Talk!/i).length).toBeGreaterThan(0);
     }, { timeout: 3000 });
 
     expect(mockTrackEvent).toHaveBeenCalledWith('free_request_submitted', { 
-      service: 'quick_chat' 
+      service: 'quick_chat',
+      frequency: ''
     });
   });
 

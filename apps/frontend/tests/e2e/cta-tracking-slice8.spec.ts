@@ -109,6 +109,7 @@ test.describe('Featured CTA Tracking & Offline Sync (Slice 8)', () => {
     await workWithMeBtn.click();
     
     const coffeeBtn = page.getByRole('button', { name: /coffee with me/i });
+    await expect(coffeeBtn).toBeVisible();
     
     // Perform rapid clicks - we don't 'await' the click() here because 
     // it will throw a timeout error once the modal disappears after the first click.

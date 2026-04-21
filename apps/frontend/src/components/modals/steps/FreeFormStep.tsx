@@ -8,6 +8,8 @@ import freeConfig from '../../../config/free-services.json';
 const freeFormSchema = z.object({
   name: z.string().min(1, 'Full Name is required'),
   email: z.string().email('Invalid email address'),
+  url: z.string().url('Invalid website URL').optional().or(z.literal('')),
+  frequency: z.string().optional(),
   message: z.string().min(10, 'Please provide a bit more detail (min 10 characters)')
 });
 
@@ -29,6 +31,8 @@ const FreeFormStep: React.FC<FreeFormStepProps> = ({ serviceId, initialData, onN
     defaultValues: {
       name: initialData.name || '',
       email: initialData.email || '',
+      url: initialData.url || '',
+      frequency: initialData.frequency || (service?.frequencyOptions?.[0] || ''),
       message: initialData.message || ''
     }
   });
@@ -80,6 +84,37 @@ const FreeFormStep: React.FC<FreeFormStepProps> = ({ serviceId, initialData, onN
             {errors.email && <p className="text-xs text-red-500 font-bold mt-1 ml-1">{errors.email.message}</p>}
           </div>
         </div>
+
+        {serviceId === 'website_audit' && (
+          <div className="space-y-2 animate-in fade-in slide-in-from-left-4 duration-500">
+            <label htmlFor="url" className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Website URL</label>
+            <input
+              {...register('url')}
+              id="url"
+              type="url"
+              placeholder="https://yourwebsite.com"
+              className={`w-full px-5 py-4 bg-slate-950/50 border rounded-2xl text-white font-medium outline-none transition-all ${
+                errors.url ? 'border-red-500 focus:border-red-500' : 'border-white/10 focus:border-blue-500'
+              }`}
+            />
+            {errors.url && <p className="text-xs text-red-500 font-bold mt-1 ml-1">{errors.url.message}</p>}
+          </div>
+        )}
+
+        {serviceId === 'tech_catchup' && service?.frequencyOptions && (
+          <div className="space-y-2 animate-in fade-in slide-in-from-left-4 duration-500">
+            <label htmlFor="frequency" className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">How often should we catch up?</label>
+            <select
+              {...register('frequency')}
+              id="frequency"
+              className="w-full px-5 py-4 bg-slate-950/50 border border-white/10 rounded-2xl text-white font-medium outline-none transition-all focus:border-blue-500 appearance-none cursor-pointer"
+            >
+              {service.frequencyOptions.map((opt: string) => (
+                <option key={opt} value={opt} className="bg-slate-900">{opt}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="space-y-2">
           <div className="flex items-center justify-between ml-1">

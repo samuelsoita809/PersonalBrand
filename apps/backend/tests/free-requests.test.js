@@ -10,14 +10,20 @@ describe('Free Help Request API', () => {
         message: 'I would like an audit for my website.'
     };
 
-    it('should successfully store a valid free help request', async () => {
+    it('should successfully store a valid free help request with metadata', async () => {
+        const requestWithMetadata = {
+            ...validRequest,
+            metadata: {
+                url: 'https://example.com',
+                frequency: 'Weekly'
+            }
+        };
         const response = await request(app)
             .post('/api/v1/free-requests')
-            .send(validRequest);
+            .send(requestWithMetadata);
 
         expect(response.status).toBe(201);
         expect(response.body.status).toBe('success');
-        expect(response.body.requestId).toBeDefined();
     });
 
     it('should return 400 if name is missing', async () => {

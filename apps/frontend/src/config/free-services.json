@@ -14,14 +14,16 @@
       "title": "15-Minute Chat",
       "icon": "MessageCircle",
       "description": "💬 Quick consultation to unblock your technical or business project project.",
-      "intentLabel": "What is the #1 challenge you want to solve in 15 minutes?"
+      "intentLabel": "What is the #1 challenge you want to solve in 15 minutes?",
+      "bookingUrl": "https://calendly.com/samuelsoita79"
     },
     {
       "id": "tech_catchup",
       "title": "Tech CatchUp",
       "icon": "Users",
       "description": "👥 Join our community group session to discuss trends, tools, and best practices.",
-      "intentLabel": "What topics are you most interested in discussing during the catchup?"
+      "intentLabel": "What topics are you most interested in discussing during the catchup?",
+      "frequencyOptions": ["Weekly", "Bi-weekly", "Monthly"]
     }
   ]
 }

@@ -37,7 +37,7 @@ describe('HelpMeFreeModal Component', () => {
     
     // Step 1: Select Service
     fireEvent.click(screen.getByText('15-Minute Chat'));
-    expect(mockTrackEvent).toHaveBeenCalledWith('free_service_selected', { serviceId: 'quick_chat' });
+    expect(mockTrackEvent).toHaveBeenCalledWith('Help Me Free CTA - 15 min Chat option Clicked');
 
     // Step 2: Form
     expect(await screen.findByText(/Tell Me More/i)).toBeDefined();
@@ -64,7 +64,7 @@ describe('HelpMeFreeModal Component', () => {
       expect(screen.getAllByText(/Let's Talk!/i).length).toBeGreaterThan(0);
     }, { timeout: 3000 });
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('free_request_submitted', { 
+    expect(mockTrackEvent).toHaveBeenCalledWith('Help Me Free CTA - 15 Min Chat Journey Completed', { 
       service: 'quick_chat',
       frequency: ''
     });

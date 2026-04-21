@@ -33,8 +33,33 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
     message: ''
   });
   const { trackEvent } = useAnalytics();
+  const isCompleted = React.useRef(false);
 
-  if (!isOpen) return null;
+  // Map service ID to event journey name
+  const getJourneyName = (serviceId: string) => {
+    switch (serviceId) {
+      case 'website_audit': return 'Site Audit';
+      case 'quick_chat': return '15 Min Chat';
+      case 'tech_catchup': return '1-2-Many Tech CatchUp';
+      default: return 'Free Service';
+    }
+  };
+
+  // Track abandonment on close if not completed
+  const handleClose = React.useCallback(() => {
+    if (!isCompleted.current && formData.serviceId) {
+      const journeyName = getJourneyName(formData.serviceId);
+      trackEvent(`Help Me Free CTA - ${journeyName} Journey Not Completed / Abandoned`);
+    }
+    onClose();
+  }, [onClose, trackEvent, formData.serviceId]);
+
+  if (!isOpen) {
+    // Reset state when closed
+    if (currentStep !== 'service') setCurrentStep('service');
+    isCompleted.current = false;
+    return null;
+  }
 
   const handleNext = (data?: Partial<FreeFormData>) => {
     const updatedData = data ? { ...formData, ...data } : formData;
@@ -44,7 +69,14 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
 
     if (currentStep === 'service') {
       if (updatedData.serviceId) {
-        trackEvent('free_service_selected', { serviceId: updatedData.serviceId });
+        const optionMap: Record<string, string> = {
+          'website_audit': 'Help Me Free CTA - Site Audit option Clicked',
+          'quick_chat': 'Help Me Free CTA - 15 min Chat option Clicked',
+          'tech_catchup': 'Help Me Free CTA - 1-2-Many Tech CatchUp option Clicked'
+        };
+        if (optionMap[updatedData.serviceId]) {
+          trackEvent(optionMap[updatedData.serviceId]);
+        }
       }
       setCurrentStep('form');
     }
@@ -76,7 +108,9 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
 
       if (!response.ok) throw new Error('Failed to submit request');
       
-      trackEvent('free_request_submitted', { 
+      isCompleted.current = true;
+      const journeyName = getJourneyName(finalData.serviceId);
+      trackEvent(`Help Me Free CTA - ${journeyName} Journey Completed`, { 
         service: finalData.serviceId,
         frequency: finalData.frequency
       });
@@ -89,8 +123,6 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
   };
 
   const getSuccessContent = () => {
-    const service = freeConfig.services.find(s => s.id === formData.serviceId);
-    
     switch (formData.serviceId) {
       case 'website_audit':
         return {
@@ -160,7 +192,7 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-300"
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Modal Container */}
@@ -180,7 +212,7 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
             )}
           </div>
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"
           >
             <X size={24} />
@@ -205,7 +237,7 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
           )}
           {currentStep === 'success' && (
             <SuccessStep 
-              onClose={onClose} 
+              onClose={handleClose} 
               title={successContent.title}
               description={successContent.description}
               steps={successContent.steps}

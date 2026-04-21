@@ -58,7 +58,7 @@ describe('CoffeeMeModal Component (Consultancy Journey Integration)', () => {
       expect(screen.getByText(/Consultancy Request Received!/i)).toBeDefined();
     }, { timeout: 3000 });
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('coffee_request_submitted', expect.objectContaining({
+    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Coffee With Me Journey Completed', expect.objectContaining({
       plan: 'growth',
       urgency: 'high'
     }));

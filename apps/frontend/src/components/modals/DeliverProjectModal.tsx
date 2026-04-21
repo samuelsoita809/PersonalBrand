@@ -78,7 +78,7 @@ const DeliverProjectModal: React.FC<DeliverProjectModalProps> = ({ isOpen, onClo
       if (!response.ok) throw new Error('Failed to submit request');
       
       isCompleted.current = true;
-      trackEvent('Work With Me - Delivery Project Journey Completed', { 
+      trackEvent('Work With Me - Deliver Project Journey Completed', { 
         plan: formData.planId 
       });
       

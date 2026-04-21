@@ -64,7 +64,7 @@ describe('HelpMeFreeModal Component', () => {
       expect(screen.getAllByText(/Let's Talk!/i).length).toBeGreaterThan(0);
     }, { timeout: 3000 });
 
-    expect(mockTrackEvent).toHaveBeenCalledWith('Help Me Free CTA - 15 Min Chat Journey Completed', { 
+    expect(mockTrackEvent).toHaveBeenCalledWith('Help Me Free - 15 Min Chat Journey Completed', { 
       service: 'quick_chat',
       frequency: ''
     });

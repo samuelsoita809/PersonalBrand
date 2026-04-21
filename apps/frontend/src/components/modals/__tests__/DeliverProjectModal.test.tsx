@@ -67,7 +67,7 @@ describe('DeliverProjectModal Component (Journey Integration)', () => {
       expect(screen.getByText(/Success!/i)).toBeDefined();
     });
     
-    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Delivery Project Journey Completed', expect.objectContaining({
+    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Deliver Project Journey Completed', expect.objectContaining({
       plan: 'starter'
     }));
   });

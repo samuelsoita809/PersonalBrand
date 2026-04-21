@@ -110,7 +110,7 @@ const HelpMeFreeModal: React.FC<HelpMeFreeModalProps> = ({ isOpen, onClose }) =>
       
       isCompleted.current = true;
       const journeyName = getJourneyName(finalData.serviceId);
-      trackEvent(`Help Me Free CTA - ${journeyName} Journey Completed`, { 
+      trackEvent(`Help Me Free - ${journeyName} Journey Completed`, { 
         service: finalData.serviceId,
         frequency: finalData.frequency
       });

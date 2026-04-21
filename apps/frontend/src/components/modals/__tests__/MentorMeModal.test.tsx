@@ -71,7 +71,7 @@ describe('MentorMeModal Component (Mentor Journey Integration)', () => {
       expect(screen.getByText(/Mentorship Request Received!/i)).toBeDefined();
     }, { timeout: 3000 });
     
-    expect(mockTrackEvent).toHaveBeenCalledWith('mentor_submitted', expect.objectContaining({
+    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Mentor Me Journey Completed', expect.objectContaining({
       plan: 'growth_mentor',
       goal: 'Improve skills'
     }));

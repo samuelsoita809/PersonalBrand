@@ -151,13 +151,32 @@ export const useAnalytics = () => {
     const sid = getSessionIdCached();
     const now = new Date().toISOString();
 
-    const isFeaturedCta = ['deliver_project', 'mentor_me', 'coffee_with_me'].includes(eventName);
-    const isStandardCta = eventName === 'cta_click' || eventName === 'cta_click_work_with_me';
-    const isPageView = eventName === 'page_view';
+    const isFeaturedCta = [
+      'deliver_project', 'mentor_me', 'coffee_with_me',
+      'Work With Me - Delivery Project option clicked',
+      'Work With Me - Mentor Me option clicked',
+      'Work With Me - Coffee With Me option clicked'
+    ].includes(eventName);
+    
+    const isStandardCta = [
+      'cta_click', 'cta_click_work_with_me',
+      'Work with me CTA Clicked',
+      'Help Me Free CTA Clicked'
+    ].includes(eventName);
+    
+    const isPageView = eventName === 'page_view' || eventName === 'hero section viewed';
 
     // 1. Featured CTA (Slice 8 - Debounced)
     if (isFeaturedCta) {
-      eventDispatcher.captureClick(eventName as any, sid, (event) => {
+      const typeMap: Record<string, string> = {
+        'Work With Me - Delivery Project option clicked': 'deliver_project',
+        'Work With Me - Mentor Me option clicked': 'mentor_me',
+        'Work With Me - Coffee With Me option clicked': 'coffee_with_me'
+      };
+      
+      const internalName = typeMap[eventName] || eventName;
+      
+      eventDispatcher.captureClick(internalName as any, sid, (event) => {
         dispatch('/api/events', event as any);
       });
       return;

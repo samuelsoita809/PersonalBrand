@@ -34,11 +34,13 @@ test.describe('Slice 11: Journey Abandonment Tracking', () => {
     await page.getByRole('button', { name: /Deliver My Project/i }).click();
     
     // 3. Fill form and complete
-    await page.getByRole('button', { name: /Fast-Track/i }).click();
+    // Click the first "Get Started Now" button in the plans list
+    await page.getByRole('button', { name: /Get Started Now/i }).first().click();
     await page.fill('input[name="name"]', 'Test User');
     await page.fill('input[name="email"]', 'test@example.com');
-    await page.fill('input[name="description"]', 'A test project description.');
-    await page.getByRole('button', { name: /Review Request/i }).click();
+    await page.selectOption('select[name="projectType"]', 'Web Application');
+    await page.fill('textarea[name="description"]', 'A test project description with at least 10 characters.');
+    await page.getByRole('button', { name: /Review Selection/i }).click();
     
     // Intercept submission
     await page.route('**/api/v1/project-requests', async (route) => {

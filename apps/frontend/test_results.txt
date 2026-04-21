@@ -1,0 +1,283 @@
+
+ RUN  v2.1.9 /home/samuel-soita/Development/oi/foundation/Brand/apps/frontend
+
+ ✓ src/utils/__tests__/event-dispatcher.test.ts (3 tests) 78ms
+stdout | src/context/__tests__/analytics.test.tsx > useAnalytics Hook > retries failed requests periodically
+{"context":"Analytics","level":"warn","message":"[Analytics] Failed dispatch to /api/v1/analytics/events. Reason: Network failure. Queuing...","service":"brand-service","timestamp":"2026-04-21T12:05:34.910Z"}
+{"context":"Analytics","level":"info","message":"[Offline Sync] Attempting to sync 1 pending events...","service":"brand-service","timestamp":"2026-04-21T12:05:34.913Z"}
+
+ ✓ src/context/__tests__/analytics.test.tsx (7 tests) 145ms
+ ✓ src/components/__tests__/HeroSection.test.tsx (3 tests) 234ms
+ ❯ src/components/modals/__tests__/HelpMeFreeModal.test.tsx (4 tests | 1 failed) 1696ms
+   × HelpMeFreeModal Component > transitions through the funnel correctly 1000ms
+     → expected "spy" to be called with arguments: [ …(2) ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   "Help Me Free CTA - 15 min Chat Journey Completed",
+-   Object {
+-     "frequency": "",
+-     "service": "quick_chat",
+-   },
++   "Help Me Free CTA - 15 min Chat option Clicked",
+  ]
+
+  2nd spy call:
+
+  Array [
+-   "Help Me Free CTA - 15 min Chat Journey Completed",
++   "Help Me Free CTA - 15 Min Chat Journey Completed",
+    Object {
+      "frequency": "",
+      "service": "quick_chat",
+    },
+  ]
+
+
+Number of calls: 2
+
+   ✓ HelpMeFreeModal Component > closes modal when X is clicked 429ms
+ ✓ src/components/modals/__tests__/CoffeeMeModal.test.tsx (3 tests) 1670ms
+   ✓ CoffeeMeModal Component (Consultancy Journey Integration) > transitions through the 3-step state machine correctly 1356ms
+ ❯ src/components/modals/__tests__/DeliverProjectModal.test.tsx (4 tests | 2 failed) 1679ms
+   × DeliverProjectModal Component (Journey Integration) > transitions through to Review Step and Success screen 906ms
+     → expected "spy" to be called with arguments: [ …(2) ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+    "Work With Me - Delivery Project Journey Completed",
+-   ObjectContaining {
+-     "formType": "deliver_project",
++   Object {
++     "plan": "starter",
+    },
+  ]
+
+
+Number of calls: 1
+
+   × DeliverProjectModal Component (Journey Integration) > tracks abandonment when closed without completion 392ms
+     → Found multiple elements with the role "button"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mclass[39m=[32m"p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"[39m
+[36m>[39m
+  [36m<svg[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mclass[39m=[32m"lucide lucide-x"[39m
+    [33mfill[39m=[32m"none"[39m
+    [33mheight[39m=[32m"24"[39m
+    [33mstroke[39m=[32m"currentColor"[39m
+    [33mstroke-linecap[39m=[32m"round"[39m
+    [33mstroke-linejoin[39m=[32m"round"[39m
+    [33mstroke-width[39m=[32m"2"[39m
+    [33mviewBox[39m=[32m"0 0 24 24"[39m
+    [33mwidth[39m=[32m"24"[39m
+    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+  [36m>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M18 6 6 18"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"m6 6 12 12"[39m
+    [36m/>[39m
+  [36m</svg>[39m
+[36m</button>[39m
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mclass[39m=[32m"w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 bg-white/5 text-slate-300 group-hover:bg-white/10 group-hover:text-white"[39m
+[36m>[39m
+  [0mGet Started Now[0m
+[36m</button>[39m
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mclass[39m=[32m"w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 bg-white/5 text-slate-300 group-hover:bg-white/10 group-hover:text-white"[39m
+[36m>[39m
+  [0mGet Started Now[0m
+[36m</button>[39m
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mclass[39m=[32m"w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all duration-300 bg-white/5 text-slate-300 group-hover:bg-white/10 group-hover:text-white"[39m
+[36m>[39m
+  [0mGet Started Now[0m
+[36m</button>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"absolute inset-0 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-300"[39m
+      [36m/>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"relative w-full max-w-4xl bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-6 border-b border-white/5"[39m
+        [36m>[39m
+          [36m<div>[39m
+            [36m<h2[39m
+              [33mclass[39m=[32m"text-2xl font-bold text-white"[39m
+            [36m>[39m
+              [0mBuild Your Project — Fast, Reliable, Done Right[0m
+            [36m</h2>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"mt-2 w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"h-full bg-blue-500 transition-all duration-500 ease-out"[39m
+                [33mstyle[39m=[32m"width: 25%;"[39m
+              [36m/>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-colors"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"lucide lucide-x"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M18 6 6 18"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m6 6 12 12"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-slate-800"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"text-center space-y-2"[39m
+            [36m>[39m
+              [36m<p[39m
+                [33mclass[39m=[32m"text-blue-400 font-bold tracking-widest uppercase text-xs"[39m
+              [36m>[39m
+                [0mValue Proposition[0m
+              [36m</p>[39m
+              [36m<h3[39m
+                [33mclass[39m=[32m"text-2xl sm:text-3xl font-black text-white italic"[39m
+              [36m>[39m
+                [0m"[0m
+                [0mFrom idea to live — done right, done fast.[0m
+                [0m"[0m
+              [36m</h3>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid grid-cols-1 lg:grid-cols-3 gap-6"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative p-8 rounded-3xl border transition-all cursor-pointer group flex flex-col border-white/10 bg-slate-900/40 hover:border-white/20 hover:bg-slate-800/60"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"mb-6"[39m
+                [36m>[39m
+                  [36m<h3[39m
+                    [33mclass[39m=[32m"text-2xl font-black text-white mb-2"[39m
+                  [36m>[39m
+                    [0mStarter Plan[0m
+                  [36m</h3>[39m
+                  [36m<p[39m
+                    [33mclass[39m=[32m"text-sm text-slate-400 leading-relaxed font-medium"[39m
+                  [36m>[39m
+                    [0mPerfect for small project or MVP.[0m
+                  [36m</p>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"mb-6 flex items-baseline gap-1"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-4xl font-black text-white tracking-tight"[39m
+                  [36m>[39m
+                    [0m$[0m
+                    [0m150[0m
+                  [36m</span>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-slate-500 text-sm font-bold"[39m
+                  [36m>[39m
+                    [0m/ project[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"mb-8 p-4 bg-white/5 rounded-2xl border border-white/5"[39m
+                [36m>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"flex items-center gap-2 mb-3"[39m
+                  [36m>[39m
+                    [36m<svg[39m
+                      [33maria-hidden[39m=[32m"true"[39m
+                      [33mclass[39m=[32m"lucide lucide-trending-up text-blue-400"[39m
+                      [33mfill[39m=[32m"none"[39m
+                      [33mheight[39m=[32m"14"[39m
+                      [33mstroke[39m=[32m"currentColor"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                      [33mstroke-width[39m=[32m"2"[39m
+                      [33mviewBox[39m=[32m"0 0 24 24"[39m
+                      [33mwidth[39m=[32m"14"[39m
+                      [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                    [36m>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"M16 7h6v6"[39m
+                      [36m/>[39m
+                      [36m<path[39m
+                        [33md[39m=[32m"m22 7-8.5 8.5-5-5L2 17"[39m
+                      [36m/>[39m
+                    [36m</svg>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"text-[10px] font-black uppercase tracking-widest text-slate-400"[39m
+                    [36m>[39m
+                      [0mResults You Get[0m
+                    [36m</span>[39m
+                  [36m</div>[39m
+                  [36m<ul[39m
+                    [33mclass[39m=[32m"space-y-2"[39m
+                  [36m>[39m
+                    [36m<li[39m
+                      [33mclass[39m=[32m"flex item...
+ ✓ src/components/modals/__tests__/MentorMeModal.test.tsx (4 tests) 2219ms
+   ✓ MentorMeModal Component (Mentor Journey Integration) > renders Step 1: Mentorship Plans by default when open 1112ms
+   ✓ MentorMeModal Component (Mentor Journey Integration) > transitions to Step 2: Details after selecting a plan 331ms
+   ✓ MentorMeModal Component (Mentor Journey Integration) > allows going back from form to plan selection 533ms
+ ✓ src/components/__tests__/PageTracker.test.tsx (2 tests) 130ms
+ ✓ src/components/__tests__/Badge.test.tsx (4 tests) 116ms
+ ✓ src/components/__tests__/Navbar.test.tsx (3 tests) 673ms
+   ✓ Navbar Component (Slice 1) > has correct accessibility attributes 461ms
+ ✓ src/smoke.test.js (1 test) 4ms
+ ✓ src/components/__tests__/ProfileCard.test.tsx (2 tests) 55ms
+
+ Test Files  2 failed | 10 passed (12)
+      Tests  3 failed | 37 passed (40)
+   Start at  15:05:31
+   Duration  7.49s (transform 1.45s, setup 0ms, collect 8.10s, tests 8.70s, environment 20.84s, prepare 2.92s)
+

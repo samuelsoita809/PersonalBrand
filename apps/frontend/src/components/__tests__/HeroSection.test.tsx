@@ -64,7 +64,7 @@ describe('HeroSection Component (Hardening - Service Selection Flow)', () => {
 
     // Should be open now
     expect(screen.getByTestId('service-selection-modal')).toBeDefined();
-    expect(mockTrackEvent).toHaveBeenCalledWith('cta_click_work_with_me', expect.any(Object));
+    expect(mockTrackEvent).toHaveBeenCalledWith('Work with me CTA Clicked', expect.any(Object));
   });
 
   it('triggers DeliverProjectModal when service is selected', () => {

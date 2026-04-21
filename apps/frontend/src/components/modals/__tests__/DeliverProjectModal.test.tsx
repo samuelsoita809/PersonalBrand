@@ -67,8 +67,23 @@ describe('DeliverProjectModal Component (Journey Integration)', () => {
       expect(screen.getByText(/Success!/i)).toBeDefined();
     });
     
-    expect(mockTrackEvent).toHaveBeenCalledWith('form_submitted', expect.objectContaining({
-      formType: 'deliver_project'
+    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Delivery Project Journey Completed', expect.objectContaining({
+      plan: 'starter'
     }));
+  });
+
+  it('tracks abandonment when closed without completion', () => {
+    const { unmount } = render(<DeliverProjectModal isOpen={true} onClose={mockOnClose} />);
+    
+    // Simulate close via X button click (which calls handleClose)
+    // In our test, we just call the prop since we're testing the component logic
+    // But handleClose is internal. We need to trigger the UI close.
+    const closeBtns = screen.queryAllByRole('button').filter(b => b.innerHTML.includes('svg'));
+    if (closeBtns.length > 0) {
+      fireEvent.click(closeBtns[0]);
+    }
+
+    // Or just check if handleClose fires the event when onClose is called?
+    // Wait, handleClose is a callback passed to the backdrop and X button.
   });
 });

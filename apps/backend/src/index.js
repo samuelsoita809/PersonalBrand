@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import { createLogger, EVENTS, VERSION } from "@monorepo/shared";
 import dotenv from "dotenv";
 import crypto from "crypto";
@@ -276,6 +277,28 @@ app.post("/api/v1/chat/start", async (req, res) => {
     } catch (error) {
         logger.error('Failed to start chat session:', error);
         res.status(500).json({ error: "Failed to start chat session" });
+    }
+});
+
+/**
+ * Chat Response Generation (TaiktousSlice2)
+ * Maps an intent to a relevant response and CTA.
+ */
+app.post("/api/v1/chat/respond", async (req, res) => {
+    const { intent } = req.body;
+    
+    try {
+        const responsesPath = new URL('./config/chat-responses.json', import.meta.url);
+        const responses = JSON.parse(fs.readFileSync(responsesPath, 'utf8'));
+        
+        const responseData = responses[intent] || responses.fallback;
+        
+        await analytics.track('SOLUTION_RECOMMENDED', { intent, solution: responseData.solutionId }, 'frontend');
+        
+        res.status(200).json(responseData);
+    } catch (error) {
+        logger.error('Failed to generate chat response:', error);
+        res.status(500).json({ error: "Failed to generate response" });
     }
 });
 

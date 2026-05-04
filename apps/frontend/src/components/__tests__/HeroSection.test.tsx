@@ -1,24 +1,19 @@
+/** @vitest-environment jsdom */
+/** @vitest-environment jsdom */
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import HeroSection from '../HeroSection';
 import React from 'react';
 import * as analytics from '../../context/analytics';
+import * as ModalContext from '../../context/ModalContext';
 
 vi.mock('../../context/analytics', () => ({
   useAnalytics: vi.fn()
 }));
 
-// Mock the heavy/complex modals to keep unit tests fast and focused
-vi.mock('../modals/ServiceSelectionModal', () => ({
-  default: ({ isOpen, onSelectService }: any) => isOpen ? (
-    <div data-testid="service-selection-modal">
-      <button onClick={() => onSelectService('deliver_project')}>Select Project</button>
-    </div>
-  ) : null
-}));
-
-vi.mock('../modals/DeliverProjectModal', () => ({
-  default: ({ isOpen }: any) => isOpen ? <div data-testid="project-modal" /> : null
+vi.mock('../../context/ModalContext', () => ({
+  ModalProvider: ({ children }: any) => <div>{children}</div>,
+  useModals: vi.fn()
 }));
 
 vi.mock('../../config/hero-content.json', () => ({
@@ -36,11 +31,13 @@ vi.mock('../../config/hero-content.json', () => ({
 
 describe('HeroSection Component (Hardening - Service Selection Flow)', () => {
   const mockTrackEvent = vi.fn();
+  const mockOpenModal = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     (analytics.useAnalytics as Mock).mockReturnValue({ trackEvent: mockTrackEvent });
+    (ModalContext.useModals as Mock).mockReturnValue({ openModal: mockOpenModal });
   });
 
   it('renders "Work with Me" CTA correctly', () => {
@@ -48,38 +45,36 @@ describe('HeroSection Component (Hardening - Service Selection Flow)', () => {
     expect(screen.getByText('Work with Me')).toBeDefined();
   });
 
-  it('opens ServiceSelectionModal after clicking Work with Me CTA (after 300ms delay)', () => {
+  it('triggers openModal("service_selection") after clicking Work with Me CTA (after 300ms delay)', () => {
     render(<HeroSection />);
-    const cta = screen.getByText('Work with Me');
+    const cta = screen.getAllByText('Work with Me')[0];
     
     fireEvent.click(cta);
     
-    // Should NOT be open immediately due to timeout
-    expect(screen.queryByTestId('service-selection-modal')).toBeNull();
+    // Should NOT be called immediately due to timeout
+    expect(mockOpenModal).not.toHaveBeenCalled();
 
     // Advance time
     act(() => {
       vi.advanceTimersByTime(300);
     });
 
-    // Should be open now
-    expect(screen.getByTestId('service-selection-modal')).toBeDefined();
+    // Should be called now
+    expect(mockOpenModal).toHaveBeenCalledWith('service_selection');
     expect(mockTrackEvent).toHaveBeenCalledWith('Work with me CTA Clicked', expect.any(Object));
   });
 
-  it('triggers DeliverProjectModal when service is selected', () => {
-    render(<HeroSection />);
-    const cta = screen.getByText('Work with Me');
+  it('does not trigger openModal if unmounted before timeout', () => {
+    const { unmount } = render(<HeroSection />);
+    const cta = screen.getAllByText('Work with Me')[0];
     
     fireEvent.click(cta);
+    unmount();
+
     act(() => {
       vi.advanceTimersByTime(300);
     });
 
-    const selectBtn = screen.getByText('Select Project');
-    fireEvent.click(selectBtn);
-
-    // Project Modal should trigger
-    expect(screen.getByTestId('project-modal')).toBeDefined();
+    expect(mockOpenModal).not.toHaveBeenCalled();
   });
 });

@@ -1,3 +1,4 @@
+/** @vitest-environment jsdom */
 import { describe, it, expect, vi, type Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Navbar from '../Navbar';

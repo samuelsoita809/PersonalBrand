@@ -2,7 +2,29 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Chat Lead Capture (TaiktousSlice3)', () => {
   test('should capture lead details within the chat flow', async ({ page }) => {
-    // Intercept lead capture API
+    // Intercept chat API endpoints to isolate frontend tests from backend dependency
+    await page.route('**/api/v1/chat/start', route => {
+      route.fulfill({
+        status: 200,
+        body: JSON.stringify({
+          message: "How can I help you today?",
+          quickReplies: ["Start a Project", "Get Advice", "Mentorship", "Ask a Question"],
+          sessionId: "e2e-session-123"
+        })
+      });
+    });
+
+    await page.route('**/api/v1/chat/respond', route => {
+      route.fulfill({
+        status: 200,
+        body: JSON.stringify({
+          message: "I offer targeted consultancy to help you overcome technical hurdles or plan your next move.",
+          ctaText: "Book Coffee With Me",
+          solutionId: "coffee_with_me"
+        })
+      });
+    });
+
     let leadCaptured = false;
     await page.route('**/api/v1/chat/leads', route => {
       leadCaptured = true;

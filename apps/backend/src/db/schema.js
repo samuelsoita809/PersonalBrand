@@ -100,3 +100,10 @@ export const events = pgTable('events', {
     timestamp: timestamp('timestamp').defaultNow(),
     session_id: varchar('session_id', { length: 100 }).notNull(),
 });
+
+export const chat_sessions = pgTable('chat_sessions', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    session_id: varchar('session_id', { length: 255 }).notNull(),
+    intent: varchar('intent', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+});

@@ -243,6 +243,43 @@ app.post("/api/v1/hero/lead", async (req, res) => {
 });
 
 /**
+ * Chat Intent Submission (TaiktousSlice1)
+ * Captures the user's initial intent when starting a chat.
+ */
+app.post("/api/v1/chat/start", async (req, res) => {
+    const { intent, session_id } = req.body;
+    
+    const validIntents = ["Start a Project", "Get Advice", "Mentorship", "Ask a Question"];
+    
+    if (!intent || !validIntents.includes(intent)) {
+        return res.status(400).json({ error: "Invalid or missing intent" });
+    }
+
+    if (!session_id) {
+        return res.status(400).json({ error: "session_id is required" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(schema.chat_sessions).values({
+            id,
+            session_id,
+            intent,
+            createdAt: new Date()
+        });
+        
+        await analytics.track('CHAT_STARTED', { intent, session_id }, 'frontend');
+        
+        logger.info(`New chat session started with intent: ${intent}`);
+        
+        res.status(201).json({ status: "success", sessionId: id });
+    } catch (error) {
+        logger.error('Failed to start chat session:', error);
+        res.status(500).json({ error: "Failed to start chat session" });
+    }
+});
+
+/**
  * Project Request Submission (Slice 4)
  * Multi-step form submission from the 'Deliver My Project' journey.
  */

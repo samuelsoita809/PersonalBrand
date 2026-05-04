@@ -113,7 +113,7 @@ const syncOfflineEvents = async () => {
 let globalSessionId: string | null = null;
 let lastPageView: Record<string, number> = {};
 
-const getSessionIdCached = () => {
+export const getSessionIdCached = () => {
   if (!globalSessionId) globalSessionId = getSessionId();
   return globalSessionId;
 };

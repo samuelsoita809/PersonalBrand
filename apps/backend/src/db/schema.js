@@ -107,3 +107,12 @@ export const chat_sessions = pgTable('chat_sessions', {
     intent: varchar('intent', { length: 255 }).notNull(),
     createdAt: timestamp('created_at').defaultNow(),
 });
+
+export const chat_leads = pgTable('chat_leads', {
+    id: varchar('id', { length: 255 }).primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    intent: varchar('intent', { length: 255 }).notNull(),
+    session_id: varchar('session_id', { length: 255 }).notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+});

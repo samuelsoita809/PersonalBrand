@@ -19,6 +19,9 @@ const ChatModal: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedIntent, setSelectedIntent] = useState<string | null>(null);
   const [aiResponse, setAiResponse] = useState<AIResponse | null>(null);
+  const [captureStep, setCaptureStep] = useState<'NAME' | 'EMAIL' | 'SUCCESS' | null>(null);
+  const [leadData, setLeadData] = useState({ name: '', email: '' });
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     if (isChatOpen) {
@@ -84,12 +87,65 @@ const ChatModal: React.FC = () => {
       return;
     }
 
-    // Close chat and open the solution modal
-    closeChat();
-    // Small delay for smooth transition
-    setTimeout(() => {
-      openModal(aiResponse.solutionId as any);
-    }, 300);
+    // NEW: Start lead capture flow instead of opening modal immediately
+    setCaptureStep('NAME');
+    trackEvent('lead_capture_started', { intent: selectedIntent });
+  };
+
+  const handleInputSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!inputValue.trim() || isSubmitting) return;
+
+    if (captureStep === 'NAME') {
+      setLeadData(prev => ({ ...prev, name: inputValue.trim() }));
+      setInputValue('');
+      setCaptureStep('EMAIL');
+    } else if (captureStep === 'EMAIL') {
+      const email = inputValue.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address.');
+        return;
+      }
+
+      setError(null);
+      setIsSubmitting(true);
+
+      try {
+        const response = await fetch('/api/v1/chat/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: leadData.name,
+            email: email,
+            intent: selectedIntent,
+            session_id: getSessionIdCached()
+          })
+        });
+
+        if (!response.ok) throw new Error('Failed to save lead');
+
+        setLeadData(prev => ({ ...prev, email }));
+        setInputValue('');
+        setCaptureStep('SUCCESS');
+        trackEvent('lead_captured', { intent: selectedIntent });
+
+        // Auto-open the solution modal after a brief delay
+        setTimeout(() => {
+          closeChat();
+          setTimeout(() => {
+            openModal(aiResponse?.solutionId as any);
+          }, 300);
+        }, 2000);
+
+      } catch (err) {
+        console.error('Lead capture error:', err);
+        setError('Failed to save your details. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   return (
@@ -146,14 +202,14 @@ const ChatModal: React.FC = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              {/* User Message */}
+              {/* User Intent Message */}
               <div className="flex gap-3 justify-end animate-in fade-in slide-in-from-right-2 duration-500">
                 <div className="bg-blue-600 rounded-2xl rounded-tr-none p-4 text-white text-sm leading-relaxed shadow-lg shadow-blue-900/20">
                   {selectedIntent}
                 </div>
               </div>
 
-              {/* Bot Response */}
+              {/* Bot AI Response */}
               {(isSubmitting || aiResponse) && (
                 <div className="flex gap-3 animate-in fade-in slide-in-from-left-2 duration-500 delay-500">
                   <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 flex-shrink-0">
@@ -161,7 +217,7 @@ const ChatModal: React.FC = () => {
                   </div>
                   <div className="flex flex-col gap-3">
                     <div className="bg-slate-800/50 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm leading-relaxed border border-white/5">
-                      {isSubmitting ? (
+                      {isSubmitting && !captureStep ? (
                         <div className="flex gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-slate-500 animate-bounce"></span>
                           <span className="w-1.5 h-1.5 rounded-full bg-slate-500 animate-bounce delay-150"></span>
@@ -172,8 +228,8 @@ const ChatModal: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Recommended CTA */}
-                    {aiResponse && !isSubmitting && (
+                    {/* CTA Button */}
+                    {aiResponse && !isSubmitting && !captureStep && (
                       <button
                         onClick={handleCtaClick}
                         className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20 group animate-in slide-in-from-bottom-2 duration-500"
@@ -185,6 +241,70 @@ const ChatModal: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Lead Capture Flow */}
+              {captureStep && (
+                <>
+                  {/* User clicks CTA (implicit message) */}
+                  <div className="flex gap-3 justify-end animate-in fade-in slide-in-from-right-2 duration-300">
+                    <div className="bg-blue-600 rounded-2xl rounded-tr-none p-4 text-white text-sm leading-relaxed">
+                      {aiResponse?.ctaText}
+                    </div>
+                  </div>
+
+                  {/* Bot prompts for Name */}
+                  <div className="flex gap-3 animate-in fade-in slide-in-from-left-2 duration-500">
+                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 flex-shrink-0">
+                      <Bot size={16} />
+                    </div>
+                    <div className="bg-slate-800/50 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm leading-relaxed border border-white/5">
+                      I'd love to help with that! Before we continue, what's your name?
+                    </div>
+                  </div>
+
+                  {/* User Name input response */}
+                  {leadData.name && (
+                    <div className="flex gap-3 justify-end animate-in fade-in slide-in-from-right-2 duration-300">
+                      <div className="bg-blue-600 rounded-2xl rounded-tr-none p-4 text-white text-sm leading-relaxed">
+                        {leadData.name}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bot prompts for Email */}
+                  {captureStep !== 'NAME' && (
+                    <div className="flex gap-3 animate-in fade-in slide-in-from-left-2 duration-500">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 flex-shrink-0">
+                        <Bot size={16} />
+                      </div>
+                      <div className="bg-slate-800/50 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm leading-relaxed border border-white/5">
+                        Thanks, {leadData.name}! And what's your email so I can follow up?
+                      </div>
+                    </div>
+                  )}
+
+                  {/* User Email input response */}
+                  {leadData.email && (
+                    <div className="flex gap-3 justify-end animate-in fade-in slide-in-from-right-2 duration-300">
+                      <div className="bg-blue-600 rounded-2xl rounded-tr-none p-4 text-white text-sm leading-relaxed">
+                        {leadData.email}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Success Message */}
+                  {captureStep === 'SUCCESS' && (
+                    <div className="flex gap-3 animate-in fade-in slide-in-from-left-2 duration-500">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 flex-shrink-0">
+                        <Bot size={16} />
+                      </div>
+                      <div className="bg-slate-800/50 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm leading-relaxed border border-white/5">
+                        Perfect! I've saved your details. Opening the solution for you now... 🚀
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
 
@@ -193,29 +313,44 @@ const ChatModal: React.FC = () => {
             <div className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs animate-in shake duration-300">
               <AlertCircle size={14} />
               <span>{error}</span>
-              <button 
-                onClick={() => handleIntentSelect(selectedIntent!)}
-                className="ml-auto underline font-bold"
-              >
-                Retry
-              </button>
+              {captureStep === null && (
+                <button 
+                  onClick={() => handleIntentSelect(selectedIntent!)}
+                  className="ml-auto underline font-bold"
+                >
+                  Retry
+                </button>
+              )}
             </div>
           )}
         </div>
 
-        {/* Footer (Disabled in Slice 1) */}
+        {/* Footer - Input enabled during lead capture */}
         <div className="p-4 border-t border-white/5 bg-slate-950/30">
-          <div className="relative group opacity-50 cursor-not-allowed">
+          <form 
+            onSubmit={handleInputSubmit}
+            className={`relative group ${!captureStep || captureStep === 'SUCCESS' ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
             <input 
               type="text" 
-              placeholder="Type a message..." 
-              disabled
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-4 pr-12 text-sm text-white placeholder:text-slate-500 focus:outline-none"
+              placeholder={
+                captureStep === 'NAME' ? "Enter your name..." : 
+                captureStep === 'EMAIL' ? "Enter your email..." : 
+                "Type a message..."
+              }
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              disabled={!captureStep || captureStep === 'SUCCESS' || isSubmitting}
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-4 pr-12 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50 transition-colors"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-500">
+            <button 
+              type="submit"
+              disabled={!captureStep || captureStep === 'SUCCESS' || isSubmitting || !inputValue.trim()}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-blue-500 hover:text-blue-400 transition-colors disabled:text-slate-600"
+            >
               <Send size={18} />
             </button>
-          </div>
+          </form>
           <p className="text-[10px] text-center text-slate-600 mt-3 font-medium">Powered by Gemini AI</p>
         </div>
       </div>

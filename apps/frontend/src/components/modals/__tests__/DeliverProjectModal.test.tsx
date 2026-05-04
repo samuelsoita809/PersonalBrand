@@ -1,3 +1,4 @@
+/** @vitest-environment jsdom */
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import DeliverProjectModal from '../DeliverProjectModal';
@@ -67,7 +68,7 @@ describe('DeliverProjectModal Component (Journey Integration)', () => {
       expect(screen.getByText(/Success!/i)).toBeDefined();
     });
     
-    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Delivery Project Journey Completed', expect.objectContaining({
+    expect(mockTrackEvent).toHaveBeenCalledWith('Work With Me - Deliver Project Journey Completed', expect.objectContaining({
       plan: 'starter'
     }));
   });

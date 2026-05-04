@@ -8,19 +8,14 @@ import CoffeeMeModal from './modals/CoffeeMeModal';
 import ServiceSelectionModal from './modals/ServiceSelectionModal';
 import HelpMeFreeModal from './modals/HelpMeFreeModal';
 import { useAnalytics } from '../context/analytics';
+import { useModals } from '../context/ModalContext';
 import heroConfig from '../config/hero-content.json';
 import Badge from './Badge';
 
 const HeroSection: React.FC = () => {
   const { heading, subheading, paragraph, profile, badges = [] } = heroConfig as any;
   const { trackEvent } = useAnalytics();
-  
-  // Modal States
-  const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-  const [isMentorModalOpen, setIsMentorModalOpen] = useState(false);
-  const [isCoffeeModalOpen, setIsCoffeeModalOpen] = useState(false);
-  const [isHelpFreeModalOpen, setIsHelpFreeModalOpen] = useState(false);
+  const { openModal } = useModals();
   
   const ctaTimeoutRef = useRef<number | undefined>(undefined);
 
@@ -62,34 +57,12 @@ const HeroSection: React.FC = () => {
       trackEvent(eventName, { ctaId: id, ctaLabel: label });
       
       if (id === 'work_with_me') {
-        setIsSelectionModalOpen(true);
+        openModal('service_selection');
       } else if (id === 'help_me_free') {
-        setIsHelpFreeModalOpen(true);
+        openModal('help_me_free');
       }
       ctaTimeoutRef.current = undefined;
     }, 300);
-  };
-
-  const handleServiceSelect = (serviceId: string) => {
-    // Slice 8/11 Tracking: Capture the specific intent with exact strings
-    const eventMap: Record<string, string> = {
-      'deliver_project': 'Work With Me - Delivery Project option clicked',
-      'mentor_me': 'Work With Me - Mentor Me option clicked',
-      'coffee_with_me': 'Work With Me - Coffee With Me option clicked'
-    };
-    
-    if (eventMap[serviceId]) {
-      trackEvent(eventMap[serviceId]);
-    }
-    
-    setIsSelectionModalOpen(false);
-    if (serviceId === 'deliver_project') {
-      setIsProjectModalOpen(true);
-    } else if (serviceId === 'mentor_me') {
-      setIsMentorModalOpen(true);
-    } else if (serviceId === 'coffee_with_me') {
-      setIsCoffeeModalOpen(true);
-    }
   };
 
   return (
@@ -134,35 +107,6 @@ const HeroSection: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Entry Step 1: Selection */}
-      <ServiceSelectionModal 
-        isOpen={isSelectionModalOpen} 
-        onClose={() => setIsSelectionModalOpen(false)} 
-        onSelectService={handleServiceSelect}
-      />
-
-      {/* Entry Step 3: Slice 4 Journey */}
-      <DeliverProjectModal 
-        isOpen={isProjectModalOpen} 
-        onClose={() => setIsProjectModalOpen(false)} 
-      />
-
-      {/* Entry Step 4: Slice 5 Journey */}
-      <MentorMeModal 
-        isOpen={isMentorModalOpen} 
-        onClose={() => setIsMentorModalOpen(false)} 
-      />
-
-      <CoffeeMeModal
-        isOpen={isCoffeeModalOpen}
-        onClose={() => setIsCoffeeModalOpen(false)}
-      />
-
-      <HelpMeFreeModal
-        isOpen={isHelpFreeModalOpen}
-        onClose={() => setIsHelpFreeModalOpen(false)}
-      />
     </section>
   );
 };

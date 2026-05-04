@@ -1,0 +1,27 @@
+{
+  "Start a Project": {
+    "message": "I can help you build and scale your vision with expert engineering. Let's deliver your project together.",
+    "ctaText": "Deliver My Project",
+    "solutionId": "deliver_project"
+  },
+  "Get Advice": {
+    "message": "I offer targeted consultancy to help you overcome technical hurdles or plan your next move.",
+    "ctaText": "Book Coffee With Me",
+    "solutionId": "coffee_with_me"
+  },
+  "Mentorship": {
+    "message": "I'm passionate about helping engineers grow. Let's fast-track your career with structured mentorship.",
+    "ctaText": "Apply for Mentorship",
+    "solutionId": "mentor_me"
+  },
+  "Ask a Question": {
+    "message": "Got a quick question? I'm here to help. Feel free to reach out for a quick consultation.",
+    "ctaText": "Get Free Help",
+    "solutionId": "help_me_free"
+  },
+  "fallback": {
+    "message": "I didn't get that, choose below 👇",
+    "ctaText": "Show Options Again",
+    "solutionId": "show_options"
+  }
+}

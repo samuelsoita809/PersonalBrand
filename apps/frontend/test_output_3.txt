@@ -1,0 +1,306 @@
+
+ RUN  v4.1.0 /home/samuel-soita/Development/oi/foundation/Brand
+
+stdout | apps/frontend/src/components/__tests__/HeroSection.test.tsx > HeroSection Component (Hardening - Service Selection Flow) > triggers DeliverProjectModal when service is selected
+<div><section class="relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-visible"><div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10"><div class="lg:col-span-7 space-y-12 animate-in fade-in slide-in-from-left-10 duration-1000"><div class="flex flex-col gap-6 max-w-2xl"><h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">Test Heading</h1><h2 class="text-2xl md:text-3xl font-medium text-slate-200">Test Subheading</h2><p class="text-lg md:text-xl text-slate-400 leading-relaxed">Test Paragraph</p></div><div class="flex flex-wrap gap-4"><button id="work_with_me" class="px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 bg-transparent border border-white/20 text-white hover:bg-white/5">Work with Me</button></div></div><div class="lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200"><div class="relative w-fit flex flex-col items-center"><div class="grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 1</span></div></div><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 3</span></div></div></div><div class="relative group"><div class="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center gap-8 shadow-2xl overflow-hidden transition-all duration-500 group-hover:border-blue-500/30"><div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/20 shadow-inner group-hover:border-blue-500/50 transition-colors duration-500 relative"><img alt="Test User" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-110" src="/test.png"><div class="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div></div><div class="text-center"><h3 class="text-2xl font-black text-white tracking-tight">Test User</h3></div></div></div><div class="grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 2</span></div></div><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 4</span></div></div></div></div></div></div></section></div><div><section class="relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-visible"><div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10"><div class="lg:col-span-7 space-y-12 animate-in fade-in slide-in-from-left-10 duration-1000"><div class="flex flex-col gap-6 max-w-2xl"><h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">Test Heading</h1><h2 class="text-2xl md:text-3xl font-medium text-slate-200">Test Subheading</h2><p class="text-lg md:text-xl text-slate-400 leading-relaxed">Test Paragraph</p></div><div class="flex flex-wrap gap-4"><button id="work_with_me" class="px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 bg-transparent border border-white/20 text-white hover:bg-white/5">Work with Me</button></div></div><div class="lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200"><div class="relative w-fit flex flex-col items-center"><div class="grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 1</span></div></div><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 3</span></div></div></div><div class="relative group"><div class="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center gap-8 shadow-2xl overflow-hidden transition-all duration-500 group-hover:border-blue-500/30"><div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/20 shadow-inner group-hover:border-blue-500/50 transition-colors duration-500 relative"><img alt="Test User" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-110" src="/test.png"><div class="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div></div><div class="text-center"><h3 class="text-2xl font-black text-white tracking-tight">Test User</h3></div></div></div><div class="grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 2</span></div></div><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 4</span></div></div></div></div></div></div></section></div><div><section class="relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-visible"><div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10"><div class="lg:col-span-7 space-y-12 animate-in fade-in slide-in-from-left-10 duration-1000"><div class="flex flex-col gap-6 max-w-2xl"><h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">Test Heading</h1><h2 class="text-2xl md:text-3xl font-medium text-slate-200">Test Subheading</h2><p class="text-lg md:text-xl text-slate-400 leading-relaxed">Test Paragraph</p></div><div class="flex flex-wrap gap-4"><button id="work_with_me" class="px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 bg-transparent border border-white/20 text-white hover:bg-white/5">Work with Me</button></div></div><div class="lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200"><div class="relative w-fit flex flex-col items-center"><div class="grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 1</span></div></div><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 3</span></div></div></div><div class="relative group"><div class="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center gap-8 shadow-2xl overflow-hidden transition-all duration-500 group-hover:border-blue-500/30"><div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/20 shadow-inner group-hover:border-blue-500/50 transition-colors duration-500 relative"><img alt="Test User" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-110" src="/test.png"><div class="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div></div><div class="text-center"><h3 class="text-2xl font-black text-white tracking-tight">Test User</h3></div></div></div><div class="grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 2</span></div></div><div class="z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000 "><div class="bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"><span class="text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap">Badge 4</span></div></div></div></div></div></div></section></div>
+
+ ❯ apps/frontend/src/components/__tests__/HeroSection.test.tsx (3 tests | 2 failed) 184ms
+     ✓ renders "Work with Me" CTA correctly 90ms
+     × opens ServiceSelectionModal after clicking Work with Me CTA (after 300ms delay) 51ms
+     × triggers DeliverProjectModal when service is selected 39ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/frontend/src/components/__tests__/HeroSection.test.tsx > HeroSection Component (Hardening - Service Selection Flow) > opens ServiceSelectionModal after clicking Work with Me CTA (after 300ms delay)
+TestingLibraryElementError: Unable to find an element by: [data-testid="service-selection-modal"]
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33mclass[39m=[32m"relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-visible"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"lg:col-span-7 space-y-12 animate-in fade-in slide-in-from-left-10 duration-1000"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-col gap-6 max-w-2xl"[39m
+          [36m>[39m
+            [36m<h1[39m
+              [33mclass[39m=[32m"text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight"[39m
+            [36m>[39m
+              [0mTest Heading[0m
+            [36m</h1>[39m
+            [36m<h2[39m
+              [33mclass[39m=[32m"text-2xl md:text-3xl font-medium text-slate-200"[39m
+            [36m>[39m
+              [0mTest Subheading[0m
+            [36m</h2>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-lg md:text-xl text-slate-400 leading-relaxed"[39m
+            [36m>[39m
+              [0mTest Paragraph[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-wrap gap-4"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 bg-transparent border border-white/20 text-white hover:bg-white/5"[39m
+              [33mid[39m=[32m"work_with_me"[39m
+            [36m>[39m
+              [0mWork with Me[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"relative w-fit flex flex-col items-center"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 "[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap"[39m
+                  [36m>[39m
+                    [0mBadge 1[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 "[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap"[39m
+                  [36m>[39m
+                    [0mBadge 3[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"relative group"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center gap-8 shadow-2xl overflow-hidden transition-all duration-500 group-hover:border-blue-500/30"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/20 shadow-inner group-hover:border-blue-500/50 transition-colors duration-500 relative"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Test User"[39m
+                    [33mclass[39m=[32m"w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-110"[39m
+                    [33msrc[39m=[32m"/test.png"[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-center"[39m
+                [36m>[39m
+                  [36m<h3[39m
+                    [33mclass[39m=[32m"text-2xl font-black text-white tracking-tight"[39m
+                  [36m>[39m
+                    [0mTest User[0m
+                  [36m</h3>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 "[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap"[39m
+                  [36m>[39m
+                    [0mBadge 2[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000 "[39m
+              [36m>[39m
+                [36m<di...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ apps/frontend/src/components/__tests__/HeroSection.test.tsx:105:19
+    103|
+    104|     // Should be open now
+    105|     expect(screen.getByTestId('service-selection-modal')).toBeDefined(…
+       |                   ^
+    106|     expect(mockTrackEvent).toHaveBeenCalledWith('Work with me CTA Clic…
+    107|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  apps/frontend/src/components/__tests__/HeroSection.test.tsx > HeroSection Component (Hardening - Service Selection Flow) > triggers DeliverProjectModal when service is selected
+TestingLibraryElementError: Unable to find an element with the text: Select Project. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33mclass[39m=[32m"relative min-h-[90vh] flex items-center justify-center py-24 px-6 overflow-visible"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"lg:col-span-7 space-y-12 animate-in fade-in slide-in-from-left-10 duration-1000"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-col gap-6 max-w-2xl"[39m
+          [36m>[39m
+            [36m<h1[39m
+              [33mclass[39m=[32m"text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight"[39m
+            [36m>[39m
+              [0mTest Heading[0m
+            [36m</h1>[39m
+            [36m<h2[39m
+              [33mclass[39m=[32m"text-2xl md:text-3xl font-medium text-slate-200"[39m
+            [36m>[39m
+              [0mTest Subheading[0m
+            [36m</h2>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-lg md:text-xl text-slate-400 leading-relaxed"[39m
+            [36m>[39m
+              [0mTest Paragraph[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-wrap gap-4"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 bg-transparent border border-white/20 text-white hover:bg-white/5"[39m
+              [33mid[39m=[32m"work_with_me"[39m
+            [36m>[39m
+              [0mWork with Me[0m
+            [36m</button>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"lg:col-span-5 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-10 duration-1000 delay-200"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"relative w-fit flex flex-col items-center"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid grid-cols-2 gap-4 mb-8 lg:mb-0 lg:absolute lg:-top-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 "[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap"[39m
+                  [36m>[39m
+                    [0mBadge 1[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 "[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap"[39m
+                  [36m>[39m
+                    [0mBadge 3[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"relative group"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col items-center gap-8 shadow-2xl overflow-hidden transition-all duration-500 group-hover:border-blue-500/30"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-white/20 shadow-inner group-hover:border-blue-500/50 transition-colors duration-500 relative"[39m
+                [36m>[39m
+                  [36m<img[39m
+                    [33malt[39m=[32m"Test User"[39m
+                    [33mclass[39m=[32m"w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-110"[39m
+                    [33msrc[39m=[32m"/test.png"[39m
+                  [36m/>[39m
+                  [36m<div[39m
+                    [33mclass[39m=[32m"absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"[39m
+                  [36m/>[39m
+                [36m</div>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"text-center"[39m
+                [36m>[39m
+                  [36m<h3[39m
+                    [33mclass[39m=[32m"text-2xl font-black text-white tracking-tight"[39m
+                  [36m>[39m
+                    [0mTest User[0m
+                  [36m</h3>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid grid-cols-2 gap-4 mt-8 lg:mt-0 lg:absolute lg:-bottom-14 lg:-inset-x-16 lg:flex lg:justify-between lg:px-0"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 "[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"bg-white/5 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-default text-center leading-tight w-[160px] min-h-[44px] flex items-center justify-center"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"text-[10px] font-bold text-white/75 uppercase tracking-wider whitespace-nowrap"[39m
+                  [36m>[39m
+                    [0mBadge 2[0m
+                  [36m</span>[39m
+                [36m</div>[39m
+              [36m</div>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"z-20 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-1000 "[39m
+              [36m>[39m
+                [36m<di...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:109:15
+ ❯ apps/frontend/src/components/__tests__/HeroSection.test.tsx:124:30
+    122|     console.log(document.body.innerHTML);
+    123|
+    124|     const selectBtn = screen.getAllByText('Select Project')[0];
+       |                              ^
+    125|     fireEvent.click(selectBtn);
+    126|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  13:29:31
+   Duration  2.76s (transform 456ms, setup 0ms, import 1.07s, tests 184ms, environment 1.19s)
+

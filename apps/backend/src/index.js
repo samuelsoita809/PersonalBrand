@@ -303,6 +303,56 @@ app.post("/api/v1/chat/respond", async (req, res) => {
 });
 
 /**
+ * Chat Lead Capture (TaiktousSlice3)
+ * Captures user details inside the chat flow.
+ */
+app.post("/api/v1/chat/leads", async (req, res) => {
+    const { name, email, intent, session_id } = req.body;
+    
+    if (!name || !email || !intent || !session_id) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    try {
+        const id = crypto.randomUUID();
+        await db.db.insert(schema.chat_leads).values({
+            id,
+            name,
+            email,
+            intent,
+            session_id,
+            createdAt: new Date()
+        });
+
+        await analytics.track('LEAD_CAPTURED', { intent, email }, 'frontend');
+        
+        res.status(201).json({ message: "Lead captured successfully", id });
+    } catch (error) {
+        logger.error('Failed to capture chat lead:', error);
+        res.status(500).json({ error: "Failed to store lead data" });
+    }
+});
+
+/**
+ * Get Chat Leads (Admin)
+ */
+app.get("/api/v1/chat/leads", authenticateToken, async (req, res) => {
+    try {
+        const leads = await db.db.select().from(schema.chat_leads).orderBy(schema.chat_leads.createdAt, 'desc');
+        res.status(200).json(leads);
+    } catch (error) {
+        logger.error('Failed to fetch chat leads:', error);
+        res.status(500).json({ error: "Failed to fetch leads" });
+    }
+});
+
+/**
  * Project Request Submission (Slice 4)
  * Multi-step form submission from the 'Deliver My Project' journey.
  */
